@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { getCookie } from "cookies-next";
 
 const AuctionItem = ({ item, onBidSubmit }) => {
   const router = useRouter();
@@ -22,10 +23,13 @@ const AuctionItem = ({ item, onBidSubmit }) => {
   const [open, setOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
+  const userId = getCookie("userId") || null; // Retrieve the current user's ID from the cookie
+  const isLeadingBidder = item.leading_user_id === userId;
+
   const handleOpen = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (sessionStorage.getItem("isLoggedIn") !== "true") {
+    if (userId) {
       // setAuthAlert(true); // Show an authentication alert
       router.push("/login");
       return;
@@ -50,7 +54,7 @@ const AuctionItem = ({ item, onBidSubmit }) => {
 
   const handleSubmit = () => {
     if (parseFloat(bid) > item.current_bid) {
-      onBidSubmit(item.id, parseFloat(bid));
+      onBidSubmit(item.id, parseFloat(bid), getCookie("userId"));
       handleClose();
     } else {
       // Open the snackbar instead of the default alert
@@ -71,6 +75,11 @@ const AuctionItem = ({ item, onBidSubmit }) => {
         <Typography variant="body2" color="textSecondary">
           Current Bid: ${item.current_bid}
         </Typography>
+        {isLeadingBidder && (
+          <Typography color="primary">
+            You are currently leading for this item!
+          </Typography>
+        )}
       </Link>
       <Button
         variant="contained"

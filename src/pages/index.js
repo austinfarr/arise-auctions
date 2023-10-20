@@ -15,6 +15,7 @@ import {
 import Link from "next/link";
 import Header from "@/components/Header";
 import { Search } from "@mui/icons-material";
+import { useCookies } from "cookies-next";
 
 export async function getServerSideProps(context) {
   let { data: items, error } = await supabase.from("Items").select("*");
@@ -37,6 +38,9 @@ export default function Home({ initialItems }) {
   const [items, setItems] = useState(initialItems);
 
   const [searchQuery, setSearchQuery] = useState("");
+
+  const [user, setUser] = useState(null);
+  // const [cookies] = useCookies(["auth"]);
 
   const sortItemsById = (a, b) => a.id - b.id;
 
@@ -78,16 +82,37 @@ export default function Home({ initialItems }) {
     }
   };
 
-  const handleBidSubmit = async (itemId, bidAmount) => {
-    const { data, error } = await supabase
+  const handleBidSubmit = async (itemId, bidAmount, userId) => {
+    console.log("itemId", itemId);
+    console.log("bidAmount", bidAmount);
+    console.log("userId", userId);
+
+    const { data: bidData, error: bidError } = await supabase
+      .from("Bids")
+      .insert([
+        {
+          item_id: itemId,
+          user_id: userId,
+          bid_amount: bidAmount,
+          // Possibly include a timestamp here, if not auto-generated.
+        },
+      ]);
+
+    if (bidError) {
+      console.error("Error logging bid:", bidError);
+      return;
+    }
+
+    const { data: itemData, error: itemError } = await supabase
       .from("Items")
       .update({
+        leading_user_id: userId,
         current_bid: bidAmount,
         // You might also want to update a `last_bidder` or similar field
       })
       .eq("id", itemId);
 
-    if (error) {
+    if (itemError) {
       console.error("Error placing bid:", error);
     } else {
       // Optimistically update the UI or refetch the items

@@ -5,24 +5,27 @@ import Image from "next/image"; // Importing the Image component
 import { use, useEffect, useState } from "react";
 import supabase from "../../lib/supabase";
 import Link from "next/link";
+import { deleteCookie, getCookie } from "cookies-next";
 
 const Header = () => {
   const router = useRouter();
   const [loggedIn, setLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    if (sessionStorage.getItem("isLoggedIn") !== "true") {
+    if (getCookie("userId") === undefined) {
       setLoggedIn(false);
     } else {
       setLoggedIn(true);
+      setUser(getCookie("userId"));
     }
   }, []);
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut(); // Call the signOut method from supabase
     if (!error) {
-      sessionStorage.removeItem("isLoggedIn"); // Clear the session
       setLoggedIn(false); // Update the state
+      deleteCookie("userId");
       //   router.push("/login"); // Optionally, redirect to login or home page after logout
     } else {
       console.error("Error logging out:", error.message);

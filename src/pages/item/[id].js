@@ -109,7 +109,7 @@ const ItemDetail = ({ initialItem }) => {
   };
 
   const handleOpen = () => {
-    if (sessionStorage.getItem("isLoggedIn") !== "true") {
+    if (!getCookie("userId")) {
       router.push("/login");
       return;
     }
