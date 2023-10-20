@@ -23,18 +23,29 @@ export default function VerificationPage() {
     setError(null); // Reset error state before attempting verification
 
     const { data, error: apiError } = await supabase.auth.verifyOtp({
+      // const response = await supabase.auth.verifyOtp({
       phone: router.query.phone,
       token: otp,
       type: "sms",
     });
 
+    // Inside handleOTPVerification function
     if (apiError) {
       console.error("OTP Verification error:", apiError.message);
       setError(apiError.message); // Update error state with the API error message
+      // ... your existing error logic
     } else {
-      // Store a value in session storage indicating user is logged in
-      sessionStorage.setItem("isLoggedIn", "true");
-      // OTP verified successfully. You can navigate the user to the dashboard or home page
+      const userId = data.user.id;
+      console.log("userId:", userId);
+
+      // Store JWT token in an httpOnly cookie
+      await fetch("/api/setCookie", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
+      });
+
+      // Navigate the user to the dashboard or home page
       router.push("/");
     }
   };
