@@ -17,14 +17,15 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { getCookie } from "cookies-next";
 
-const AuctionItem = ({ item, onBidSubmit }) => {
+const AuctionItem = ({ item, onBidSubmit, user }) => {
   const router = useRouter();
   const [bid, setBid] = useState("");
   const [open, setOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const userId = getCookie("userId") || null; // Retrieve the current user's ID from the cookie
-  const isLeadingBidder = item.leading_user_id === userId;
+  // const isLeadingBidder = item.leading_user_id === userId;
+  const isLeadingBidder = item.leading_user_id === user;
 
   const handleOpen = (e) => {
     e.preventDefault();

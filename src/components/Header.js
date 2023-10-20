@@ -7,9 +7,9 @@ import supabase from "../../lib/supabase";
 import Link from "next/link";
 import { deleteCookie, getCookie } from "cookies-next";
 
-const Header = () => {
+const Header = ({ loggedIn, onLogout, setLoggedIn }) => {
   const router = useRouter();
-  const [loggedIn, setLoggedIn] = useState(false);
+  // const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -77,7 +77,7 @@ const Header = () => {
           <Button
             color="inherit"
             sx={{ color: "#fff" }}
-            onClick={handleLogout} // Call the handleLogout function when this button is clicked
+            onClick={onLogout} // Call the handleLogout function when this button is clicked
           >
             Logout
           </Button>
