@@ -61,7 +61,6 @@ export default function Home({ initialItems }) {
       .subscribe();
 
     return () => {
-      // cleanup the subscription on component unmount
       subscription.unsubscribe();
     };
   }, []);
