@@ -16,6 +16,7 @@ import {
 import { useRouter } from "next/router";
 import supabase from "../../../lib/supabase";
 import Header from "@/components/Header";
+import { getCookie } from "cookies-next";
 
 export async function getServerSideProps(context) {
   const itemId = context.params.id;
@@ -44,6 +45,9 @@ const ItemDetail = ({ initialItem }) => {
   const [open, setOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [item, setItem] = useState(initialItem);
+
+  const [user, setUser] = useState(getCookie("userId") || null);
+  const [loggedIn, setLoggedIn] = useState(Boolean(user));
 
   useEffect(() => {
     const subscription = supabase
@@ -145,9 +149,24 @@ const ItemDetail = ({ initialItem }) => {
     }
   };
 
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (!error) {
+      setLoggedIn(false);
+      deleteCookie("userId");
+      setUser(null);
+    } else {
+      console.error("Error logging out:", error.message);
+    }
+  };
+
   return (
     <>
-      <Header />
+      <Header
+        loggedIn={loggedIn}
+        onLogout={handleLogout}
+        setLoggedIn={setLoggedIn}
+      />
 
       <Container>
         <Typography variant="h3" gutterBottom sx={{ marginTop: "2rem" }}>

@@ -25,7 +25,8 @@ const AuctionItem = ({ item, onBidSubmit, user }) => {
 
   const userId = getCookie("userId") || null; // Retrieve the current user's ID from the cookie
   // const isLeadingBidder = item.leading_user_id === userId;
-  const isLeadingBidder = item.leading_user_id === user;
+  const isLeadingBidder =
+    item.leading_user_id === user && item.leading_user_id !== null;
 
   const handleOpen = (e) => {
     e.preventDefault();
