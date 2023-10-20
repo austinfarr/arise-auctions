@@ -29,7 +29,7 @@ const AuctionItem = ({ item, onBidSubmit }) => {
   const handleOpen = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (userId) {
+    if (!userId) {
       // setAuthAlert(true); // Show an authentication alert
       router.push("/login");
       return;
