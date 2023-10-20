@@ -46,10 +46,6 @@ export default function LoginPage() {
         sx={{
           marginTop: "5vh",
           fontWeight: "bold",
-
-          // background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)",
-          // WebkitBackgroundClip: "text",
-          // WebkitTextFillColor: "transparent",
           textShadow: "1px 1px 2px rgba(0, 0, 0, 0.1)",
         }}
       >

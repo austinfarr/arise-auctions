@@ -5,7 +5,16 @@ import styles from "@/styles/Home.module.css";
 import supabase from "../../lib/supabase";
 import AuctionItem from "@/components/AuctionItem";
 import { useEffect, useState } from "react";
-import { Typography } from "@mui/material";
+import {
+  Box,
+  Grid,
+  InputAdornment,
+  TextField,
+  Typography,
+} from "@mui/material";
+import Link from "next/link";
+import Header from "@/components/Header";
+import { Search } from "@mui/icons-material";
 
 export async function getServerSideProps(context) {
   let { data: items, error } = await supabase.from("Items").select("*");
@@ -24,6 +33,8 @@ export async function getServerSideProps(context) {
 
 export default function Home({ initialItems }) {
   const [items, setItems] = useState(initialItems);
+
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const subscription = supabase
@@ -96,10 +107,13 @@ export default function Home({ initialItems }) {
         break;
       case "UPDATE":
         setItems((prevItems) => {
-          const updated = prevItems.map((item) =>
-            item.id === newRecord.id ? newRecord : item
+          const itemIndex = prevItems.findIndex(
+            (item) => item.id === newRecord.id
           );
-          return updated.sort(sortItemsById);
+          if (itemIndex !== -1) {
+            prevItems[itemIndex] = newRecord;
+          }
+          return [...prevItems]; // This creates a new array instance, ensuring reactivity
         });
         break;
       case "DELETE":
@@ -127,6 +141,7 @@ export default function Home({ initialItems }) {
         </Head>
 
         <main>
+          <Header />
           <Typography
             variant="h3"
             align="center"
@@ -144,13 +159,42 @@ export default function Home({ initialItems }) {
           >
             Browse Items
           </Typography>
-          {items.map((item) => (
-            <AuctionItem
-              key={item.id}
-              item={item}
-              onBidSubmit={handleBidSubmit}
-            />
-          ))}
+
+          <Grid
+            container
+            justifyContent="center"
+            spacing={2}
+            sx={{ marginBottom: "2rem" }}
+          >
+            <Grid item xs={10} sm={8} md={6}>
+              <TextField
+                fullWidth
+                variant="outlined"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search for items..."
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Search />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+          </Grid>
+
+          {items
+            .filter((item) =>
+              item.title.toLowerCase().includes(searchQuery.toLowerCase())
+            )
+            .map((filteredItem) => (
+              <AuctionItem
+                key={filteredItem.id}
+                item={filteredItem}
+                onBidSubmit={handleBidSubmit}
+              />
+            ))}
         </main>
       </>
     </>

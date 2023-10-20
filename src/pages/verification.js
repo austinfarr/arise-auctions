@@ -32,6 +32,8 @@ export default function VerificationPage() {
       console.error("OTP Verification error:", apiError.message);
       setError(apiError.message); // Update error state with the API error message
     } else {
+      // Store a value in session storage indicating user is logged in
+      sessionStorage.setItem("isLoggedIn", "true");
       // OTP verified successfully. You can navigate the user to the dashboard or home page
       router.push("/");
     }
