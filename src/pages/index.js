@@ -15,7 +15,7 @@ import {
 import Link from "next/link";
 import Header from "@/components/Header";
 import { Search } from "@mui/icons-material";
-import { useCookies } from "cookies-next";
+import { deleteCookie, getCookie, useCookies } from "cookies-next";
 
 export async function getServerSideProps(context) {
   let { data: items, error } = await supabase.from("Items").select("*");
@@ -39,7 +39,10 @@ export default function Home({ initialItems }) {
 
   const [searchQuery, setSearchQuery] = useState("");
 
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(getCookie("userId") || null);
+  const [loggedIn, setLoggedIn] = useState(Boolean(user));
+
+  // const [user, setUser] = useState(null);
   // const [cookies] = useCookies(["auth"]);
 
   const sortItemsById = (a, b) => a.id - b.id;
@@ -79,6 +82,17 @@ export default function Home({ initialItems }) {
     } else {
       updatedItems.sort(sortItemsById); // Sort items by id
       setItems(updatedItems);
+    }
+  };
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (!error) {
+      setLoggedIn(false);
+      deleteCookie("userId");
+      setUser(null);
+    } else {
+      console.error("Error logging out:", error.message);
     }
   };
 
@@ -167,7 +181,11 @@ export default function Home({ initialItems }) {
         </Head>
 
         <main>
-          <Header />
+          <Header
+            loggedIn={loggedIn}
+            onLogout={handleLogout}
+            setLoggedIn={setLoggedIn}
+          />
           <Typography
             variant="h3"
             align="center"
@@ -218,6 +236,7 @@ export default function Home({ initialItems }) {
               <AuctionItem
                 key={filteredItem.id}
                 item={filteredItem}
+                user={user}
                 onBidSubmit={handleBidSubmit}
               />
             ))}
