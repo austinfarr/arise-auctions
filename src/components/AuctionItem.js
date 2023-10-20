@@ -32,12 +32,9 @@ const AuctionItem = ({ item, onBidSubmit, user }) => {
     e.preventDefault();
     e.stopPropagation();
     if (!userId) {
-      // setAuthAlert(true); // Show an authentication alert
       router.push("/login");
       return;
     }
-
-    // e.stopPropagation(); // Prevent the event from bubbling up
 
     setOpen(true);
   };
@@ -65,7 +62,7 @@ const AuctionItem = ({ item, onBidSubmit, user }) => {
   };
 
   return (
-    <Paper style={{ padding: "16px", marginBottom: "20px" }}>
+    <Paper sx={{ padding: "16px", marginY: 2, marginX: 2 }}>
       <Link
         href={`/item/${item.id}`}
         style={{ textDecoration: "none", color: "inherit" }}
@@ -74,7 +71,7 @@ const AuctionItem = ({ item, onBidSubmit, user }) => {
           {item.title}
         </Typography>
         <Typography variant="body1">Description: {item.description}</Typography>
-        <Typography variant="body2" color="textSecondary">
+        <Typography variant="body2" color="textSecondary" marginY={1}>
           Current Bid: ${item.current_bid}
         </Typography>
         {isLeadingBidder && (
