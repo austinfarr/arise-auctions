@@ -18,6 +18,8 @@ import { Search } from "@mui/icons-material";
 
 export async function getServerSideProps(context) {
   let { data: items, error } = await supabase.from("Items").select("*");
+  const sortItemsById = (a, b) => a.id - b.id;
+  items.sort(sortItemsById);
 
   if (error) {
     console.error("Error fetching items:", error);
@@ -35,6 +37,8 @@ export default function Home({ initialItems }) {
   const [items, setItems] = useState(initialItems);
 
   const [searchQuery, setSearchQuery] = useState("");
+
+  const sortItemsById = (a, b) => a.id - b.id;
 
   useEffect(() => {
     const subscription = supabase
@@ -58,7 +62,7 @@ export default function Home({ initialItems }) {
 
     return () => {
       // cleanup the subscription on component unmount
-      // supabase.removeSubscription(subscription);
+      subscription.unsubscribe();
     };
   }, []);
 
@@ -94,8 +98,6 @@ export default function Home({ initialItems }) {
       setItems(updatedItems);
     }
   };
-
-  const sortItemsById = (a, b) => a.id - b.id;
 
   const handleDataChange = (eventType, newRecord, oldRecord) => {
     switch (eventType) {
