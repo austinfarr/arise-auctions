@@ -7,8 +7,12 @@ import AuctionItem from "@/components/AuctionItem";
 import { useEffect, useState } from "react";
 import {
   Box,
+  FormControl,
   Grid,
   InputAdornment,
+  InputLabel,
+  MenuItem,
+  Select,
   TextField,
   Typography,
 } from "@mui/material";
@@ -42,6 +46,9 @@ export default function Home({ initialItems }) {
   const [user, setUser] = useState(getCookie("userId") || null);
   const [loggedIn, setLoggedIn] = useState(Boolean(user));
 
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+
   // const [user, setUser] = useState(null);
   // const [cookies] = useCookies(["auth"]);
 
@@ -66,6 +73,24 @@ export default function Home({ initialItems }) {
         }
       )
       .subscribe();
+
+    const fetchCategories = async () => {
+      let { data: categoriesData, error: categoriesError } = await supabase
+        .from("Items")
+        .select("categories");
+
+      if (categoriesError) {
+        console.error("Error fetching categories:", categoriesError);
+      } else {
+        const allCategories = categoriesData.flatMap(
+          (cat) => cat.categories || []
+        );
+        const uniqueCategories = [...new Set(allCategories)].filter(Boolean);
+        setCategories(uniqueCategories);
+      }
+    };
+
+    fetchCategories();
 
     return () => {
       subscription.unsubscribe();
@@ -225,13 +250,42 @@ export default function Home({ initialItems }) {
                   ),
                 }}
               />
+              <FormControl variant="outlined" fullWidth sx={{ marginY: 3 }}>
+                <InputLabel id="category-select-label">Category</InputLabel>
+                <Select
+                  labelId="category-select-label"
+                  id="category-select"
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  label="Category"
+                >
+                  <MenuItem value="">
+                    <em>All</em>
+                  </MenuItem>
+                  {categories.map((category) => (
+                    <MenuItem key={category} value={category}>
+                      {category}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Grid>
           </Grid>
 
           {items
-            .filter((item) =>
-              item.title.toLowerCase().includes(searchQuery.toLowerCase())
-            )
+            .filter((item) => {
+              // Check if the item's title matches the search query
+              const matchesQuery = item.title
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase());
+
+              // Check if the item's categories include the selected category or if no category is selected
+              const matchesCategory = selectedCategory
+                ? (item.categories || []).includes(selectedCategory)
+                : true;
+
+              return matchesQuery && matchesCategory;
+            })
             .map((filteredItem) => (
               <AuctionItem
                 key={filteredItem.id}
