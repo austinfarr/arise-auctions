@@ -24,6 +24,7 @@ const AuctionItem = ({ item, onBidSubmit, user }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const dialogRef = createRef();
+  const bidInputRef = createRef();
 
   const userId = getCookie("userId") || null; // Retrieve the current user's ID from the cookie
   // const isLeadingBidder = item.leading_user_id === userId;
@@ -41,11 +42,15 @@ const AuctionItem = ({ item, onBidSubmit, user }) => {
     setOpen(true);
 
     setTimeout(() => {
-      dialogRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
-    }, 500); // Adjust the timeout as needed
+      bidInputRef.current?.focus();
+    }, 500);
+
+    // setTimeout(() => {
+    //   dialogRef.current?.scrollIntoView({
+    //     behavior: "smooth",
+    //     block: "center",
+    //   });
+    // }, 500); // Adjust the timeout as needed
   };
 
   const handleClose = () => {
@@ -121,6 +126,7 @@ const AuctionItem = ({ item, onBidSubmit, user }) => {
             fullWidth
             value={bid}
             onChange={(e) => setBid(e.target.value)}
+            inputRef={bidInputRef}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">$</InputAdornment>
