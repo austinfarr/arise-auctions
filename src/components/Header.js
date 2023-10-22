@@ -9,7 +9,6 @@ import { deleteCookie, getCookie } from "cookies-next";
 
 const Header = ({ loggedIn, onLogout, setLoggedIn }) => {
   const router = useRouter();
-  // const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -19,7 +18,7 @@ const Header = ({ loggedIn, onLogout, setLoggedIn }) => {
       setLoggedIn(true);
       setUser(getCookie("userId"));
     }
-  }, []);
+  }, [setLoggedIn]);
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut(); // Call the signOut method from supabase

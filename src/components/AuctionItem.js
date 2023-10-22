@@ -25,18 +25,16 @@ const AuctionItem = ({ item, onBidSubmit, user }) => {
 
   const userId = getCookie("userId") || null; // Retrieve the current user's ID from the cookie
   // const isLeadingBidder = item.leading_user_id === userId;
-  const isLeadingBidder = item.leading_user_id === user;
+  const isLeadingBidder =
+    item.leading_user_id === user && item.leading_user_id !== null;
 
   const handleOpen = (e) => {
     e.preventDefault();
     e.stopPropagation();
     if (!userId) {
-      // setAuthAlert(true); // Show an authentication alert
       router.push("/login");
       return;
     }
-
-    // e.stopPropagation(); // Prevent the event from bubbling up
 
     setOpen(true);
   };
@@ -64,7 +62,7 @@ const AuctionItem = ({ item, onBidSubmit, user }) => {
   };
 
   return (
-    <Paper style={{ padding: "16px", marginBottom: "20px" }}>
+    <Paper sx={{ padding: "16px", marginY: 2, marginX: 2 }}>
       <Link
         href={`/item/${item.id}`}
         style={{ textDecoration: "none", color: "inherit" }}
@@ -73,7 +71,7 @@ const AuctionItem = ({ item, onBidSubmit, user }) => {
           {item.title}
         </Typography>
         <Typography variant="body1">Description: {item.description}</Typography>
-        <Typography variant="body2" color="textSecondary">
+        <Typography variant="body2" color="textSecondary" marginY={1}>
           Current Bid: ${item.current_bid}
         </Typography>
         {isLeadingBidder && (
@@ -86,9 +84,17 @@ const AuctionItem = ({ item, onBidSubmit, user }) => {
         variant="contained"
         color="primary"
         onClick={(e) => handleOpen(e)}
-        sx={{ color: "#fff" }}
+        sx={{ color: "#fff", marginRight: 2 }}
       >
         Place Bid
+      </Button>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={(e) => handleOpen(e)}
+        sx={{ color: "#fff" }}
+      >
+        Buy Now for ${item.buy_now_price}
       </Button>
 
       <Dialog open={open} onClose={handleClose}>
