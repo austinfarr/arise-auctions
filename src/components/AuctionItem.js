@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { createRef, useEffect, useState } from "react";
 import {
   Paper,
   Typography,
@@ -23,6 +23,8 @@ const AuctionItem = ({ item, onBidSubmit, user }) => {
   const [open, setOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
+  const dialogRef = createRef();
+
   const userId = getCookie("userId") || null; // Retrieve the current user's ID from the cookie
   // const isLeadingBidder = item.leading_user_id === userId;
   const isLeadingBidder =
@@ -37,6 +39,13 @@ const AuctionItem = ({ item, onBidSubmit, user }) => {
     }
 
     setOpen(true);
+
+    setTimeout(() => {
+      dialogRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }, 500); // Adjust the timeout as needed
   };
 
   const handleClose = () => {
@@ -97,7 +106,7 @@ const AuctionItem = ({ item, onBidSubmit, user }) => {
         Buy Now for ${item.buy_now_price}
       </Button>
 
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog open={open} onClose={handleClose} ref={dialogRef}>
         <DialogTitle>Place your bid</DialogTitle>
         <DialogContent>
           <DialogContentText>

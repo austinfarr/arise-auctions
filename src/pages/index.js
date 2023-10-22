@@ -22,6 +22,19 @@ import { Search } from "@mui/icons-material";
 import { deleteCookie, getCookie, useCookies } from "cookies-next";
 
 export async function getServerSideProps(context) {
+  const cookies = context.req.cookies;
+  const token = cookies["userId"]; // Adjust this to your actual cookie name
+  console.log("token", token);
+
+  let user = null;
+
+  if (token) {
+    // Verify the token and fetch user data
+    // This is a simplified example. You might need to adjust it according to your backend logic.
+    //
+    user = token;
+  }
+
   let { data: items, error } = await supabase.from("Items").select("*");
   const sortItemsById = (a, b) => a.id - b.id;
   items.sort(sortItemsById);
@@ -34,16 +47,19 @@ export async function getServerSideProps(context) {
   return {
     props: {
       initialItems: items,
+      initialUser: user,
     },
   };
 }
 
-export default function Home({ initialItems }) {
+export default function Home({ initialItems, initialUser }) {
   const [items, setItems] = useState(initialItems);
 
   const [searchQuery, setSearchQuery] = useState("");
 
-  const [user, setUser] = useState(getCookie("userId") || null);
+  // const [user, setUser] = useState(getCookie("userId") || null);
+  const [user, setUser] = useState(initialUser);
+  console.log("user", user);
   const [loggedIn, setLoggedIn] = useState(Boolean(user));
 
   const [categories, setCategories] = useState([]);
