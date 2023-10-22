@@ -250,7 +250,7 @@ export default function Home({ initialItems }) {
                   ),
                 }}
               />
-              <FormControl variant="outlined" fullWidth sx={{ marginY: 3 }}>
+              {/* <FormControl variant="outlined" fullWidth sx={{ marginY: 3 }}>
                 <InputLabel id="category-select-label">Category</InputLabel>
                 <Select
                   labelId="category-select-label"
@@ -268,7 +268,7 @@ export default function Home({ initialItems }) {
                     </MenuItem>
                   ))}
                 </Select>
-              </FormControl>
+              </FormControl> */}
             </Grid>
           </Grid>
 

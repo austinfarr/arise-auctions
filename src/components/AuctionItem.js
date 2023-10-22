@@ -84,9 +84,17 @@ const AuctionItem = ({ item, onBidSubmit, user }) => {
         variant="contained"
         color="primary"
         onClick={(e) => handleOpen(e)}
-        sx={{ color: "#fff" }}
+        sx={{ color: "#fff", marginRight: 2 }}
       >
         Place Bid
+      </Button>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={(e) => handleOpen(e)}
+        sx={{ color: "#fff" }}
+      >
+        Buy Now for ${item.buy_now_price}
       </Button>
 
       <Dialog open={open} onClose={handleClose}>
