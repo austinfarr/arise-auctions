@@ -1,4 +1,4 @@
-import React, { createRef, useEffect, useState } from "react";
+import React, { createRef, useMemo, useState } from "react";
 import {
   Paper,
   Typography,
@@ -17,40 +17,34 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { getCookie } from "cookies-next";
 
-const AuctionItem = ({ item, onBidSubmit, user }) => {
+const AuctionItem = ({
+  item: { id, title, description, current_bid, buy_now_price, leading_user_id },
+  onBidSubmit,
+  user,
+}) => {
   const router = useRouter();
   const [bid, setBid] = useState("");
   const [open, setOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
-  const dialogRef = createRef();
-  const bidInputRef = createRef();
+  const userId = getCookie("userId") || null;
 
-  const userId = getCookie("userId") || null; // Retrieve the current user's ID from the cookie
-  // const isLeadingBidder = item.leading_user_id === userId;
-  const isLeadingBidder =
-    item.leading_user_id === user && item.leading_user_id !== null;
+  const isLeadingBidder = useMemo(
+    () => leading_user_id === user && leading_user_id !== null,
+    [leading_user_id, user]
+  );
 
-  const handleOpen = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const dialogPaperStyle = {
+    position: "absolute",
+    top: "15%",
+  };
+
+  const handleOpen = () => {
     if (!userId) {
-      router.push("/login");
+      router.push("/login?returnUrl=" + router.pathname);
       return;
     }
-
     setOpen(true);
-
-    setTimeout(() => {
-      bidInputRef.current?.focus();
-    }, 500);
-
-    // setTimeout(() => {
-    //   dialogRef.current?.scrollIntoView({
-    //     behavior: "smooth",
-    //     block: "center",
-    //   });
-    // }, 500); // Adjust the timeout as needed
   };
 
   const handleClose = () => {
@@ -59,18 +53,17 @@ const AuctionItem = ({ item, onBidSubmit, user }) => {
   };
 
   const handleSnackbarClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
+    if (reason !== "clickaway") {
+      setSnackbarOpen(false);
     }
-    setSnackbarOpen(false);
   };
 
   const handleSubmit = () => {
-    if (parseFloat(bid) > item.current_bid) {
-      onBidSubmit(item.id, parseFloat(bid), getCookie("userId"));
+    const bidAmount = parseFloat(bid);
+    if (bidAmount > current_bid) {
+      onBidSubmit(id, bidAmount, userId);
       handleClose();
     } else {
-      // Open the snackbar instead of the default alert
       setSnackbarOpen(true);
     }
   };
@@ -78,26 +71,28 @@ const AuctionItem = ({ item, onBidSubmit, user }) => {
   return (
     <Paper sx={{ padding: "16px", marginY: 2, marginX: 2 }}>
       <Link
-        href={`/item/${item.id}`}
+        href={`/item/${id}`}
         style={{ textDecoration: "none", color: "inherit" }}
       >
-        <Typography variant="h6" gutterBottom>
-          {item.title}
-        </Typography>
-        <Typography variant="body1">Description: {item.description}</Typography>
-        <Typography variant="body2" color="textSecondary" marginY={1}>
-          Current Bid: ${item.current_bid}
-        </Typography>
-        {isLeadingBidder && (
-          <Typography color="primary">
-            You are currently leading for this item!
+        <div>
+          <Typography variant="h6" gutterBottom>
+            {title}
           </Typography>
-        )}
+          <Typography variant="body1">Description: {description}</Typography>
+          <Typography variant="body2" color="textSecondary" marginY={1}>
+            Current Bid: ${current_bid}
+          </Typography>
+          {isLeadingBidder && (
+            <Typography color="primary">
+              You are currently leading for this item!
+            </Typography>
+          )}
+        </div>
       </Link>
       <Button
         variant="contained"
         color="primary"
-        onClick={(e) => handleOpen(e)}
+        onClick={handleOpen}
         sx={{ color: "#fff", marginRight: 2 }}
       >
         Place Bid
@@ -105,18 +100,29 @@ const AuctionItem = ({ item, onBidSubmit, user }) => {
       <Button
         variant="contained"
         color="primary"
-        onClick={(e) => handleOpen(e)}
+        onClick={handleOpen}
         sx={{ color: "#fff" }}
       >
-        Buy Now for ${item.buy_now_price}
+        Buy Now for ${buy_now_price}
       </Button>
-
-      <Dialog open={open} onClose={handleClose} ref={dialogRef}>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        sx={{
+          "& .MuiPaper-root": {
+            position: "absolute",
+            top: "15%",
+          },
+        }}
+        // PaperComponent={(props) => (
+        //   <Paper {...props} style={dialogPaperStyle} />
+        // )}
+      >
         <DialogTitle>Place your bid</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Enter your bid amount for {item.title}. It should be higher than the
-            current bid: <strong>${item.current_bid}</strong>
+            Enter your bid amount for {title}. It should be higher than the
+            current bid: <strong>${current_bid}</strong>
           </DialogContentText>
           <TextField
             autoFocus
@@ -126,7 +132,6 @@ const AuctionItem = ({ item, onBidSubmit, user }) => {
             fullWidth
             value={bid}
             onChange={(e) => setBid(e.target.value)}
-            inputRef={bidInputRef}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">$</InputAdornment>
@@ -156,8 +161,6 @@ const AuctionItem = ({ item, onBidSubmit, user }) => {
           </Button>
         </DialogActions>
       </Dialog>
-
-      {/* Snackbar for displaying message */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={5000}

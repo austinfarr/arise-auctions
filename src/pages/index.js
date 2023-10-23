@@ -20,21 +20,9 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import { Search } from "@mui/icons-material";
 import { deleteCookie, getCookie, useCookies } from "cookies-next";
+import { useAuth } from "@/context/AuthContext";
 
 export async function getServerSideProps(context) {
-  const cookies = context.req.cookies;
-  const token = cookies["userId"]; // Adjust this to your actual cookie name
-  console.log("token", token);
-
-  let user = null;
-
-  if (token) {
-    // Verify the token and fetch user data
-    // This is a simplified example. You might need to adjust it according to your backend logic.
-    //
-    user = token;
-  }
-
   let { data: items, error } = await supabase.from("Items").select("*");
   const sortItemsById = (a, b) => a.id - b.id;
   items.sort(sortItemsById);
@@ -47,26 +35,21 @@ export async function getServerSideProps(context) {
   return {
     props: {
       initialItems: items,
-      initialUser: user,
     },
   };
 }
 
-export default function Home({ initialItems, initialUser }) {
+export default function Home({ initialItems }) {
+  const { loggedIn, logout, user } = useAuth();
+
   const [items, setItems] = useState(initialItems);
 
   const [searchQuery, setSearchQuery] = useState("");
 
-  // const [user, setUser] = useState(getCookie("userId") || null);
-  const [user, setUser] = useState(initialUser);
   console.log("user", user);
-  const [loggedIn, setLoggedIn] = useState(Boolean(user));
 
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
-
-  // const [user, setUser] = useState(null);
-  // const [cookies] = useCookies(["auth"]);
 
   const sortItemsById = (a, b) => a.id - b.id;
 
@@ -126,17 +109,6 @@ export default function Home({ initialItems, initialUser }) {
     }
   };
 
-  const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (!error) {
-      setLoggedIn(false);
-      deleteCookie("userId");
-      setUser(null);
-    } else {
-      console.error("Error logging out:", error.message);
-    }
-  };
-
   const handleBidSubmit = async (itemId, bidAmount, userId) => {
     console.log("itemId", itemId);
     console.log("bidAmount", bidAmount);
@@ -149,7 +121,6 @@ export default function Home({ initialItems, initialUser }) {
           item_id: itemId,
           user_id: userId,
           bid_amount: bidAmount,
-          // Possibly include a timestamp here, if not auto-generated.
         },
       ]);
 
@@ -179,33 +150,27 @@ export default function Home({ initialItems, initialUser }) {
   };
 
   const handleDataChange = (eventType, newRecord, oldRecord) => {
-    switch (eventType) {
-      case "INSERT":
-        setItems((prevItems) => {
-          const updated = [...prevItems, newRecord];
-          return updated.sort(sortItemsById);
-        });
-        break;
-      case "UPDATE":
-        setItems((prevItems) => {
-          const itemIndex = prevItems.findIndex(
-            (item) => item.id === newRecord.id
-          );
-          if (itemIndex !== -1) {
-            prevItems[itemIndex] = newRecord;
-          }
-          return [...prevItems]; // This creates a new array instance, ensuring reactivity
-        });
-        break;
-      case "DELETE":
-        setItems((prevItems) =>
-          prevItems.filter((item) => item.id !== oldRecord.id)
-        );
-        break;
-      default:
-        fetchUpdatedItems(); // fallback to fetching all data in case of unexpected event types
-        break;
-    }
+    setItems((prevItems) => {
+      switch (eventType) {
+        case "INSERT":
+          return [...prevItems, newRecord].sort(sortItemsById);
+
+        case "UPDATE":
+          return prevItems
+            .map((item) => (item.id === newRecord.id ? newRecord : item))
+            .sort(sortItemsById);
+
+        case "DELETE":
+          return prevItems.filter((item) => item.id !== oldRecord.id);
+
+        default:
+          // It might not be the best idea to fetch all data again here,
+          // as it could lead to performance issues for large datasets.
+          // Instead, you might want to log an unexpected event type.
+          console.warn("Unexpected event type in handleDataChange:", eventType);
+          return prevItems;
+      }
+    });
   };
 
   return (
@@ -222,11 +187,7 @@ export default function Home({ initialItems, initialUser }) {
         </Head>
 
         <main>
-          <Header
-            loggedIn={loggedIn}
-            onLogout={handleLogout}
-            setLoggedIn={setLoggedIn}
-          />
+          <Header hasLogoutOption={true} />
           <Typography
             variant="h3"
             align="center"
@@ -235,10 +196,6 @@ export default function Home({ initialItems, initialUser }) {
             sx={{
               marginTop: "5vh",
               fontWeight: "bold",
-
-              // background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)",
-              // WebkitBackgroundClip: "text",
-              // WebkitTextFillColor: "transparent",
               textShadow: "1px 1px 2px rgba(0, 0, 0, 0.1)",
             }}
           >
