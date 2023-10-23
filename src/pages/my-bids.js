@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import supabase from "../../lib/supabase";
 import AuctionItem from "@/components/AuctionItem";
 import Header from "@/components/Header";
-import { Typography, Grid } from "@mui/material";
+import { Typography, Grid, CircularProgress } from "@mui/material";
 
 export async function getServerSideProps(context) {
   const cookies = context.req.cookies;
@@ -29,6 +29,7 @@ export async function getServerSideProps(context) {
 export default function MyBids({ initialUser }) {
   const [items, setItems] = useState([]);
   const [user, setUser] = useState(initialUser);
+  const [loading, setLoading] = useState(true);
 
   console.log("user", user);
 
@@ -58,6 +59,7 @@ export default function MyBids({ initialUser }) {
             setItems(items);
           }
         }
+        setLoading(false);
       }
     };
 
@@ -127,20 +129,27 @@ export default function MyBids({ initialUser }) {
         My Bids
       </Typography>
 
-      {items.length > 0 ? (
-        items.map((item) => (
-          <AuctionItem
-            key={item.id}
-            item={item}
-            user={user}
-            onBidSubmit={handleBidSubmit}
-          />
-        ))
-      ) : (
-        <Typography variant="h5" align="center" color="textSecondary">
-          You haven&apos;t bid on any items yet.
-        </Typography>
+      {loading && (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <CircularProgress size={80} />
+        </div>
       )}
+
+      {!loading &&
+        (items.length > 0 ? (
+          items.map((item) => (
+            <AuctionItem
+              key={item.id}
+              item={item}
+              user={user}
+              onBidSubmit={handleBidSubmit}
+            />
+          ))
+        ) : (
+          <Typography variant="h5" align="center" color="textSecondary">
+            You haven&apos;t bid on any items yet.
+          </Typography>
+        ))}
     </div>
   );
 }
