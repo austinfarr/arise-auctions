@@ -4,36 +4,15 @@ import supabase from "../../lib/supabase";
 import AuctionItem from "@/components/AuctionItem";
 import Header from "@/components/Header";
 import { Typography, Grid, CircularProgress } from "@mui/material";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/router";
 
-export async function getServerSideProps(context) {
-  const cookies = context.req.cookies;
-  const token = cookies["userId"]; // Adjust this to your actual cookie name
-  console.log("token", token);
-
-  let user = null;
-
-  if (token) {
-    // Verify the token and fetch user data
-    // This is a simplified example. You might need to adjust it according to your backend logic.
-    //
-    user = token;
-  }
-
-  return {
-    props: {
-      initialUser: user,
-    },
-  };
-}
-
-export default function MyBids({ initialUser }) {
+export default function MyBids() {
   const [items, setItems] = useState([]);
-  const [user, setUser] = useState(initialUser);
   const [loading, setLoading] = useState(true);
+  const { user, loggedIn } = useAuth();
 
-  console.log("user", user);
-
-  const [loggedIn, setLoggedIn] = useState(Boolean(user));
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUserAndBids = async () => {
@@ -51,7 +30,6 @@ export default function MyBids({ initialUser }) {
             .from("Items")
             .select("*")
             .in("id", itemIds);
-          console.log("items", items);
 
           if (itemsError) {
             console.error("Error fetching items:", itemsError);
@@ -66,17 +44,17 @@ export default function MyBids({ initialUser }) {
     fetchUserAndBids();
   }, [user]);
 
-  const handleBidSubmit = async (itemId, bidAmount, userId) => {
+  const handleBidSubmit = async (itemId, bidAmount) => {
     console.log("itemId", itemId);
     console.log("bidAmount", bidAmount);
-    console.log("userId", userId);
+    console.log("userId", user);
 
     const { data: bidData, error: bidError } = await supabase
       .from("Bids")
       .insert([
         {
           item_id: itemId,
-          user_id: userId,
+          user_id: user,
           bid_amount: bidAmount,
         },
       ]);
@@ -89,14 +67,13 @@ export default function MyBids({ initialUser }) {
     const { data: itemData, error: itemError } = await supabase
       .from("Items")
       .update({
-        leading_user_id: userId,
+        leading_user_id: user,
         current_bid: bidAmount,
-        // You might also want to update a `last_bidder` or similar field
       })
       .eq("id", itemId);
 
     if (itemError) {
-      console.error("Error placing bid:", error);
+      console.error("Error placing bid:", itemError);
     } else {
       // Optimistically update the UI or refetch the items
       const updatedItems = items.map((item) =>
@@ -106,6 +83,11 @@ export default function MyBids({ initialUser }) {
     }
   };
 
+  if (!loggedIn) {
+    //go to login page
+    router.push("/login");
+  }
+
   return (
     <div>
       <Head>
@@ -113,7 +95,7 @@ export default function MyBids({ initialUser }) {
         <meta name="description" content="View your bidding history" />
       </Head>
 
-      <Header user={user} hasLogoutOption={false} />
+      <Header hasLogoutOption={false} />
 
       <Typography
         variant="h3"
