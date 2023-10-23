@@ -13,6 +13,7 @@ import {
   ListItem,
   ListItemText,
   ListItemButton,
+  ListItemIcon,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useRouter } from "next/router";
@@ -22,6 +23,7 @@ import supabase from "../../lib/supabase";
 import Link from "next/link";
 import { deleteCookie, getCookie } from "cookies-next";
 import { useAuth } from "@/context/AuthContext";
+import { Login, Logout, Sell, ViewList } from "@mui/icons-material";
 
 const Header = ({ hasLogoutOption }) => {
   const router = useRouter();
@@ -69,8 +71,8 @@ const Header = ({ hasLogoutOption }) => {
             <Image
               src="https://www.ariseafrica.org/wp-content/uploads/2020/04/arise-logo-color.png"
               alt="Arise Auctions Logo"
-              width={50} // You can adjust these values for your design needs
-              height={50}
+              width={45} // You can adjust these values for your design needs
+              height={45}
               priority={true}
 
               // objectFit="contain"
@@ -102,6 +104,9 @@ const Header = ({ hasLogoutOption }) => {
             },
           }}
         >
+          {/* <Typography variant="h5" color="primary">
+            Where to?
+          </Typography> */}
           <List>
             <ListItemButton
               key="Browse"
@@ -110,6 +115,9 @@ const Header = ({ hasLogoutOption }) => {
                 router.push("/");
               }}
             >
+              <ListItemIcon>
+                <ViewList color="primary" />
+              </ListItemIcon>
               <ListItemText primary="Browse" />
             </ListItemButton>
             <ListItemButton
@@ -119,14 +127,23 @@ const Header = ({ hasLogoutOption }) => {
                 router.push("/my-bids");
               }}
             >
+              <ListItemIcon>
+                <Sell color="primary" />
+              </ListItemIcon>
               <ListItemText primary="My Bids" />
             </ListItemButton>
             {loggedIn ? (
               <ListItemButton key="Logout" onClick={logout}>
+                <ListItemIcon>
+                  <Logout color="primary" />
+                </ListItemIcon>
                 <ListItemText primary="Logout" />
               </ListItemButton>
             ) : (
               <ListItemButton key="Login" onClick={() => router.push("/login")}>
+                <ListItemIcon>
+                  <Login color="primary" />
+                </ListItemIcon>
                 <ListItemText primary="Login" />
               </ListItemButton>
             )}
