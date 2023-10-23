@@ -15,6 +15,11 @@ export default function MyBids() {
   const router = useRouter();
 
   useEffect(() => {
+    if (!loggedIn) {
+      //go to login page
+      router.push("/login");
+    }
+
     const fetchUserAndBids = async () => {
       if (user) {
         const { data: bids, error: bidsError } = await supabase
@@ -82,11 +87,6 @@ export default function MyBids() {
       setItems(updatedItems);
     }
   };
-
-  if (!loggedIn) {
-    //go to login page
-    router.push("/login");
-  }
 
   return (
     <div>
