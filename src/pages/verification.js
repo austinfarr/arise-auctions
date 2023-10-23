@@ -12,41 +12,22 @@ import {
   Paper,
   Alert,
 } from "@mui/material";
+import { useAuth } from "@/context/AuthContext";
 
 export default function VerificationPage() {
+  const { verifyOtp } = useAuth();
   const [otp, setOtp] = useState("");
   const [error, setError] = useState(null); // For storing error messages
   const router = useRouter();
 
   const handleOTPVerification = async (e) => {
     e.preventDefault();
-    setError(null); // Reset error state before attempting verification
-
-    const { data, error: apiError } = await supabase.auth.verifyOtp({
-      // const response = await supabase.auth.verifyOtp({
-      phone: router.query.phone,
-      token: otp,
-      type: "sms",
-    });
-
-    // Inside handleOTPVerification function
-    if (apiError) {
-      console.error("OTP Verification error:", apiError.message);
-      setError(apiError.message); // Update error state with the API error message
-      // ... your existing error logic
-    } else {
-      const userId = data.user.id;
-      console.log("userId:", userId);
-
-      // Store JWT token in an httpOnly cookie
-      await fetch("/api/setCookie", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId }),
-      });
-
-      // Navigate the user to the dashboard or home page
-      router.push("/");
+    setError(null);
+    try {
+      await verifyOtp(router.query.phone, otp);
+      router.push("/"); // Navigate to dashboard or home
+    } catch (error) {
+      setError(error.message);
     }
   };
 
@@ -60,10 +41,6 @@ export default function VerificationPage() {
         sx={{
           marginTop: "5vh",
           fontWeight: "bold",
-
-          // background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)",
-          // WebkitBackgroundClip: "text",
-          // WebkitTextFillColor: "transparent",
           textShadow: "1px 1px 2px rgba(0, 0, 0, 0.1)",
         }}
       >

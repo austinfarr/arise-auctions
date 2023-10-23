@@ -10,29 +10,25 @@ import {
   Paper,
   Alert,
 } from "@mui/material";
+import { useAuth } from "@/context/AuthContext";
 
 export default function LoginPage() {
+  const { login } = useAuth();
   const [phoneNumber, setPhoneNumber] = useState("");
   const [error, setError] = useState(null); // For storing error messages
   const router = useRouter();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError(null); // Reset error state before attempting login
-
-    const { data, error: apiError } = await supabase.auth.signInWithOtp({
-      phone: phoneNumber,
-    });
-
-    if (apiError) {
-      console.error("Login error:", apiError.message);
-      setError(apiError.message); // Update error state with the API error message
-    } else {
-      // OTP sent successfully. Navigate to verification page
+    setError(null);
+    try {
+      await login(phoneNumber);
       router.push({
         pathname: "/verification",
         query: { phone: phoneNumber },
       });
+    } catch (error) {
+      setError(error.message);
     }
   };
 

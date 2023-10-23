@@ -1,34 +1,57 @@
 // components/Header.js
-import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  Box,
+  MenuItem,
+  Menu,
+  IconButton,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemButton,
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
 import { useRouter } from "next/router";
 import Image from "next/image"; // Importing the Image component
 import { use, useEffect, useState } from "react";
 import supabase from "../../lib/supabase";
 import Link from "next/link";
 import { deleteCookie, getCookie } from "cookies-next";
+import { useAuth } from "@/context/AuthContext";
 
-const Header = ({ loggedIn, onLogout, setLoggedIn }) => {
+const Header = ({ hasLogoutOption }) => {
   const router = useRouter();
-  const [user, setUser] = useState(null);
+  const { loggedIn, logout } = useAuth();
 
-  useEffect(() => {
-    if (getCookie("userId") === undefined) {
-      setLoggedIn(false);
-    } else {
-      setLoggedIn(true);
-      setUser(getCookie("userId"));
-    }
-  }, [setLoggedIn]);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
 
-  const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut(); // Call the signOut method from supabase
-    if (!error) {
-      setLoggedIn(false); // Update the state
-      deleteCookie("userId");
-      //   router.push("/login"); // Optionally, redirect to login or home page after logout
-    } else {
-      console.error("Error logging out:", error.message);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const toggleDrawer = (open) => (event) => {
+    console.log("toggleDrawer", open);
+    console.log("event", event);
+
+    if (
+      event &&
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
     }
+    setDrawerOpen(open);
+  };
+
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   return (
@@ -58,6 +81,59 @@ const Header = ({ loggedIn, onLogout, setLoggedIn }) => {
           </Typography>
         </Box>
 
+        <IconButton
+          size="large"
+          edge="start"
+          color="inherit"
+          aria-label="menu"
+          sx={{ mr: 2 }}
+          onClick={toggleDrawer(true)}
+        >
+          <MenuIcon color="secondary" />
+        </IconButton>
+
+        <Drawer
+          anchor="right"
+          open={drawerOpen}
+          onClose={toggleDrawer(false)}
+          sx={{
+            "& .MuiDrawer-paper": {
+              width: "40%", // Adjust as needed
+            },
+          }}
+        >
+          <List>
+            <ListItemButton
+              key="Browse"
+              onClick={() => {
+                toggleDrawer(false)();
+                router.push("/");
+              }}
+            >
+              <ListItemText primary="Browse" />
+            </ListItemButton>
+            <ListItemButton
+              key="My Bids"
+              onClick={() => {
+                toggleDrawer(false)();
+                router.push("/my-bids");
+              }}
+            >
+              <ListItemText primary="My Bids" />
+            </ListItemButton>
+            {loggedIn ? (
+              <ListItemButton key="Logout" onClick={logout}>
+                <ListItemText primary="Logout" />
+              </ListItemButton>
+            ) : (
+              <ListItemButton key="Login" onClick={() => router.push("/login")}>
+                <ListItemText primary="Login" />
+              </ListItemButton>
+            )}
+          </List>
+        </Drawer>
+
+        {/* 
         <Button
           color="inherit"
           sx={{ color: "#fff" }}
@@ -65,31 +141,40 @@ const Header = ({ loggedIn, onLogout, setLoggedIn }) => {
         >
           Browse
         </Button>
-        {/* <Button
+        <Button
           color="inherit"
           sx={{ color: "#fff" }}
-          onClick={() => router.push("/about")}
+          onClick={() => router.push("/my-bids")}
         >
-          About
+          My Bids
         </Button> */}
-        {loggedIn && (
-          <Button
-            color="inherit"
-            sx={{ color: "#fff" }}
-            onClick={onLogout} // Call the handleLogout function when this button is clicked
-          >
-            Logout
-          </Button>
+
+        {/* {hasLogoutOption === true ? (
+          loggedIn === true && (
+            <Button
+              color="inherit"
+              sx={{ color: "#fff" }}
+              onClick={logout} // Call the handleLogout function when this button is clicked
+            >
+              Logout
+            </Button>
+          )
+        ) : (
+          <></>
         )}
-        {!loggedIn && (
-          <Button
-            color="inherit"
-            sx={{ color: "#fff" }}
-            onClick={() => router.push("/login")}
-          >
-            Login
-          </Button>
-        )}
+        {hasLogoutOption === true ? (
+          !loggedIn && (
+            <Button
+              color="inherit"
+              sx={{ color: "#fff" }}
+              onClick={() => router.push("/login")}
+            >
+              Login
+            </Button>
+          )
+        ) : (
+          <></>
+        )} */}
       </Toolbar>
     </AppBar>
   );

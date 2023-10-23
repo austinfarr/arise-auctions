@@ -6,6 +6,9 @@ const theme = createTheme({
     primary: {
       main: "#ff6600", // Taken from your primary glow; you might adjust this
     },
+    secondary: {
+      main: "#fff", // Taken from your primary glow; you might adjust this
+    },
     // You can add secondary, error, warning, etc. colors similarly
     background: {
       default: "rgb(214, 219, 220)", // Background color for light mode
