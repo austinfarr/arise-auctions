@@ -148,7 +148,7 @@ function ItemDetails({ item, open, onClose, onBidSubmit }) {
 
             <Box textAlign="right" sx={{ marginX: 2 }}>
               <Typography sx={{ fontWeight: "bold", fontSize: 24 }}>
-                ${item.current_bid}
+                ${item.current_bid.toLocaleString()}
               </Typography>
               <Typography variant="body1">Current bid</Typography>
             </Box>
