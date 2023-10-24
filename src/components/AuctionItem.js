@@ -12,6 +12,26 @@ import {
 import ItemDetails from "./ItemDetails"; // Import the new component
 import Image from "next/image";
 
+const LeadingBidRibbon = () => (
+  <Box
+    sx={{
+      position: "absolute",
+      top: 130,
+      left: -30,
+      backgroundColor: "#ffeeca",
+      padding: "8px 50px",
+      color: "#ffb81d",
+      transform: "rotate(-45deg)",
+      transformOrigin: "0 0",
+      fontSize: "16px",
+      fontWeight: "bold",
+      fontFamily: "Montserrat, sans-serif",
+    }}
+  >
+    You&rsquo;re Winning!
+  </Box>
+);
+
 const AuctionItem = ({ item, onBidSubmit, user }) => {
   const [detailsOpen, setDetailsOpen] = useState(false);
 
@@ -37,7 +57,11 @@ const AuctionItem = ({ item, onBidSubmit, user }) => {
         }}
         onClick={handleItemClick}
       >
-        <Card sx={{ maxWidth: 500, width: "100%" }} onClick={handleItemClick}>
+        <Card
+          sx={{ maxWidth: 500, width: "100%", position: "relative" }}
+          onClick={handleItemClick}
+        >
+          {user && user === item.leading_user_id && <LeadingBidRibbon />}
           <CardMedia
             sx={{ height: 240 }}
             image={item.image}
