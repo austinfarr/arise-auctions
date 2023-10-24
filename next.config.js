@@ -2,7 +2,11 @@
 const nextConfig = {
   reactStrictMode: false,
   images: {
-    domains: ["www.ariseafrica.org"],
+    domains: [
+      "www.ariseafrica.org",
+      "sothebys-com.brightspotcdn.com",
+      "www.pujolsfamilyfoundation.org",
+    ],
   },
 };
 
