@@ -47,7 +47,7 @@ export default function MyBids() {
     };
 
     fetchUserAndBids();
-  }, [user, handleBidSubmit]);
+  }, [user]);
 
   const handleBidSubmit = async (itemId, bidAmount) => {
     console.log("itemId", itemId);
