@@ -17,6 +17,7 @@ import {
   Icon,
   Avatar,
   Badge,
+  Chip,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useRouter } from "next/router";
@@ -34,6 +35,11 @@ import {
   ViewList,
 } from "@mui/icons-material";
 import { deepOrange } from "@mui/material/colors";
+import NotificationItem from "./NotificationItem";
+import NotificationMenu from "./NotificationMenu";
+import UserMenu from "./UserMenu";
+import DrawerMenu from "./DrawerMenu";
+import Logo from "./Logo";
 
 const Header = () => {
   const router = useRouter();
@@ -51,14 +57,6 @@ const Header = () => {
   const [notificationMenuAnchorEl, setNotificationMenuAnchorEl] =
     useState(null);
   const isNotificationMenuOpen = Boolean(notificationMenuAnchorEl);
-
-  const handleNotificationMenuOpen = (event) => {
-    setNotificationMenuAnchorEl(event.currentTarget);
-  };
-
-  const handleNotificationMenuClose = () => {
-    setNotificationMenuAnchorEl(null);
-  };
 
   const toggleDrawer = (open) => (event) => {
     console.log("toggleDrawer", open);
@@ -100,234 +98,134 @@ const Header = () => {
     setAnchorEl(null);
   };
 
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        // Assuming you have a 'user_id' field in your Notifications table
-        const user_id = user;
-        console.log("user_id", user_id);
-        if (!user_id) return;
-
-        const { data: notifications, error } = await supabase
-          .from("Notifications")
-          .select("*")
-          .eq("user_id", user_id);
-
-        if (error) throw error;
-
-        setNotifications(notifications);
-      } catch (error) {
-        console.error("Error fetching notifications", error);
-      }
-    };
-
-    fetchNotifications();
-
-    // Set up a real-time subscription to new notifications
-    // const notificationSubscription = supabase
-    //   .from("Notifications")
-    //   .on("INSERT", (payload) => {
-    //     setNotifications((prevNotifications) => [
-    //       payload.new,
-    //       ...prevNotifications,
-    //     ]);
-    //   })
-    //   .subscribe();
-
-    const notificationSubscription = supabase
-      .channel("table_db_changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "Notifications",
-        },
-        (payload) => {
-          const eventType = payload.eventType;
-          const newRecord = payload.new;
-          const oldRecord = payload.old;
-          console.log("eventType", eventType);
-          console.log("newRecord", newRecord);
-          console.log("oldRecord", oldRecord);
-          setNotifications((prevNotifications) => [
-            payload.new,
-            ...prevNotifications,
-          ]);
-
-          // handleDataChange(eventType, newRecord, oldRecord);
-        }
-      )
-      .subscribe();
-
-    // Cleanup the subscription when the component unmounts
-    return () => {
-      notificationSubscription.unsubscribe();
-    };
-  }, []);
-
   return (
-    <AppBar
-      position="sticky"
-      color="secondary"
-      sx={{
-        width: "100%",
-      }}
-    >
+    <AppBar position="sticky" color="secondary">
       <Toolbar>
         <Box display="flex" alignItems="center" sx={{ flexGrow: 1 }}>
-          {/* Using the Image component to load the image */}
-          <Link href="/">
-            <Image
-              src="https://www.ariseafrica.org/wp-content/uploads/2020/04/arise-logo-color.png"
-              alt="Arise Auctions Logo"
-              width={45} // You can adjust these values for your design needs
-              height={45}
-              priority={true}
-
-              // objectFit="contain"
-            />
-          </Link>
-          {/* <Typography variant="h6" sx={{ marginLeft: 2, color: "white" }}>
-            Arise Auctions
-          </Typography> */}
+          <Logo />
         </Box>
-
-        {/* <Icon
-          size="small"
-          // edge="start"
-          // color="inherit"
-          // aria-label="menu"
-          // sx={{ mr: 2 }}
-          // onClick={toggleDrawer(true)}
-        > */}
-
-        <IconButton
-          size="large"
-          edge="end"
-          aria-label="show new notifications"
-          color="inherit"
-          onClick={handleNotificationMenuOpen}
-        >
-          <Badge badgeContent={notifications.length} color="error">
-            <Notifications />
-          </Badge>
-        </IconButton>
-        <Menu
+        {/* 
+        <NotificationMenu
+          notifications={notifications}
           anchorEl={notificationMenuAnchorEl}
-          anchorOrigin={{
-            vertical: "top",
-            horizontal: "right",
-          }}
-          keepMounted
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "right",
-          }}
-          open={isNotificationMenuOpen}
+          isOpen={isNotificationMenuOpen}
           onClose={handleNotificationMenuClose}
-        >
-          {notifications.length === 0 && (
-            <MenuItem onClick={handleNotificationMenuClose}>
-              No new notifications
-            </MenuItem>
-          )}
-          {notifications.map((notification) => (
-            <MenuItem
-              key={notification.id}
-              onClick={handleNotificationMenuClose}
-            >
-              {notification.message}
-            </MenuItem>
-          ))}
-        </Menu>
+          onOpen={handleNotificationMenuOpen}
+          onNotificationClick={handleNotificationClick}
+        /> */}
 
-        <Button
-          onClick={handleAvatarClick}
-          sx={{ padding: 0, minWidth: "auto", color: "inherit" }}
-        >
-          <Avatar sx={{ bgcolor: deepOrange[300] }}>H</Avatar>
-        </Button>
-
-        <Menu
+        <UserMenu
+          loggedIn={loggedIn}
           anchorEl={avatarMenuAnchorEl}
-          anchorOrigin={{
-            vertical: "top",
-            horizontal: "right",
-          }}
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "right",
-          }}
-          open={isAvatarMenuOpen}
+          isOpen={isAvatarMenuOpen}
+          onOpen={handleAvatarClick}
           onClose={handleAvatarMenuClose}
-        >
-          {loggedIn ? (
-            <MenuItem onClick={handleLogout}>Logout</MenuItem>
-          ) : (
-            <MenuItem onClick={handleLogin}>Login</MenuItem>
-          )}
-        </Menu>
-        {/* </Icon> */}
+          onLogout={handleLogout}
+          onLogin={handleLogin}
+        />
 
-        <Drawer
-          anchor="right"
-          open={drawerOpen}
+        <DrawerMenu
+          isOpen={drawerOpen}
           onClose={toggleDrawer(false)}
-          sx={{
-            "& .MuiDrawer-paper": {
-              width: "50%", // Adjust as needed
-            },
-          }}
-        >
-          {/* <Typography variant="h5" color="primary">
-            Where to?
-          </Typography> */}
-          <List>
-            <ListItemButton
-              key="Browse"
-              onClick={() => {
-                toggleDrawer(false)();
-                router.push("/");
-              }}
-            >
-              <ListItemIcon>
-                <ViewList color="primary" />
-              </ListItemIcon>
-              <ListItemText primary="Browse" />
-            </ListItemButton>
-            <ListItemButton
-              key="My Bids"
-              onClick={() => {
-                toggleDrawer(false)();
-                router.push("/my-bids");
-              }}
-            >
-              <ListItemIcon>
-                <Sell color="primary" />
-              </ListItemIcon>
-              <ListItemText primary="My Bids" />
-            </ListItemButton>
-            {loggedIn ? (
-              <ListItemButton key="Logout" onClick={logout}>
-                <ListItemIcon>
-                  <Logout color="primary" />
-                </ListItemIcon>
-                <ListItemText primary="Logout" />
-              </ListItemButton>
-            ) : (
-              <ListItemButton key="Login" onClick={() => router.push("/login")}>
-                <ListItemIcon>
-                  <Login color="primary" />
-                </ListItemIcon>
-                <ListItemText primary="Login" />
-              </ListItemButton>
-            )}
-          </List>
-        </Drawer>
+          loggedIn={loggedIn}
+          onLogout={handleLogout}
+        />
       </Toolbar>
     </AppBar>
   );
 };
 
 export default Header;
+
+// const handleNotificationMenuOpen = (event) => {
+//   setNotificationMenuAnchorEl(event.currentTarget);
+//   console.log("notifications", notifications);
+// };
+
+// const handleNotificationMenuClose = () => {
+//   setNotificationMenuAnchorEl(null);
+// };
+
+// const handleNotificationClick = async (notification) => {
+//   // handleNotificationMenuClose();
+
+//   // Update the state immediately for a responsive UI
+//   setNotifications((prev) =>
+//     prev.map((n) => (n.id === notification.id ? { ...n, read: true } : n))
+//   );
+//   console.log(notifications.map((n) => n));
+
+//   // Send the update to Supabase
+//   try {
+//     console.log("notification.id", notification.id);
+//     const { error } = await supabase
+//       .from("Notifications")
+//       .update({ read: true })
+//       .match({ id: notification.id });
+
+//     if (error) throw error;
+//   } catch (error) {
+//     console.error("Error marking notification as read", error);
+//   }
+// };
+
+// useEffect(() => {
+//   const fetchNotifications = async () => {
+//     try {
+//       // Assuming you have a 'user_id' field in your Notifications table
+//       const user_id = user;
+//       console.log("user_id", user_id);
+//       if (!user_id) return;
+
+//       const { data: notifications, error } = await supabase
+//         .from("Notifications")
+//         .select("*")
+//         .eq("user_id", user_id);
+
+//       if (error) throw error;
+
+//       setNotifications(notifications);
+//     } catch (error) {
+//       console.error("Error fetching notifications", error);
+//     }
+//   };
+
+//   fetchNotifications();
+
+//   const notificationSubscription = supabase
+//     .channel("table_db_changes")
+//     .on(
+//       "postgres_changes",
+//       {
+//         event: "*",
+//         schema: "public",
+//         table: "Notifications",
+//       },
+//       (payload) => {
+//         const eventType = payload.eventType;
+//         const newRecord = payload.new;
+//         const oldRecord = payload.old;
+//         console.log("eventType", eventType);
+//         console.log("newRecord", newRecord);
+//         console.log("oldRecord", oldRecord);
+//         setNotifications((prevNotifications) => {
+//           // Check if the notification is already in the state
+//           const alreadyExists = prevNotifications.some(
+//             (n) => n.id === newRecord.id
+//           );
+//           if (!alreadyExists) {
+//             return [newRecord, ...prevNotifications];
+//           }
+//           return prevNotifications;
+//         });
+
+//         // handleDataChange(eventType, newRecord, oldRecord);
+//       }
+//     )
+//     .subscribe();
+
+//   // Cleanup the subscription when the component unmounts
+//   return () => {
+//     notificationSubscription.unsubscribe();
+//   };
+// }, []);

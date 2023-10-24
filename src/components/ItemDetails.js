@@ -29,13 +29,6 @@ function ItemDetails({ item, open, onClose, onBidSubmit }) {
     setBidAmount(event.target.value);
   };
 
-  //   const handlePlaceBid = () => {
-  //     if (bidAmount && !isNaN(bidAmount)) {
-  //       onBidSubmit(item.id, parseFloat(bidAmount), user);
-  //       setBidAmount("");
-  //     }
-  //   };
-
   const showSnackbar = (message, severity = "error") => {
     setSnackbar({ open: true, message, severity });
   };
@@ -110,10 +103,10 @@ function ItemDetails({ item, open, onClose, onBidSubmit }) {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              borderRadius: "10%",
+              borderRadius: "5%",
               overflow: "hidden",
-              height: "90%",
-              width: "80%",
+              height: "80%",
+              width: "90%",
               //   width: 400,
               margin: "0 auto",
             }}
@@ -122,26 +115,11 @@ function ItemDetails({ item, open, onClose, onBidSubmit }) {
               <Image
                 src={item.image}
                 alt={item.title}
-                layout="fill"
-                objectFit="cover"
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                style={{ objectFit: "cover" }}
               />
             )}
-            {/* <Typography
-            sx={{
-              position: "absolute",
-              top: "50%", // Adjusted from 10% to 50%
-              left: "50%",
-              transform: "translate(-100%, -100%) rotate(-45deg)",
-              fontSize: "2rem",
-              fontWeight: "bold",
-              color: "white",
-              textShadow: "2px 2px 4px rgba(0, 0, 0, 0.8)",
-              backgroundColor: "yellow", // Optional: adds a semi-transparent background for better readability
-              padding: "0.5rem", // Optional: adds some space around the text
-            }}
-          >
-            You Won!
-          </Typography> */}
           </Box>
 
           <Box
@@ -153,7 +131,7 @@ function ItemDetails({ item, open, onClose, onBidSubmit }) {
               paddingY: 1, // Removes vertical padding
             }}
           >
-            <Box>
+            <Box sx={{ marginX: 2 }}>
               <Typography
                 variant="h6"
                 component="div"
@@ -163,7 +141,7 @@ function ItemDetails({ item, open, onClose, onBidSubmit }) {
               </Typography>
             </Box>
 
-            <Box textAlign="right">
+            <Box textAlign="right" sx={{ marginX: 2 }}>
               <Typography sx={{ fontWeight: "bold", fontSize: 24 }}>
                 ${item.current_bid}
               </Typography>
@@ -223,8 +201,8 @@ function ItemDetails({ item, open, onClose, onBidSubmit }) {
             Buy Now for ${item.buy_now_price}
           </Button>
 
-          <Typography variant="body1" paragraph sx={{ marginTop: 3 }}>
-            Description: {item.description}
+          <Typography variant="body1" paragraph sx={{ marginY: 3 }}>
+            {item.description}
           </Typography>
         </Box>
       </Drawer>
