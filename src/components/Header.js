@@ -32,6 +32,9 @@ const Header = ({ hasLogoutOption }) => {
   const router = useRouter();
   const { loggedIn, logout } = useAuth();
 
+  const [avatarMenuAnchorEl, setAvatarMenuAnchorEl] = useState(null);
+  const isAvatarMenuOpen = Boolean(avatarMenuAnchorEl);
+
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
@@ -49,6 +52,24 @@ const Header = ({ hasLogoutOption }) => {
       return;
     }
     setDrawerOpen(open);
+  };
+
+  const handleAvatarClick = (event) => {
+    setAvatarMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleAvatarMenuClose = () => {
+    setAvatarMenuAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    handleAvatarMenuClose();
+    logout();
+  };
+
+  const handleLogin = () => {
+    handleAvatarMenuClose();
+    router.push("/login");
   };
 
   const handleMenu = (event) => {
@@ -94,7 +115,33 @@ const Header = ({ hasLogoutOption }) => {
           // sx={{ mr: 2 }}
           // onClick={toggleDrawer(true)}
         > */}
-        <Avatar sx={{ bgcolor: deepOrange[300] }}>H</Avatar>
+
+        <Button
+          onClick={handleAvatarClick}
+          sx={{ padding: 0, minWidth: "auto", color: "inherit" }}
+        >
+          <Avatar sx={{ bgcolor: deepOrange[300] }}>H</Avatar>
+        </Button>
+
+        <Menu
+          anchorEl={avatarMenuAnchorEl}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          open={isAvatarMenuOpen}
+          onClose={handleAvatarMenuClose}
+        >
+          {loggedIn ? (
+            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+          ) : (
+            <MenuItem onClick={handleLogin}>Login</MenuItem>
+          )}
+        </Menu>
         {/* </Icon> */}
 
         <Drawer

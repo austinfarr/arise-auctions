@@ -23,6 +23,7 @@ import Header from "@/components/Header";
 import { Search } from "@mui/icons-material";
 import { deleteCookie, getCookie, useCookies } from "cookies-next";
 import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/router";
 
 export async function getServerSideProps(context) {
   let { data: items, error } = await supabase.from("Items").select("*");
@@ -43,6 +44,8 @@ export async function getServerSideProps(context) {
 
 export default function Home({ initialItems }) {
   const { loggedIn, logout, user } = useAuth();
+
+  const router = useRouter();
 
   const [items, setItems] = useState(initialItems);
 
@@ -140,6 +143,12 @@ export default function Home({ initialItems }) {
     console.log("itemId", itemId);
     console.log("bidAmount", bidAmount);
     console.log("userId", userId);
+
+    if (!userId) {
+      console.error("User not logged in!");
+      router.push("/login");
+      return;
+    }
 
     const { data: bidData, error: bidError } = await supabase
       .from("Bids")
