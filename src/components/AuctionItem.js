@@ -12,26 +12,7 @@ import {
 import ItemDetails from "./ItemDetails"; // Import the new component
 import Image from "next/image";
 import { useRouter } from "next/router";
-
-const LeadingBidRibbon = () => (
-  <Box
-    sx={{
-      position: "absolute",
-      top: 130,
-      left: -30,
-      backgroundColor: "#ffeeca",
-      padding: "8px 50px",
-      color: "#ffb81d",
-      transform: "rotate(-45deg)",
-      transformOrigin: "0 0",
-      fontSize: "16px",
-      fontWeight: "bold",
-      fontFamily: "Montserrat, sans-serif",
-    }}
-  >
-    You&rsquo;re Winning!
-  </Box>
-);
+import LeadingBidRibbon from "./LeadingBidRibbon";
 
 const AuctionItem = ({ item, onBidSubmit, user }) => {
   const router = useRouter();
@@ -105,7 +86,7 @@ const AuctionItem = ({ item, onBidSubmit, user }) => {
               <Typography
                 sx={{ color: "white", fontWeight: "bold", fontSize: 24 }}
               >
-                ${item.current_bid}
+                ${item.current_bid.toLocaleString()}
               </Typography>
               <Typography sx={{ color: "white" }}>Current bid</Typography>
             </Box>

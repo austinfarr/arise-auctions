@@ -14,6 +14,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import Image from "next/image";
 import { getCookie } from "cookies-next";
 import { useAuth } from "@/context/AuthContext";
+import LeadingBidRibbon from "./LeadingBidRibbon";
 
 function ItemDetails({ item, open, onClose, onBidSubmit }) {
   const [bidAmount, setBidAmount] = useState("");
@@ -111,14 +112,18 @@ function ItemDetails({ item, open, onClose, onBidSubmit }) {
               margin: "0 auto",
             }}
           >
+            {user && user === item.leading_user_id && <LeadingBidRibbon />}
             {item.image && (
-              <Image
-                src={item.image}
-                alt={item.title}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                style={{ objectFit: "cover" }}
-              />
+              <>
+                <Image
+                  src={item.image}
+                  alt={item.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  style={{ objectFit: "cover" }}
+                />
+                {user && user === item.leading_user_id && <LeadingBidRibbon />}
+              </>
             )}
           </Box>
 
@@ -143,7 +148,7 @@ function ItemDetails({ item, open, onClose, onBidSubmit }) {
 
             <Box textAlign="right" sx={{ marginX: 2 }}>
               <Typography sx={{ fontWeight: "bold", fontSize: 24 }}>
-                ${item.current_bid}
+                ${item.current_bid.toLocaleString()}
               </Typography>
               <Typography variant="body1">Current bid</Typography>
             </Box>
