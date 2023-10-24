@@ -7,6 +7,7 @@ import AuctionItem from "@/components/AuctionItem";
 import { useEffect, useState } from "react";
 import {
   Box,
+  Button,
   Chip,
   FormControl,
   Grid,
@@ -348,37 +349,52 @@ export default function Home({ initialItems }) {
               </Box>
             </Grid>
           </Grid>
+          {activeFilter === "myBids" && !loggedIn ? (
+            <Grid container justifyContent="center">
+              <Grid item>
+                <Link href="/login" passHref>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{ color: "#fff" }}
+                  >
+                    Login to View Your Bids
+                  </Button>
+                </Link>
+              </Grid>
+            </Grid>
+          ) : (
+            items
+              .filter((item) => {
+                // Filtering based on active filter
+                if (activeFilter === "myBids") {
+                  return userBids.includes(item.id);
+                }
+                // Add more filters as needed
+                return true;
+              })
+              .filter((item) => {
+                // ... (previous filter code)
+                const matchesQuery = item.title
+                  .toLowerCase()
+                  .includes(searchQuery.toLowerCase());
 
-          {items
-            .filter((item) => {
-              // Filtering based on active filter
-              if (activeFilter === "myBids") {
-                return userBids.includes(item.id);
-              }
-              // Add more filters as needed
-              return true;
-            })
-            .filter((item) => {
-              // ... (previous filter code)
-              const matchesQuery = item.title
-                .toLowerCase()
-                .includes(searchQuery.toLowerCase());
+                // Check if the item's categories include the selected category or if no category is selected
+                const matchesCategory = selectedCategory
+                  ? (item.categories || []).includes(selectedCategory)
+                  : true;
 
-              // Check if the item's categories include the selected category or if no category is selected
-              const matchesCategory = selectedCategory
-                ? (item.categories || []).includes(selectedCategory)
-                : true;
-
-              return matchesQuery && matchesCategory;
-            })
-            .map((filteredItem) => (
-              <AuctionItem
-                key={filteredItem.id}
-                item={filteredItem}
-                user={user}
-                onBidSubmit={handleBidSubmit}
-              />
-            ))}
+                return matchesQuery && matchesCategory;
+              })
+              .map((filteredItem) => (
+                <AuctionItem
+                  key={filteredItem.id}
+                  item={filteredItem}
+                  user={user}
+                  onBidSubmit={handleBidSubmit}
+                />
+              ))
+          )}
         </main>
       </>
     </>
