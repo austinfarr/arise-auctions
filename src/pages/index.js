@@ -278,38 +278,74 @@ export default function Home({ initialItems }) {
               />
             </Grid>
             {/* Chips for filtering */}
-            <Grid item>
-              <Stack direction="row" spacing={1}>
-                <Chip
-                  label="All"
-                  variant="plain"
-                  onClick={handleChipClick("all")}
-                  color={activeFilter === "all" ? "primary" : "secondary"}
-                  sx={{
-                    color: activeFilter === "all" ? "white" : "gray",
-                  }}
-                />
-                <Chip
-                  label="Your Bids"
-                  onClick={handleChipClick("myBids")}
-                  color={activeFilter === "myBids" ? "primary" : "secondary"}
-                  sx={{
-                    color: activeFilter === "myBids" ? "white" : "gray",
-                  }}
-                />
-                {categories.map((category) => (
+            <Grid item xs={12}>
+              {" "}
+              {/* Make sure to set the item prop correctly */}
+              <Box
+                sx={{
+                  overflowX: "auto",
+                  marginX: 2,
+                  scrollbarWidth: "none",
+                  "&::-webkit-scrollbar": { display: "none" },
+                }}
+              >
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  sx={{ minWidth: "max-content" }}
+                >
                   <Chip
-                    key={category}
-                    label={capitalizeFirstLetter(category)}
-                    onClick={handleChipClick(category)}
-                    color={activeFilter === category ? "primary" : "secondary"}
+                    label="All"
+                    onClick={handleChipClick("all")}
+                    color={activeFilter === "all" ? "primary" : "secondary"}
                     sx={{
-                      color: activeFilter === category ? "white" : "gray",
+                      color: activeFilter === "all" ? "white" : "gray",
+                      "&:hover": {
+                        bgcolor:
+                          activeFilter === "all"
+                            ? "#ff8e44"
+                            : "lighten(secondary.main, 0.2)",
+                        color: "white",
+                      },
                     }}
                   />
-                ))}
-                {/* Add more chips as needed */}
-              </Stack>
+                  <Chip
+                    label="Your Bids"
+                    onClick={handleChipClick("myBids")}
+                    color={activeFilter === "myBids" ? "primary" : "secondary"}
+                    sx={{
+                      color: activeFilter === "myBids" ? "white" : "gray",
+                      "&:hover": {
+                        bgcolor:
+                          activeFilter === "myBids"
+                            ? "#ff8e44"
+                            : "lighten(secondary.main, 0.2)",
+                        color: "white",
+                      },
+                    }}
+                  />
+                  {categories.map((category) => (
+                    <Chip
+                      key={category}
+                      label={capitalizeFirstLetter(category)}
+                      onClick={handleChipClick(category)}
+                      color={
+                        activeFilter === category ? "primary" : "secondary"
+                      }
+                      sx={{
+                        color: activeFilter === category ? "white" : "gray",
+                        "&:hover": {
+                          bgcolor:
+                            activeFilter === category
+                              ? "#ff8e44"
+                              : "lighten(secondary.main, 0.2)",
+                          color: "white",
+                        },
+                      }}
+                    />
+                  ))}
+                </Stack>
+              </Box>
             </Grid>
           </Grid>
 
