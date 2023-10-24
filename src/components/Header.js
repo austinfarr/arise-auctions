@@ -16,6 +16,7 @@ import {
   ListItemIcon,
   Icon,
   Avatar,
+  Badge,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useRouter } from "next/router";
@@ -25,12 +26,18 @@ import supabase from "../../lib/supabase";
 import Link from "next/link";
 import { deleteCookie, getCookie } from "cookies-next";
 import { useAuth } from "@/context/AuthContext";
-import { Login, Logout, Sell, ViewList } from "@mui/icons-material";
+import {
+  Login,
+  Logout,
+  Notifications,
+  Sell,
+  ViewList,
+} from "@mui/icons-material";
 import { deepOrange } from "@mui/material/colors";
 
-const Header = ({ hasLogoutOption }) => {
+const Header = () => {
   const router = useRouter();
-  const { loggedIn, logout } = useAuth();
+  const { loggedIn, logout, user } = useAuth();
 
   const [avatarMenuAnchorEl, setAvatarMenuAnchorEl] = useState(null);
   const isAvatarMenuOpen = Boolean(avatarMenuAnchorEl);
@@ -39,6 +46,19 @@ const Header = ({ hasLogoutOption }) => {
   const open = Boolean(anchorEl);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const [notifications, setNotifications] = useState([]);
+  const [notificationMenuAnchorEl, setNotificationMenuAnchorEl] =
+    useState(null);
+  const isNotificationMenuOpen = Boolean(notificationMenuAnchorEl);
+
+  const handleNotificationMenuOpen = (event) => {
+    setNotificationMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleNotificationMenuClose = () => {
+    setNotificationMenuAnchorEl(null);
+  };
 
   const toggleDrawer = (open) => (event) => {
     console.log("toggleDrawer", open);
@@ -80,6 +100,72 @@ const Header = ({ hasLogoutOption }) => {
     setAnchorEl(null);
   };
 
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        // Assuming you have a 'user_id' field in your Notifications table
+        const user_id = user;
+        console.log("user_id", user_id);
+        if (!user_id) return;
+
+        const { data: notifications, error } = await supabase
+          .from("Notifications")
+          .select("*")
+          .eq("user_id", user_id);
+
+        if (error) throw error;
+
+        setNotifications(notifications);
+      } catch (error) {
+        console.error("Error fetching notifications", error);
+      }
+    };
+
+    fetchNotifications();
+
+    // Set up a real-time subscription to new notifications
+    // const notificationSubscription = supabase
+    //   .from("Notifications")
+    //   .on("INSERT", (payload) => {
+    //     setNotifications((prevNotifications) => [
+    //       payload.new,
+    //       ...prevNotifications,
+    //     ]);
+    //   })
+    //   .subscribe();
+
+    const notificationSubscription = supabase
+      .channel("table_db_changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "Notifications",
+        },
+        (payload) => {
+          const eventType = payload.eventType;
+          const newRecord = payload.new;
+          const oldRecord = payload.old;
+          console.log("eventType", eventType);
+          console.log("newRecord", newRecord);
+          console.log("oldRecord", oldRecord);
+          setNotifications((prevNotifications) => [
+            payload.new,
+            ...prevNotifications,
+          ]);
+
+          // handleDataChange(eventType, newRecord, oldRecord);
+        }
+      )
+      .subscribe();
+
+    // Cleanup the subscription when the component unmounts
+    return () => {
+      notificationSubscription.unsubscribe();
+    };
+  }, []);
+
   return (
     <AppBar
       position="sticky"
@@ -115,6 +201,46 @@ const Header = ({ hasLogoutOption }) => {
           // sx={{ mr: 2 }}
           // onClick={toggleDrawer(true)}
         > */}
+
+        <IconButton
+          size="large"
+          edge="end"
+          aria-label="show new notifications"
+          color="inherit"
+          onClick={handleNotificationMenuOpen}
+        >
+          <Badge badgeContent={notifications.length} color="error">
+            <Notifications />
+          </Badge>
+        </IconButton>
+        <Menu
+          anchorEl={notificationMenuAnchorEl}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          keepMounted
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          open={isNotificationMenuOpen}
+          onClose={handleNotificationMenuClose}
+        >
+          {notifications.length === 0 && (
+            <MenuItem onClick={handleNotificationMenuClose}>
+              No new notifications
+            </MenuItem>
+          )}
+          {notifications.map((notification) => (
+            <MenuItem
+              key={notification.id}
+              onClick={handleNotificationMenuClose}
+            >
+              {notification.message}
+            </MenuItem>
+          ))}
+        </Menu>
 
         <Button
           onClick={handleAvatarClick}
@@ -199,49 +325,6 @@ const Header = ({ hasLogoutOption }) => {
             )}
           </List>
         </Drawer>
-
-        {/* 
-        <Button
-          color="inherit"
-          sx={{ color: "#fff" }}
-          onClick={() => router.push("/")}
-        >
-          Browse
-        </Button>
-        <Button
-          color="inherit"
-          sx={{ color: "#fff" }}
-          onClick={() => router.push("/my-bids")}
-        >
-          My Bids
-        </Button> */}
-
-        {/* {hasLogoutOption === true ? (
-          loggedIn === true && (
-            <Button
-              color="inherit"
-              sx={{ color: "#fff" }}
-              onClick={logout} // Call the handleLogout function when this button is clicked
-            >
-              Logout
-            </Button>
-          )
-        ) : (
-          <></>
-        )}
-        {hasLogoutOption === true ? (
-          !loggedIn && (
-            <Button
-              color="inherit"
-              sx={{ color: "#fff" }}
-              onClick={() => router.push("/login")}
-            >
-              Login
-            </Button>
-          )
-        ) : (
-          <></>
-        )} */}
       </Toolbar>
     </AppBar>
   );

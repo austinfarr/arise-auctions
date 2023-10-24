@@ -63,9 +63,10 @@ const AuctionItem = ({ item, onBidSubmit, user }) => {
         >
           {user && user === item.leading_user_id && <LeadingBidRibbon />}
           <CardMedia
+            component="img"
             sx={{ height: 240 }}
             image={item.image}
-            title="green iguana"
+            // title="green iguana"
           />
           <CardContent
             sx={{

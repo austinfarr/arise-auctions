@@ -6,6 +6,7 @@ const nextConfig = {
       "www.ariseafrica.org",
       "sothebys-com.brightspotcdn.com",
       "www.pujolsfamilyfoundation.org",
+      "images.unsplash.com",
     ],
   },
 };
