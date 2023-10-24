@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import ItemDetails from "./ItemDetails"; // Import the new component
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 const LeadingBidRibbon = () => (
   <Box
@@ -33,6 +34,9 @@ const LeadingBidRibbon = () => (
 );
 
 const AuctionItem = ({ item, onBidSubmit, user }) => {
+  const router = useRouter();
+  const { itemDetailId } = router.query;
+
   const [detailsOpen, setDetailsOpen] = useState(false);
 
   const handleItemClick = () => {
@@ -41,7 +45,16 @@ const AuctionItem = ({ item, onBidSubmit, user }) => {
 
   const handleDetailsClose = () => {
     setDetailsOpen(false);
+    router.push("/", undefined, { shallow: true });
   };
+
+  useEffect(() => {
+    console.log("itemDetailId", itemDetailId);
+    console.log("item.id", item.id);
+    if (itemDetailId && itemDetailId === item.id.toString()) {
+      setDetailsOpen(true);
+    }
+  }, [itemDetailId, item.id]);
 
   return (
     <>
