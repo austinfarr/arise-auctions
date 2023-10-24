@@ -1,182 +1,88 @@
-import React, { createRef, useMemo, useState } from "react";
+import React, { useState } from "react";
 import {
+  Box,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardMedia,
   Paper,
   Typography,
-  Button,
-  TextField,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Snackbar,
-  Alert,
-  InputAdornment,
 } from "@mui/material";
-import { useRouter } from "next/router";
-import Link from "next/link";
-import { getCookie } from "cookies-next";
+import ItemDetails from "./ItemDetails"; // Import the new component
+import Image from "next/image";
 
-const AuctionItem = ({
-  item: { id, title, description, current_bid, buy_now_price, leading_user_id },
-  onBidSubmit,
-  user,
-}) => {
-  const router = useRouter();
-  const [bid, setBid] = useState("");
-  const [open, setOpen] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
+const AuctionItem = ({ item, onBidSubmit, user }) => {
+  const [detailsOpen, setDetailsOpen] = useState(false);
 
-  const userId = getCookie("userId") || null;
-
-  const isLeadingBidder = useMemo(
-    () => leading_user_id === user && leading_user_id !== null,
-    [leading_user_id, user]
-  );
-
-  const dialogPaperStyle = {
-    position: "absolute",
-    top: "15%",
+  const handleItemClick = () => {
+    setDetailsOpen(true);
   };
 
-  const handleOpen = () => {
-    if (!userId) {
-      router.push("/login?returnUrl=" + router.pathname);
-      return;
-    }
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    setBid("");
-  };
-
-  const handleSnackbarClose = (event, reason) => {
-    if (reason !== "clickaway") {
-      setSnackbarOpen(false);
-    }
-  };
-
-  const handleSubmit = () => {
-    const bidAmount = parseFloat(bid);
-    if (bidAmount > current_bid) {
-      onBidSubmit(id, bidAmount, userId);
-      handleClose();
-    } else {
-      setSnackbarOpen(true);
-    }
+  const handleDetailsClose = () => {
+    setDetailsOpen(false);
   };
 
   return (
-    <Paper sx={{ padding: "16px", marginY: 2, marginX: 2 }}>
-      <Link
-        href={`/item/${id}`}
-        style={{ textDecoration: "none", color: "inherit" }}
-      >
-        <div>
-          <Typography variant="h6" gutterBottom>
-            {title}
-          </Typography>
-          <Typography variant="body1">Description: {description}</Typography>
-          <Typography variant="body2" color="textSecondary" marginY={1}>
-            Current Bid: ${current_bid}
-          </Typography>
-          {isLeadingBidder && (
-            <Typography color="primary">
-              You are currently leading for this item!
-            </Typography>
-          )}
-        </div>
-      </Link>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleOpen}
-        sx={{ color: "#fff", marginRight: 2 }}
-      >
-        Place Bid
-      </Button>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleOpen}
-        sx={{ color: "#fff" }}
-      >
-        Buy Now for ${buy_now_price}
-      </Button>
-      <Dialog
-        open={open}
-        onClose={handleClose}
+    <>
+      <Box
         sx={{
-          "& .MuiPaper-root": {
-            position: "absolute",
-            top: "15%",
-          },
+          // padding: "16px",
+          marginY: 2,
+          marginX: 2,
+          cursor: "pointer",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
         }}
-        // PaperComponent={(props) => (
-        //   <Paper {...props} style={dialogPaperStyle} />
-        // )}
+        onClick={handleItemClick}
       >
-        <DialogTitle>Place your bid</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Enter your bid amount for {title}. It should be higher than the
-            current bid: <strong>${current_bid}</strong>
-          </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Your Bid"
-            type="number"
-            fullWidth
-            value={bid}
-            onChange={(e) => setBid(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">$</InputAdornment>
-              ),
-              inputProps: {
-                min: 0,
-              },
-            }}
+        <Card sx={{ maxWidth: 500, width: "100%" }} onClick={handleItemClick}>
+          <CardMedia
+            sx={{ height: 240 }}
+            image={item.image}
+            title="green iguana"
           />
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={handleClose}
-            color="primary"
-            variant="contained"
-            sx={{ color: "#fff" }}
+          <CardContent
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center", // This ensures vertical centering
+              justifyContent: "space-between",
+              backgroundColor: "#ff8e44",
+              paddingY: 1, // Removes vertical padding
+              "&:last-child": { paddingBottom: 0 }, // Removes default bottom padding from MUI
+            }}
           >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleSubmit}
-            color="primary"
-            variant="contained"
-            sx={{ color: "#fff" }}
-          >
-            Submit Bid
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={5000}
-        onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert
-          onClose={handleSnackbarClose}
-          variant="filled"
-          severity="error"
-          sx={{ width: "100%" }}
-        >
-          Your bid should be higher than the current bid!
-        </Alert>
-      </Snackbar>
-    </Paper>
+            <Box>
+              <Typography
+                variant="h6"
+                component="div"
+                sx={{ color: "white", fontWeight: "bold" }}
+              >
+                {item.title}
+              </Typography>
+            </Box>
+            <Box textAlign="right">
+              <Typography
+                sx={{ color: "white", fontWeight: "bold", fontSize: 24 }}
+              >
+                ${item.current_bid}
+              </Typography>
+              <Typography sx={{ color: "white" }}>Current bid</Typography>
+            </Box>
+          </CardContent>
+        </Card>
+      </Box>
+
+      <ItemDetails
+        item={item}
+        open={detailsOpen}
+        onClose={handleDetailsClose}
+        onBidSubmit={onBidSubmit}
+        user={user}
+      />
+    </>
   );
 };
 

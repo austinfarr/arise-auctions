@@ -4,7 +4,7 @@ const theme = createTheme({
   palette: {
     mode: "light",
     primary: {
-      main: "#ff6600", // Taken from your primary glow; you might adjust this
+      main: "#ff8e44", // Taken from your primary glow; you might adjust this
     },
     secondary: {
       main: "#fff", // Taken from your primary glow; you might adjust this

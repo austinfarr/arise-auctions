@@ -14,6 +14,8 @@ import {
   ListItemText,
   ListItemButton,
   ListItemIcon,
+  Icon,
+  Avatar,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useRouter } from "next/router";
@@ -24,6 +26,7 @@ import Link from "next/link";
 import { deleteCookie, getCookie } from "cookies-next";
 import { useAuth } from "@/context/AuthContext";
 import { Login, Logout, Sell, ViewList } from "@mui/icons-material";
+import { deepOrange } from "@mui/material/colors";
 
 const Header = ({ hasLogoutOption }) => {
   const router = useRouter();
@@ -59,7 +62,7 @@ const Header = ({ hasLogoutOption }) => {
   return (
     <AppBar
       position="sticky"
-      color="primary"
+      color="secondary"
       sx={{
         width: "100%",
       }}
@@ -78,21 +81,21 @@ const Header = ({ hasLogoutOption }) => {
               // objectFit="contain"
             />
           </Link>
-          <Typography variant="h6" sx={{ marginLeft: 2, color: "white" }}>
+          {/* <Typography variant="h6" sx={{ marginLeft: 2, color: "white" }}>
             Arise Auctions
-          </Typography>
+          </Typography> */}
         </Box>
 
-        <IconButton
-          size="large"
-          edge="start"
-          color="inherit"
-          aria-label="menu"
-          sx={{ mr: 2 }}
-          onClick={toggleDrawer(true)}
-        >
-          <MenuIcon color="secondary" />
-        </IconButton>
+        {/* <Icon
+          size="small"
+          // edge="start"
+          // color="inherit"
+          // aria-label="menu"
+          // sx={{ mr: 2 }}
+          // onClick={toggleDrawer(true)}
+        > */}
+        <Avatar sx={{ bgcolor: deepOrange[300] }}>H</Avatar>
+        {/* </Icon> */}
 
         <Drawer
           anchor="right"
@@ -100,7 +103,7 @@ const Header = ({ hasLogoutOption }) => {
           onClose={toggleDrawer(false)}
           sx={{
             "& .MuiDrawer-paper": {
-              width: "40%", // Adjust as needed
+              width: "50%", // Adjust as needed
             },
           }}
         >
