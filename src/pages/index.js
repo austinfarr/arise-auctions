@@ -7,12 +7,14 @@ import AuctionItem from "@/components/AuctionItem";
 import { useEffect, useState } from "react";
 import {
   Box,
+  Chip,
   FormControl,
   Grid,
   InputAdornment,
   InputLabel,
   MenuItem,
   Select,
+  Stack,
   TextField,
   Typography,
 } from "@mui/material";
@@ -46,12 +48,36 @@ export default function Home({ initialItems }) {
 
   const [searchQuery, setSearchQuery] = useState("");
 
+  const [userBids, setUserBids] = useState([]);
+
+  const [activeFilter, setActiveFilter] = useState("all");
+
   console.log("user", user);
 
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
 
   const sortItemsById = (a, b) => a.id - b.id;
+
+  useEffect(() => {
+    if (user) {
+      const fetchUserBids = async () => {
+        const { data: userBids, error } = await supabase
+          .from("Bids")
+          .select("item_id")
+          .eq("user_id", user);
+
+        if (error) {
+          console.error("Error fetching user bids:", error);
+        } else {
+          setUserBids(userBids.map((bid) => bid.item_id));
+        }
+      };
+
+      fetchUserBids();
+      console.log("userBids", userBids);
+    }
+  }, [user]);
 
   useEffect(() => {
     const subscription = supabase
@@ -90,6 +116,7 @@ export default function Home({ initialItems }) {
     };
 
     fetchCategories();
+    console.log("categories", categories);
 
     return () => {
       subscription.unsubscribe();
@@ -147,6 +174,8 @@ export default function Home({ initialItems }) {
       );
       setItems(updatedItems);
     }
+
+    setUserBids((prevUserBids) => [...prevUserBids, itemId]);
   };
 
   const handleDataChange = (eventType, newRecord, oldRecord) => {
@@ -173,6 +202,20 @@ export default function Home({ initialItems }) {
     });
   };
 
+  const handleChipClick = (filter) => () => {
+    setActiveFilter(filter);
+    if (filter === "all" || filter === "myBids") {
+      setSelectedCategory("");
+    } else {
+      setSelectedCategory(filter);
+    }
+  };
+
+  function capitalizeFirstLetter(string) {
+    if (!string) return "";
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
   return (
     <>
       <>
@@ -188,7 +231,7 @@ export default function Home({ initialItems }) {
 
         <main>
           <Header hasLogoutOption={true} />
-          <Typography
+          {/* <Typography
             variant="h3"
             align="center"
             gutterBottom
@@ -200,13 +243,13 @@ export default function Home({ initialItems }) {
             }}
           >
             Browse Items
-          </Typography>
+          </Typography> */}
 
           <Grid
             container
             justifyContent="center"
             spacing={2}
-            sx={{ marginBottom: "2rem" }}
+            sx={{ marginBottom: "2rem", marginTop: "1rem" }}
           >
             <Grid item xs={10} sm={8} md={6}>
               <TextField
@@ -214,40 +257,64 @@ export default function Home({ initialItems }) {
                 variant="outlined"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search for items..."
+                // placeholder="Search for items..."
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
                       <Search />
                     </InputAdornment>
                   ),
+                  style: { backgroundColor: "#F5F5F5" },
                 }}
               />
-              {/* <FormControl variant="outlined" fullWidth sx={{ marginY: 3 }}>
-                <InputLabel id="category-select-label">Category</InputLabel>
-                <Select
-                  labelId="category-select-label"
-                  id="category-select"
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  label="Category"
-                >
-                  <MenuItem value="">
-                    <em>All</em>
-                  </MenuItem>
-                  {categories.map((category) => (
-                    <MenuItem key={category} value={category}>
-                      {category}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl> */}
+            </Grid>
+            {/* Chips for filtering */}
+            <Grid item>
+              <Stack direction="row" spacing={1}>
+                <Chip
+                  label="All"
+                  variant="plain"
+                  onClick={handleChipClick("all")}
+                  color={activeFilter === "all" ? "primary" : "secondary"}
+                  sx={{
+                    color: activeFilter === "all" ? "white" : "gray",
+                  }}
+                />
+                <Chip
+                  label="Your Bids"
+                  onClick={handleChipClick("myBids")}
+                  color={activeFilter === "myBids" ? "primary" : "secondary"}
+                  sx={{
+                    color: activeFilter === "myBids" ? "white" : "gray",
+                  }}
+                />
+                {categories.map((category) => (
+                  <Chip
+                    key={category}
+                    label={capitalizeFirstLetter(category)}
+                    onClick={handleChipClick(category)}
+                    color={activeFilter === category ? "primary" : "secondary"}
+                    sx={{
+                      color: activeFilter === category ? "white" : "gray",
+                    }}
+                  />
+                ))}
+                {/* Add more chips as needed */}
+              </Stack>
             </Grid>
           </Grid>
 
           {items
             .filter((item) => {
-              // Check if the item's title matches the search query
+              // Filtering based on active filter
+              if (activeFilter === "myBids") {
+                return userBids.includes(item.id);
+              }
+              // Add more filters as needed
+              return true;
+            })
+            .filter((item) => {
+              // ... (previous filter code)
               const matchesQuery = item.title
                 .toLowerCase()
                 .includes(searchQuery.toLowerCase());

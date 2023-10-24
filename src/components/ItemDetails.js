@@ -47,15 +47,34 @@ function ItemDetails({ item, open, onClose, onBidSubmit }) {
     setSnackbarOpen(false);
   };
 
+  const isBidValid = (bid) => {
+    const numericBid = parseFloat(bid);
+    if (isNaN(numericBid) || numericBid <= item.current_bid) {
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = () => {
-    if (parseFloat(bidAmount) > item.current_bid) {
-      onBidSubmit(item.id, parseFloat(bidAmount), user);
+    const bidAmountNumber = parseFloat(bidAmount);
+    if (isBidValid(bidAmountNumber)) {
+      submitBid(bidAmountNumber);
+    } else {
+      showSnackbar(
+        "Your bid should be a number and higher than the current bid!",
+        "error"
+      );
+    }
+  };
+
+  const submitBid = async (bidAmount) => {
+    try {
+      await onBidSubmit(item.id, bidAmount, user);
       setBidAmount("");
       showSnackbar("Bid placed successfully!", "success");
-      //   onClose();
-    } else {
-      // Open the snackbar instead of the default alert
-      showSnackbar("Your bid should be higher than the current bid!");
+    } catch (error) {
+      console.error("Bid submission failed:", error);
+      showSnackbar("Failed to place bid. Please try again later.", "error");
     }
   };
 
