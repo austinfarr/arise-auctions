@@ -10,11 +10,32 @@ export const AuthProvider = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
-    const userId = getCookie("userId");
-    if (userId) {
-      setUser(userId);
-      setLoggedIn(true);
-    }
+    const fetchUser = async () => {
+      const userId = getCookie("userId");
+      if (userId) {
+        try {
+          let { data: userProfile, error } = await supabase
+            .from("user_profiles")
+            .select("*") // Adjust according to the fields you need
+            .eq("id", userId)
+            .single();
+
+          if (error) {
+            throw error;
+          }
+
+          if (userProfile) {
+            setUser(userProfile);
+            setLoggedIn(true);
+            console.log("user", userProfile);
+          }
+        } catch (error) {
+          console.error("Error fetching user:", error);
+        }
+      }
+    };
+
+    fetchUser();
   }, []);
 
   const login = async (phoneNumber) => {
@@ -40,10 +61,32 @@ export const AuthProvider = ({ children }) => {
       console.error("OTP Verification error:", error.message);
       throw error;
     } else {
-      setUser(data.user.id);
-      setLoggedIn(true);
-      setCookie("userId", data.user.id); // You might want to adjust options here
-      return data.user;
+      try {
+        let { data: userProfile, error: userError } = await supabase
+          .from("user_profiles")
+          .select("*") // Adjust according to the fields you need
+          .eq("id", data.user.id)
+          .single();
+
+        if (userError) {
+          throw userError;
+        }
+
+        if (userProfile) {
+          setUser(userProfile);
+          setLoggedIn(true);
+          setCookie("userId", userProfile.id); // You might want to adjust options here
+          return userProfile;
+        }
+      } catch (error) {
+        console.error("Error fetching user after OTP verification:", error);
+      }
+
+      // setUser(data.user.id);
+      // console.log("data.user.id:", data.user.id);
+      // setLoggedIn(true);
+      // setCookie("userId", data.user.id); // You might want to adjust options here
+      // return data.user;
     }
   };
 

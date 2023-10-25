@@ -63,7 +63,7 @@ function ItemDetails({ item, open, onClose, onBidSubmit }) {
 
   const submitBid = async (bidAmount) => {
     try {
-      await onBidSubmit(item.id, bidAmount, user);
+      await onBidSubmit(item.id, bidAmount, user.id);
       setBidAmount("");
       showSnackbar("Bid placed successfully!", "success");
     } catch (error) {
@@ -112,7 +112,6 @@ function ItemDetails({ item, open, onClose, onBidSubmit }) {
               margin: "0 auto",
             }}
           >
-            {user && user === item.leading_user_id && <LeadingBidRibbon />}
             {item.image && (
               <>
                 <Image
@@ -122,7 +121,9 @@ function ItemDetails({ item, open, onClose, onBidSubmit }) {
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   style={{ objectFit: "cover" }}
                 />
-                {user && user === item.leading_user_id && <LeadingBidRibbon />}
+                {user && user.id === item.leading_user_id && (
+                  <LeadingBidRibbon />
+                )}
               </>
             )}
           </Box>
@@ -195,7 +196,7 @@ function ItemDetails({ item, open, onClose, onBidSubmit }) {
           <Button
             variant="contained"
             color="primary"
-            onClick={() => onBidSubmit(item.id, item.buy_now_price, user)} // Buy Now
+            onClick={() => onBidSubmit(item.id, item.buy_now_price, user.id)} // Buy Now
             sx={{
               color: "#fff",
               width: "100%",

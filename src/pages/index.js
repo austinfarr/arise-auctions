@@ -69,7 +69,7 @@ export default function Home({ initialItems }) {
         const { data: userBids, error } = await supabase
           .from("Bids")
           .select("item_id")
-          .eq("user_id", user);
+          .eq("user_id", user.id);
 
         if (error) {
           console.error("Error fetching user bids:", error);

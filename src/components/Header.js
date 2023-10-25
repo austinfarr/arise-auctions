@@ -98,6 +98,10 @@ const Header = () => {
     setAnchorEl(null);
   };
 
+  const handleUserMenuOpen = () => {
+    setDrawerOpen(true);
+  };
+
   return (
     <AppBar position="sticky" color="secondary">
       <Toolbar>
@@ -114,7 +118,7 @@ const Header = () => {
           onNotificationClick={handleNotificationClick}
         /> */}
 
-        <UserMenu
+        {/* <UserMenu
           loggedIn={loggedIn}
           anchorEl={avatarMenuAnchorEl}
           isOpen={isAvatarMenuOpen}
@@ -122,13 +126,20 @@ const Header = () => {
           onClose={handleAvatarMenuClose}
           onLogout={handleLogout}
           onLogin={handleLogin}
-        />
+        /> */}
+
+        <Button onClick={handleUserMenuOpen}>
+          <Avatar sx={{ bgcolor: deepOrange[300] }}>
+            {user ? user.full_name.charAt(0) : "U"}
+          </Avatar>
+        </Button>
 
         <DrawerMenu
           isOpen={drawerOpen}
           onClose={toggleDrawer(false)}
           loggedIn={loggedIn}
           onLogout={handleLogout}
+          user={user}
         />
       </Toolbar>
     </AppBar>
