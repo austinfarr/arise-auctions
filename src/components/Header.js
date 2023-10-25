@@ -31,6 +31,7 @@ import {
   Login,
   Logout,
   Notifications,
+  Person,
   Sell,
   ViewList,
 } from "@mui/icons-material";
@@ -107,7 +108,7 @@ const Header = () => {
 
         <Button onClick={handleUserMenuOpen}>
           <Avatar sx={{ bgcolor: deepOrange[300] }}>
-            {user ? user.full_name.charAt(0) : "U"}
+            {user ? user.full_name.charAt(0) : <Person />}
           </Avatar>
         </Button>
 

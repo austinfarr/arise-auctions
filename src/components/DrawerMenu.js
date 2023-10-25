@@ -127,25 +127,38 @@ const DrawerMenu = ({ loggedIn }) => {
           ) : isVerificationInitiated ? (
             // OTP Verification Form
             <form onSubmit={handleOTPVerification}>
-              {/* ... */}
-              <TextField
-                variant="outlined"
-                fullWidth
-                required
-                label="Enter OTP"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-                sx={{ marginBottom: "1em" }}
-              />
-              <Button
-                variant="contained"
-                color="primary"
-                type="submit"
-                disabled={isVerifying}
-                sx={{ color: "#fff", margin: "0 auto" }}
-              >
-                Verify Code
-              </Button>
+              <ListItem>
+                <ListItemText
+                  primary={
+                    <Typography variant="body2" align="center">
+                      Verify Your One-Time-Passcode
+                    </Typography>
+                  }
+                />
+              </ListItem>
+              <ListItem>
+                <TextField
+                  variant="outlined"
+                  fullWidth
+                  required
+                  autoFocus
+                  label="Enter OTP"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  sx={{ marginBottom: "1em" }}
+                />
+              </ListItem>
+              <ListItem>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  disabled={isVerifying}
+                  sx={{ color: "#fff", margin: "0 auto" }}
+                >
+                  Verify Code
+                </Button>
+              </ListItem>
               {verificationError && (
                 <Alert
                   severity="error"
@@ -192,7 +205,7 @@ const DrawerMenu = ({ loggedIn }) => {
                   disabled={isLoggingIn}
                   sx={{ color: "#fff", margin: "0 auto" }}
                 >
-                  Get OTP
+                  Get Verification Code
                 </Button>
               </ListItem>
               {error && (
