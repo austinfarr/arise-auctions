@@ -14,6 +14,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import LeadingBidRibbon from "./LeadingBidRibbon";
 import { useAuth } from "@/context/AuthContext";
+import BuyNowDetailsDrawer from "./BuyNowDetailsDrawer";
 
 const AuctionItem = ({ item, onBidSubmit }) => {
   const router = useRouter();
@@ -29,6 +30,30 @@ const AuctionItem = ({ item, onBidSubmit }) => {
   const handleDetailsClose = () => {
     setDetailsOpen(false);
     router.push("/", undefined, { shallow: true });
+  };
+
+  const [itemDetailsOpen, setItemDetailsOpen] = useState(false);
+  const [buyNowDetailsOpen, setBuyNowDetailsOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  const handleOpenItemDetails = (item) => {
+    setSelectedItem(item);
+    setItemDetailsOpen(true);
+  };
+
+  const handleCloseItemDetails = () => {
+    setItemDetailsOpen(false);
+    router.push("/", undefined, { shallow: true });
+  };
+
+  const handleOpenBuyNowDetails = () => {
+    setItemDetailsOpen(false); // Close ItemDetails Drawer
+    setBuyNowDetailsOpen(true); // Open BuyNowDetails Drawer
+  };
+
+  const handleCloseBuyNowDetails = () => {
+    setBuyNowDetailsOpen(false);
+    setItemDetailsOpen(true);
   };
 
   useEffect(() => {
@@ -51,11 +76,11 @@ const AuctionItem = ({ item, onBidSubmit }) => {
           justifyContent: "center",
           alignItems: "center",
         }}
-        onClick={handleItemClick}
+        onClick={handleOpenItemDetails}
       >
         <Card
           sx={{ maxWidth: 500, width: "100%", position: "relative" }}
-          onClick={handleItemClick}
+          onClick={handleOpenItemDetails}
         >
           {loggedIn && user && user.id === item.leading_user_id && (
             <LeadingBidRibbon />
@@ -100,10 +125,16 @@ const AuctionItem = ({ item, onBidSubmit }) => {
 
       <ItemDetails
         item={item}
-        open={detailsOpen}
-        onClose={handleDetailsClose}
+        open={itemDetailsOpen}
+        onClose={handleCloseItemDetails}
         onBidSubmit={onBidSubmit}
-        user={user}
+        onBuyNowClick={handleOpenBuyNowDetails}
+      />
+
+      <BuyNowDetailsDrawer
+        item={item}
+        open={buyNowDetailsOpen}
+        onClose={handleCloseBuyNowDetails}
       />
     </>
   );

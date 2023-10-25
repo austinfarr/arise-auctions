@@ -16,8 +16,9 @@ import { getCookie } from "cookies-next";
 import { useAuth } from "@/context/AuthContext";
 import LeadingBidRibbon from "./LeadingBidRibbon";
 import { useDrawer } from "@/context/DrawerContext";
+import BuyNowDetailsDrawer from "./BuyNowDetailsDrawer";
 
-function ItemDetails({ item, open, onClose, onBidSubmit }) {
+function ItemDetails({ item, open, onClose, onBidSubmit, onBuyNowClick }) {
   const [bidAmount, setBidAmount] = useState("");
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -28,19 +29,22 @@ function ItemDetails({ item, open, onClose, onBidSubmit }) {
   const { user } = useAuth();
   const { openDrawer } = useDrawer();
 
+  const [buyNowDrawerOpen, setBuyNowDrawerOpen] = useState(false);
+
+  const handleBuyNowClick = () => {
+    setBuyNowDrawerOpen(true);
+  };
+
+  const handleBuyNowDrawerClose = () => {
+    setBuyNowDrawerOpen(false);
+  };
+
   const handleBidAmountChange = (event) => {
     setBidAmount(event.target.value);
   };
 
   const showSnackbar = (message, severity = "error") => {
     setSnackbar({ open: true, message, severity });
-  };
-
-  const handleSnackbarClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setSnackbarOpen(false);
   };
 
   const isBidValid = (bid) => {
@@ -53,6 +57,12 @@ function ItemDetails({ item, open, onClose, onBidSubmit }) {
 
   const handleSubmit = () => {
     const bidAmountNumber = parseFloat(bidAmount);
+
+    if (!user) {
+      showSnackbar("Please login to place a bid!", "error");
+      openDrawer();
+      return;
+    }
     if (isBidValid(bidAmountNumber)) {
       submitBid(bidAmountNumber);
     } else {
@@ -65,11 +75,6 @@ function ItemDetails({ item, open, onClose, onBidSubmit }) {
 
   const submitBid = async (bidAmount) => {
     try {
-      if (!user) {
-        showSnackbar("Please login to place a bid!", "error");
-        openDrawer();
-        return;
-      }
       console.log("Submitting bid:", bidAmount, item.id, user.id);
       await onBidSubmit(item.id, bidAmount, user.id);
       setBidAmount("");
@@ -203,17 +208,27 @@ function ItemDetails({ item, open, onClose, onBidSubmit }) {
 
           <Button
             variant="contained"
-            color="primary"
-            onClick={() => onBidSubmit(item.id, item.buy_now_price, user.id)} // Buy Now
+            // color="primary"
+            onClick={() => {
+              if (onBuyNowClick) {
+                onBuyNowClick();
+              }
+            }}
             sx={{
               color: "#fff",
               width: "100%",
               marginTop: 2,
               borderRadius: 100,
+              backgroundColor: "#ffb81d",
             }}
           >
             Buy Now for ${item.buy_now_price}
           </Button>
+          <BuyNowDetailsDrawer
+            item={item}
+            open={buyNowDrawerOpen}
+            onClose={handleBuyNowDrawerClose}
+          />
 
           <Typography variant="body1" paragraph sx={{ marginY: 3 }}>
             {item.description}
