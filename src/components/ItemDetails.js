@@ -15,6 +15,7 @@ import Image from "next/image";
 import { getCookie } from "cookies-next";
 import { useAuth } from "@/context/AuthContext";
 import LeadingBidRibbon from "./LeadingBidRibbon";
+import { useDrawer } from "@/context/DrawerContext";
 
 function ItemDetails({ item, open, onClose, onBidSubmit }) {
   const [bidAmount, setBidAmount] = useState("");
@@ -25,6 +26,7 @@ function ItemDetails({ item, open, onClose, onBidSubmit }) {
   });
 
   const { user } = useAuth();
+  const { openDrawer } = useDrawer();
 
   const handleBidAmountChange = (event) => {
     setBidAmount(event.target.value);
@@ -63,7 +65,13 @@ function ItemDetails({ item, open, onClose, onBidSubmit }) {
 
   const submitBid = async (bidAmount) => {
     try {
-      await onBidSubmit(item.id, bidAmount, user);
+      if (!user) {
+        showSnackbar("Please login to place a bid!", "error");
+        openDrawer();
+        return;
+      }
+      console.log("Submitting bid:", bidAmount, item.id, user.id);
+      // await onBidSubmit(item.id, bidAmount, user.id);
       setBidAmount("");
       showSnackbar("Bid placed successfully!", "success");
     } catch (error) {
@@ -112,7 +120,6 @@ function ItemDetails({ item, open, onClose, onBidSubmit }) {
               margin: "0 auto",
             }}
           >
-            {user && user === item.leading_user_id && <LeadingBidRibbon />}
             {item.image && (
               <>
                 <Image
@@ -122,7 +129,9 @@ function ItemDetails({ item, open, onClose, onBidSubmit }) {
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   style={{ objectFit: "cover" }}
                 />
-                {user && user === item.leading_user_id && <LeadingBidRibbon />}
+                {user && user.id === item.leading_user_id && (
+                  <LeadingBidRibbon />
+                )}
               </>
             )}
           </Box>
@@ -195,7 +204,7 @@ function ItemDetails({ item, open, onClose, onBidSubmit }) {
           <Button
             variant="contained"
             color="primary"
-            onClick={() => onBidSubmit(item.id, item.buy_now_price, user)} // Buy Now
+            onClick={() => onBidSubmit(item.id, item.buy_now_price, user.id)} // Buy Now
             sx={{
               color: "#fff",
               width: "100%",

@@ -25,6 +25,7 @@ import { Search } from "@mui/icons-material";
 import { deleteCookie, getCookie, useCookies } from "cookies-next";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
+import { useDrawer } from "@/context/DrawerContext";
 
 export async function getServerSideProps(context) {
   let { data: items, error } = await supabase.from("Items").select("*");
@@ -45,6 +46,7 @@ export async function getServerSideProps(context) {
 
 export default function Home({ initialItems }) {
   const { loggedIn, logout, user } = useAuth();
+  const { openDrawer } = useDrawer();
 
   const router = useRouter();
 
@@ -69,7 +71,7 @@ export default function Home({ initialItems }) {
         const { data: userBids, error } = await supabase
           .from("Bids")
           .select("item_id")
-          .eq("user_id", user);
+          .eq("user_id", user.id);
 
         if (error) {
           console.error("Error fetching user bids:", error);
@@ -144,12 +146,6 @@ export default function Home({ initialItems }) {
     console.log("itemId", itemId);
     console.log("bidAmount", bidAmount);
     console.log("userId", userId);
-
-    if (!userId) {
-      console.error("User not logged in!");
-      router.push("/login");
-      return;
-    }
 
     const { data: bidData, error: bidError } = await supabase
       .from("Bids")
