@@ -13,9 +13,11 @@ import ItemDetails from "./ItemDetails"; // Import the new component
 import Image from "next/image";
 import { useRouter } from "next/router";
 import LeadingBidRibbon from "./LeadingBidRibbon";
+import { useAuth } from "@/context/AuthContext";
 
-const AuctionItem = ({ item, onBidSubmit, user }) => {
+const AuctionItem = ({ item, onBidSubmit }) => {
   const router = useRouter();
+  const { user, loggedIn } = useAuth();
   const { itemDetailId } = router.query;
 
   const [detailsOpen, setDetailsOpen] = useState(false);
@@ -55,7 +57,9 @@ const AuctionItem = ({ item, onBidSubmit, user }) => {
           sx={{ maxWidth: 500, width: "100%", position: "relative" }}
           onClick={handleItemClick}
         >
-          {user && user === item.leading_user_id && <LeadingBidRibbon />}
+          {loggedIn && user && user.id === item.leading_user_id && (
+            <LeadingBidRibbon />
+          )}
           <CardMedia
             component="img"
             sx={{ height: 240 }}
