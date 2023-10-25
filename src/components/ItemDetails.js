@@ -71,7 +71,7 @@ function ItemDetails({ item, open, onClose, onBidSubmit }) {
         return;
       }
       console.log("Submitting bid:", bidAmount, item.id, user.id);
-      // await onBidSubmit(item.id, bidAmount, user.id);
+      await onBidSubmit(item.id, bidAmount, user.id);
       setBidAmount("");
       showSnackbar("Bid placed successfully!", "success");
     } catch (error) {
