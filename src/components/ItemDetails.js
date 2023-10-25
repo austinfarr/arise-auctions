@@ -15,6 +15,7 @@ import Image from "next/image";
 import { getCookie } from "cookies-next";
 import { useAuth } from "@/context/AuthContext";
 import LeadingBidRibbon from "./LeadingBidRibbon";
+import { useDrawer } from "@/context/DrawerContext";
 
 function ItemDetails({ item, open, onClose, onBidSubmit }) {
   const [bidAmount, setBidAmount] = useState("");
@@ -25,6 +26,7 @@ function ItemDetails({ item, open, onClose, onBidSubmit }) {
   });
 
   const { user } = useAuth();
+  const { openDrawer } = useDrawer();
 
   const handleBidAmountChange = (event) => {
     setBidAmount(event.target.value);
@@ -63,7 +65,13 @@ function ItemDetails({ item, open, onClose, onBidSubmit }) {
 
   const submitBid = async (bidAmount) => {
     try {
-      await onBidSubmit(item.id, bidAmount, user.id);
+      if (!user) {
+        showSnackbar("Please login to place a bid!", "error");
+        openDrawer();
+        return;
+      }
+      console.log("Submitting bid:", bidAmount, item.id, user.id);
+      // await onBidSubmit(item.id, bidAmount, user.id);
       setBidAmount("");
       showSnackbar("Bid placed successfully!", "success");
     } catch (error) {

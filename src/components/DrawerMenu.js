@@ -7,16 +7,70 @@ import {
   Button,
   Typography,
   Box,
+  TextField,
+  Alert,
 } from "@mui/material";
+import { useState } from "react";
+import supabase from "../../lib/supabase";
+import { useDrawer } from "@/context/DrawerContext";
 
-const DrawerMenu = ({ isOpen, onClose, loggedIn, onLogout }) => {
-  const { user } = useAuth();
+const DrawerMenu = ({ loggedIn }) => {
+  const { isDrawerOpen, closeDrawer } = useDrawer();
+  const { user, login, verifyOtp, logout } = useAuth();
+
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [error, setError] = useState(null);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+
+  const [otp, setOtp] = useState("");
+  const [verificationError, setVerificationError] = useState(null);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [isVerificationInitiated, setIsVerificationInitiated] = useState(false);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError(null);
+    setIsLoggingIn(true);
+    try {
+      await login(phoneNumber);
+      // You might need to adjust this part depending on your login flow
+      setIsLoggingIn(false);
+      setIsVerificationInitiated(true);
+    } catch (error) {
+      setError(error.message);
+      setIsLoggingIn(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    logout();
+    setIsVerificationInitiated(false);
+  };
+
+  const handleOTPVerification = async (e) => {
+    e.preventDefault();
+    setVerificationError(null);
+    setIsVerifying(true);
+    try {
+      console.log("phoneNumber", phoneNumber);
+      console.log("otp", otp);
+      await verifyOtp(phoneNumber, otp);
+
+      setIsVerifying(false);
+      setPhoneNumber("");
+      setOtp("");
+      //   onClose(); // Close the drawer after verification
+    } catch (error) {
+      setVerificationError(error.message);
+      setIsVerifying(false);
+    }
+  };
 
   return (
     <Drawer
       anchor="bottom"
-      open={isOpen}
-      onClose={onClose}
+      open={isDrawerOpen}
+      onClose={closeDrawer}
       sx={{
         height: "60%",
         display: "flex",
@@ -63,23 +117,100 @@ const DrawerMenu = ({ isOpen, onClose, loggedIn, onLogout }) => {
                 <Button
                   variant="outlined"
                   color="primary"
-                  onClick={onLogout}
+                  onClick={handleLogout}
                   sx={{ margin: "0 auto" }}
                 >
                   Log Out
                 </Button>
               </ListItem>
             </>
-          ) : (
-            <ListItem>
-              <ListItemText
-                primary={
-                  <Typography variant="body2" align="center">
-                    You are not logged in yet
-                  </Typography>
-                }
+          ) : isVerificationInitiated ? (
+            // OTP Verification Form
+            <form onSubmit={handleOTPVerification}>
+              {/* ... */}
+              <TextField
+                variant="outlined"
+                fullWidth
+                required
+                label="Enter OTP"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                sx={{ marginBottom: "1em" }}
               />
-            </ListItem>
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                disabled={isVerifying}
+                sx={{ color: "#fff", margin: "0 auto" }}
+              >
+                Verify Code
+              </Button>
+              {verificationError && (
+                <Alert
+                  severity="error"
+                  variant="contained"
+                  sx={{
+                    backgroundColor: "#d32f2f",
+                    color: "#fff",
+                    width: "100%",
+                    marginTop: "1em",
+                  }}
+                >
+                  {verificationError}
+                </Alert>
+              )}
+            </form>
+          ) : (
+            <form onSubmit={handleLogin}>
+              <ListItem>
+                <ListItemText
+                  primary={
+                    <Typography variant="body2" align="center">
+                      Login to Your Account
+                    </Typography>
+                  }
+                />
+              </ListItem>
+              <ListItem>
+                <TextField
+                  variant="outlined"
+                  fullWidth
+                  required
+                  label="Phone Number"
+                  autoFocus
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  sx={{ marginBottom: "1em" }}
+                />
+              </ListItem>
+              <ListItem>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  disabled={isLoggingIn}
+                  sx={{ color: "#fff", margin: "0 auto" }}
+                >
+                  Get OTP
+                </Button>
+              </ListItem>
+              {error && (
+                <ListItem>
+                  <Alert
+                    severity="error"
+                    variant="contained"
+                    sx={{
+                      backgroundColor: "#d32f2f",
+                      color: "#fff",
+                      width: "100%",
+                    }}
+                  >
+                    {error}
+                  </Alert>
+                </ListItem>
+              )}
+            </form>
           )}
         </List>
       </Box>

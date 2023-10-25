@@ -40,13 +40,12 @@ import NotificationMenu from "./NotificationMenu";
 import UserMenu from "./UserMenu";
 import DrawerMenu from "./DrawerMenu";
 import Logo from "./Logo";
+import { useDrawer } from "@/context/DrawerContext";
 
 const Header = () => {
   const router = useRouter();
   const { loggedIn, logout, user } = useAuth();
-
-  const [avatarMenuAnchorEl, setAvatarMenuAnchorEl] = useState(null);
-  const isAvatarMenuOpen = Boolean(avatarMenuAnchorEl);
+  const { openDrawer, closeDrawer } = useDrawer();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -72,34 +71,12 @@ const Header = () => {
     setDrawerOpen(open);
   };
 
-  const handleAvatarClick = (event) => {
-    setAvatarMenuAnchorEl(event.currentTarget);
-  };
-
-  const handleAvatarMenuClose = () => {
-    setAvatarMenuAnchorEl(null);
-  };
-
   const handleLogout = () => {
-    handleAvatarMenuClose();
     logout();
   };
 
-  const handleLogin = () => {
-    handleAvatarMenuClose();
-    router.push("/login");
-  };
-
-  const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
   const handleUserMenuOpen = () => {
-    setDrawerOpen(true);
+    openDrawer();
   };
 
   return (
@@ -135,11 +112,9 @@ const Header = () => {
         </Button>
 
         <DrawerMenu
-          isOpen={drawerOpen}
           onClose={toggleDrawer(false)}
           loggedIn={loggedIn}
           onLogout={handleLogout}
-          user={user}
         />
       </Toolbar>
     </AppBar>
