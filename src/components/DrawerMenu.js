@@ -13,31 +13,83 @@ import {
 import { useState } from "react";
 import supabase from "../../lib/supabase";
 import { useDrawer } from "@/context/DrawerContext";
+import LoggedInView from "./login/LoggedInView";
+import SignUpForm from "./login/SignUpForm";
+import OTPVerificationForm from "./login/OTPVerificationForm";
+import LoginForm from "./login/LoginForm";
 
 const DrawerMenu = ({ loggedIn }) => {
   const { isDrawerOpen, closeDrawer } = useDrawer();
   const { user, login, verifyOtp, logout } = useAuth();
 
+  const [fullName, setFullName] = useState("");
+  const [isFullNameSubmitted, setIsFullNameSubmitted] = useState(false);
+
   const [phoneNumber, setPhoneNumber] = useState("");
   const [error, setError] = useState(null);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+
+  const [isSigningUp, setIsSigningUp] = useState(false);
+  const [isSignUpVerificationInitiated, setIsSignUpVerificationInitiated] =
+    useState(false);
 
   const [otp, setOtp] = useState("");
   const [verificationError, setVerificationError] = useState(null);
   const [isVerifying, setIsVerifying] = useState(false);
   const [isVerificationInitiated, setIsVerificationInitiated] = useState(false);
 
+  const handleSignUp = async (phone, fullName) => {
+    try {
+      // Adjust the implementation based on how your sign-up function works
+      // You might need to temporarily store the full name until the OTP is verified
+      // await supabase.auth.signUp({ phone });
+      const { user, error } = await supabase.auth.signInWithOtp({
+        phone: phone,
+      });
+      console.log("user", user);
+      console.log("error", error);
+      setIsSignUpVerificationInitiated(true);
+    } catch (error) {
+      setError("Failed to initiate sign up: " + error.message);
+    }
+  };
+
+  const handleFullNameSubmit = async (e) => {
+    e.preventDefault();
+    setIsFullNameSubmitted(true);
+    handleSignUp(phoneNumber, fullName);
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError(null);
     setIsLoggingIn(true);
+
     try {
-      await login(phoneNumber);
-      // You might need to adjust this part depending on your login flow
-      setIsLoggingIn(false);
-      setIsVerificationInitiated(true);
+      // Check if user already exists
+      const { data: user, error: userError } = await supabase
+        .from("user_profiles")
+        .select("id, phone")
+        .eq("phone", phoneNumber)
+        .single();
+
+      console.log("user", user);
+      console.log("userError", userError);
+
+      if (user) {
+        // User exists, initiate login
+        console.log("User exists, initiating login...");
+        await login(phoneNumber);
+        setIsVerificationInitiated(true);
+      } else {
+        // User does not exist, initiate sign up
+        console.log("User does not exist, initiating sign up...");
+        setIsLoggingIn(false);
+        setIsSigningUp(true);
+        setIsFullNameSubmitted(false); // Reset to allow full name input
+      }
     } catch (error) {
-      setError(error.message);
+      setError("Failed to initiate login: " + error.message);
       setIsLoggingIn(false);
     }
   };
@@ -94,136 +146,27 @@ const DrawerMenu = ({ loggedIn }) => {
       >
         <List sx={{ width: "100%" }}>
           {loggedIn && user ? (
-            <>
-              <ListItem>
-                <ListItemText
-                  primary={
-                    <Typography variant="body1" align="center">
-                      You are logged in as
-                    </Typography>
-                  }
-                  secondary={
-                    <Typography
-                      variant="h4"
-                      align="center"
-                      sx={{ fontWeight: "bold", fontFamily: "sans-serif" }}
-                    >
-                      {user.full_name}
-                    </Typography>
-                  }
-                />
-              </ListItem>
-              <ListItem>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={handleLogout}
-                  sx={{ margin: "0 auto" }}
-                >
-                  Log Out
-                </Button>
-              </ListItem>
-            </>
+            <LoggedInView user={user} onLogout={handleLogout} />
+          ) : isSigningUp && !isFullNameSubmitted ? (
+            <SignUpForm
+              fullName={fullName}
+              onFullNameChange={(e) => setFullName(e.target.value)}
+              onSubmit={handleFullNameSubmit}
+            />
           ) : isVerificationInitiated ? (
-            // OTP Verification Form
-            <form onSubmit={handleOTPVerification}>
-              <ListItem>
-                <ListItemText
-                  primary={
-                    <Typography variant="body2" align="center">
-                      Verify Your One-Time-Passcode
-                    </Typography>
-                  }
-                />
-              </ListItem>
-              <ListItem>
-                <TextField
-                  variant="outlined"
-                  fullWidth
-                  required
-                  autoFocus
-                  label="Enter OTP"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  sx={{ marginBottom: "1em" }}
-                />
-              </ListItem>
-              <ListItem>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  disabled={isVerifying}
-                  sx={{ color: "#fff", margin: "0 auto" }}
-                >
-                  Verify Code
-                </Button>
-              </ListItem>
-              {verificationError && (
-                <Alert
-                  severity="error"
-                  variant="contained"
-                  sx={{
-                    backgroundColor: "#d32f2f",
-                    color: "#fff",
-                    width: "100%",
-                    marginTop: "1em",
-                  }}
-                >
-                  {verificationError}
-                </Alert>
-              )}
-            </form>
+            <OTPVerificationForm
+              otp={otp}
+              onOtpChange={(e) => setOtp(e.target.value)}
+              onSubmit={handleOTPVerification}
+              error={verificationError}
+            />
           ) : (
-            <form onSubmit={handleLogin}>
-              <ListItem>
-                <ListItemText
-                  primary={
-                    <Typography variant="body2" align="center">
-                      Login to Your Account
-                    </Typography>
-                  }
-                />
-              </ListItem>
-              <ListItem>
-                <TextField
-                  variant="outlined"
-                  fullWidth
-                  required
-                  label="Phone Number"
-                  autoFocus
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                  sx={{ marginBottom: "1em" }}
-                />
-              </ListItem>
-              <ListItem>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  disabled={isLoggingIn}
-                  sx={{ color: "#fff", margin: "0 auto" }}
-                >
-                  Get Verification Code
-                </Button>
-              </ListItem>
-              {error && (
-                <ListItem>
-                  <Alert
-                    severity="error"
-                    variant="contained"
-                    sx={{
-                      backgroundColor: "#d32f2f",
-                      color: "#fff",
-                      width: "100%",
-                    }}
-                  >
-                    {error}
-                  </Alert>
-                </ListItem>
-              )}
-            </form>
+            <LoginForm
+              phoneNumber={phoneNumber}
+              onPhoneNumberChange={(e) => setPhoneNumber(e.target.value)}
+              onSubmit={handleLogin}
+              error={error}
+            />
           )}
         </List>
       </Box>

@@ -42,6 +42,8 @@ export const AuthProvider = ({ children }) => {
     const { data, error } = await supabase.auth.signInWithOtp({
       phone: phoneNumber,
     });
+    console.log("data", data);
+    console.log("error", error);
     if (error) {
       console.error("Login error:", error.message);
       throw error;
