@@ -210,9 +210,7 @@ export default function Home({ initialItems }) {
                   }}
                 />
               </Grid>
-              {/* Chips for filtering */}
               <Grid item xs={12}>
-                {" "}
                 {/* Make sure to set the item prop correctly */}
                 <Box
                   sx={{
@@ -259,6 +257,22 @@ export default function Home({ initialItems }) {
                         },
                       }}
                     />
+                    <Chip
+                      label="Sold"
+                      onClick={handleChipClick("sold")}
+                      color={activeFilter === "sold" ? "primary" : "secondary"}
+                      sx={{
+                        color: activeFilter === "sold" ? "white" : "gray",
+                        "&:hover": {
+                          bgcolor:
+                            activeFilter === "sold"
+                              ? "#ff8e44"
+                              : "lighten(secondary.main, 0.2)",
+                          color: "white",
+                        },
+                      }}
+                    />
+
                     {categories.map((category) => (
                       <Chip
                         key={category}
@@ -304,7 +318,9 @@ export default function Home({ initialItems }) {
               items
                 .filter((item) => {
                   // Filtering based on active filter
-                  if (activeFilter === "myBids") {
+                  if (activeFilter === "sold") {
+                    return item.status === "sold";
+                  } else if (activeFilter === "myBids") {
                     return (
                       userBids.includes(item.id) &&
                       (item.status !== "sold" ||
