@@ -1,7 +1,13 @@
 import { useAuction } from "@/context/AuctionContext";
 import { useAuth } from "@/context/AuthContext";
 import { useDrawer } from "@/context/DrawerContext";
-import { Drawer, Box, Typography, Button } from "@mui/material";
+import {
+  Drawer,
+  Box,
+  Typography,
+  Button,
+  CircularProgress,
+} from "@mui/material";
 import React from "react";
 
 const BuyNowDetailsDrawer = ({ item, open, onClose }) => {
@@ -9,16 +15,21 @@ const BuyNowDetailsDrawer = ({ item, open, onClose }) => {
   const { openDrawer, showSnackbar } = useDrawer();
   const { handleBuyNowSubmit } = useAuction();
 
-  const handleBuyNow = () => {
+  const [isPurchasing, setIsPurchasing] = React.useState(false);
+
+  const handleBuyNow = async () => {
+    setIsPurchasing(true);
     const buyNowPrice = item.buy_now_price;
 
     if (!user) {
       // showSnackbar("Please login to buy!", "error");
       openDrawer();
+      setIsPurchasing(false); // You might want to stop the purchasing process here
       return;
     } else {
-      handleBuyNowSubmit(item.id, user.id, item.buy_now_price);
+      await handleBuyNowSubmit(item.id, user.id, buyNowPrice);
     }
+    setIsPurchasing(false);
   };
 
   return (
@@ -61,12 +72,12 @@ const BuyNowDetailsDrawer = ({ item, open, onClose }) => {
           sx={{ fontWeight: "bold", fontFamily: "sans-serif" }}
         >
           {item.status === "sold"
-            ? `You purchased for $${item.buy_now_price.toLocaleString()}!`
-            : `Buy Now ${item.buy_now_price.toLocaleString()}`}
+            ? `You purchased for $${item.final_purchase_price?.toLocaleString()}!`
+            : `Buy Now $${item.buy_now_price.toLocaleString()}`}
         </Typography>
         <Button
           variant="contained"
-          disabled={item.status === "sold"}
+          disabled={item.status === "sold" || isPurchasing}
           sx={{
             bgcolor: "#ffb81d",
             color: "#fff",
@@ -82,6 +93,14 @@ const BuyNowDetailsDrawer = ({ item, open, onClose }) => {
           }}
           onClick={handleBuyNow}
         >
+          <CircularProgress
+            size={20}
+            sx={{
+              color: "#fff",
+              position: "absolute",
+              display: isPurchasing ? "block" : "none",
+            }}
+          />
           Buy Now
         </Button>
         <Typography

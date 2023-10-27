@@ -80,6 +80,8 @@ export const AuctionProvider = ({ children, items, setItems }) => {
         current_bid: buyNowPrice,
         status: "sold",
         winner_user_id: userId,
+        final_purchase_price: buyNowPrice,
+        type: "buy_now",
         // You might also want to update a `last_bidder` or similar field
       })
       .eq("id", itemId);
