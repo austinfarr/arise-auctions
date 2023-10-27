@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/router";
 import supabase from "../../../lib/supabase";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 import { getCookie } from "cookies-next";
 
 export async function getServerSideProps(context) {

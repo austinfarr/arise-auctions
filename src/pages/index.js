@@ -20,7 +20,7 @@ import {
   Typography,
 } from "@mui/material";
 import Link from "next/link";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 import { Search } from "@mui/icons-material";
 import { deleteCookie, getCookie, useCookies } from "cookies-next";
 import { useAuth } from "@/context/AuthContext";
@@ -103,22 +103,6 @@ export default function Home({ initialItems }) {
       )
       .subscribe();
 
-    const fetchCategories = async () => {
-      let { data: categoriesData, error: categoriesError } = await supabase
-        .from("Items")
-        .select("categories");
-
-      if (categoriesError) {
-        console.error("Error fetching categories:", categoriesError);
-      } else {
-        const allCategories = categoriesData.flatMap(
-          (cat) => cat.categories || []
-        );
-        const uniqueCategories = [...new Set(allCategories)].filter(Boolean);
-        setCategories(uniqueCategories);
-      }
-    };
-
     const handleDataChange = (eventType, newRecord, oldRecord) => {
       setItems((prevItems) => {
         switch (eventType) {
@@ -146,11 +130,29 @@ export default function Home({ initialItems }) {
       });
     };
 
-    fetchCategories();
-
     return () => {
       subscription.unsubscribe();
     };
+  }, []);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      let { data: categoriesData, error: categoriesError } = await supabase
+        .from("Items")
+        .select("categories");
+
+      if (categoriesError) {
+        console.error("Error fetching categories:", categoriesError);
+      } else {
+        const allCategories = categoriesData.flatMap(
+          (cat) => cat.categories || []
+        );
+        const uniqueCategories = [...new Set(allCategories)].filter(Boolean);
+        setCategories(uniqueCategories);
+      }
+    };
+
+    fetchCategories();
   }, [categories]);
 
   const handleChipClick = (filter) => () => {
@@ -210,9 +212,7 @@ export default function Home({ initialItems }) {
                   }}
                 />
               </Grid>
-              {/* Chips for filtering */}
               <Grid item xs={12}>
-                {" "}
                 {/* Make sure to set the item prop correctly */}
                 <Box
                   sx={{
@@ -259,6 +259,22 @@ export default function Home({ initialItems }) {
                         },
                       }}
                     />
+                    <Chip
+                      label="Sold"
+                      onClick={handleChipClick("sold")}
+                      color={activeFilter === "sold" ? "primary" : "secondary"}
+                      sx={{
+                        color: activeFilter === "sold" ? "white" : "gray",
+                        "&:hover": {
+                          bgcolor:
+                            activeFilter === "sold"
+                              ? "#ff8e44"
+                              : "lighten(secondary.main, 0.2)",
+                          color: "white",
+                        },
+                      }}
+                    />
+
                     {categories.map((category) => (
                       <Chip
                         key={category}
@@ -304,24 +320,28 @@ export default function Home({ initialItems }) {
               items
                 .filter((item) => {
                   // Filtering based on active filter
-                  if (activeFilter === "myBids") {
-                    return userBids.includes(item.id);
+                  if (activeFilter === "sold") {
+                    return item.status === "sold";
+                  } else if (activeFilter === "myBids") {
+                    return (
+                      userBids.includes(item.id) &&
+                      (item.status !== "sold" ||
+                        (item.status === "sold" && userBids.includes(item.id)))
+                    );
+                  } else if (activeFilter === "all") {
+                    return item.status !== "sold";
+                  } else {
+                    return (
+                      item.status !== "sold" &&
+                      (item.categories || []).includes(selectedCategory)
+                    );
                   }
-                  // Add more filters as needed
-                  return true;
                 })
                 .filter((item) => {
-                  // ... (previous filter code)
                   const matchesQuery = item.title
                     .toLowerCase()
                     .includes(searchQuery.toLowerCase());
-
-                  // Check if the item's categories include the selected category or if no category is selected
-                  const matchesCategory = selectedCategory
-                    ? (item.categories || []).includes(selectedCategory)
-                    : true;
-
-                  return matchesQuery && matchesCategory;
+                  return matchesQuery;
                 })
                 .map((filteredItem) => (
                   <AuctionItem
