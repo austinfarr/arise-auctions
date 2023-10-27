@@ -4,9 +4,14 @@ import Image from "next/image";
 import YouWonRibbon from "../ribbons/YouWonRibbon";
 import SoldRibbon from "../ribbons/SoldRibbon";
 import LeadingBidRibbon from "../ribbons/LeadingBidRibbon";
+import YouLostRibbon from "../ribbons/YouLostRibbon";
+import { useEffect, useState } from "react";
+import { supabase } from "../../../lib/supabase";
 
 function ImageDisplay({ item, user }) {
   const { loggedIn } = useAuth();
+
+  const [userHasBid, setUserHasBid] = useState(false);
 
   return (
     <>
@@ -38,6 +43,7 @@ function ImageDisplay({ item, user }) {
               user.id === item.leading_user_id && <YouWonRibbon />}
             {loggedIn &&
               item.status === "sold" &&
+              !userHasBid &&
               user.id !== item.leading_user_id && <SoldRibbon />}
             {loggedIn &&
               user.id === item.leading_user_id &&

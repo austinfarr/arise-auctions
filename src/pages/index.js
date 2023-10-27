@@ -103,22 +103,6 @@ export default function Home({ initialItems }) {
       )
       .subscribe();
 
-    const fetchCategories = async () => {
-      let { data: categoriesData, error: categoriesError } = await supabase
-        .from("Items")
-        .select("categories");
-
-      if (categoriesError) {
-        console.error("Error fetching categories:", categoriesError);
-      } else {
-        const allCategories = categoriesData.flatMap(
-          (cat) => cat.categories || []
-        );
-        const uniqueCategories = [...new Set(allCategories)].filter(Boolean);
-        setCategories(uniqueCategories);
-      }
-    };
-
     const handleDataChange = (eventType, newRecord, oldRecord) => {
       setItems((prevItems) => {
         switch (eventType) {
@@ -146,11 +130,29 @@ export default function Home({ initialItems }) {
       });
     };
 
-    fetchCategories();
-
     return () => {
       subscription.unsubscribe();
     };
+  }, []);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      let { data: categoriesData, error: categoriesError } = await supabase
+        .from("Items")
+        .select("categories");
+
+      if (categoriesError) {
+        console.error("Error fetching categories:", categoriesError);
+      } else {
+        const allCategories = categoriesData.flatMap(
+          (cat) => cat.categories || []
+        );
+        const uniqueCategories = [...new Set(allCategories)].filter(Boolean);
+        setCategories(uniqueCategories);
+      }
+    };
+
+    fetchCategories();
   }, [categories]);
 
   const handleChipClick = (filter) => () => {

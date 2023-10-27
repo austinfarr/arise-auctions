@@ -1,11 +1,11 @@
 import { Box } from "@mui/material";
 
-const SoldRibbon = () => (
+const YouLostRibbon = () => (
   <Box
     sx={{
       position: "absolute",
-      top: 190,
-      left: -50,
+      top: 120,
+      left: -30,
       backgroundColor: "red",
       padding: "8px 85px",
       color: "#fff",
@@ -16,8 +16,8 @@ const SoldRibbon = () => (
       fontFamily: "Montserrat, sans-serif",
     }}
   >
-    Sold to Someone Else!
+    You Lost!
   </Box>
 );
 
-export default SoldRibbon;
+export default YouLostRibbon;
