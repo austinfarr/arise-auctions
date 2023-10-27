@@ -305,23 +305,25 @@ export default function Home({ initialItems }) {
                 .filter((item) => {
                   // Filtering based on active filter
                   if (activeFilter === "myBids") {
-                    return userBids.includes(item.id);
+                    return (
+                      userBids.includes(item.id) &&
+                      (item.status !== "sold" ||
+                        (item.status === "sold" && userBids.includes(item.id)))
+                    );
+                  } else if (activeFilter === "all") {
+                    return item.status !== "sold";
+                  } else {
+                    return (
+                      item.status !== "sold" &&
+                      (item.categories || []).includes(selectedCategory)
+                    );
                   }
-                  // Add more filters as needed
-                  return true;
                 })
                 .filter((item) => {
-                  // ... (previous filter code)
                   const matchesQuery = item.title
                     .toLowerCase()
                     .includes(searchQuery.toLowerCase());
-
-                  // Check if the item's categories include the selected category or if no category is selected
-                  const matchesCategory = selectedCategory
-                    ? (item.categories || []).includes(selectedCategory)
-                    : true;
-
-                  return matchesQuery && matchesCategory;
+                  return matchesQuery;
                 })
                 .map((filteredItem) => (
                   <AuctionItem
