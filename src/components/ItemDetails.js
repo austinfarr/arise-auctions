@@ -14,11 +14,14 @@ import CloseIcon from "@mui/icons-material/Close";
 import Image from "next/image";
 import { getCookie } from "cookies-next";
 import { useAuth } from "@/context/AuthContext";
-import LeadingBidRibbon from "./LeadingBidRibbon";
+import LeadingBidRibbon from "./ribbons/LeadingBidRibbon";
 import { useDrawer } from "@/context/DrawerContext";
 import BuyNowDetailsDrawer from "./BuyNowDetailsDrawer";
+import { useAuction } from "@/context/AuctionContext";
+import YouWonRibbon from "./ribbons/YouWonRibbon";
+import SoldRibbon from "./ribbons/SoldRibbon";
 
-function ItemDetails({ item, open, onClose, onBidSubmit, onBuyNowClick }) {
+function ItemDetails({ item, open, onClose, onBuyNowClick }) {
   const [bidAmount, setBidAmount] = useState("");
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -26,8 +29,9 @@ function ItemDetails({ item, open, onClose, onBidSubmit, onBuyNowClick }) {
     severity: "error",
   });
 
-  const { user } = useAuth();
+  const { user, loggedIn } = useAuth();
   const { openDrawer } = useDrawer();
+  const { items, handleBidSubmit, handleBuyNowSubmit } = useAuction();
 
   const [buyNowDrawerOpen, setBuyNowDrawerOpen] = useState(false);
 
@@ -76,7 +80,7 @@ function ItemDetails({ item, open, onClose, onBidSubmit, onBuyNowClick }) {
   const submitBid = async (bidAmount) => {
     try {
       console.log("Submitting bid:", bidAmount, item.id, user.id);
-      await onBidSubmit(item.id, bidAmount, user.id);
+      await handleBidSubmit(item.id, bidAmount, user.id);
       setBidAmount("");
       showSnackbar("Bid placed successfully!", "success");
     } catch (error) {
@@ -134,9 +138,15 @@ function ItemDetails({ item, open, onClose, onBidSubmit, onBuyNowClick }) {
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   style={{ objectFit: "cover" }}
                 />
-                {user && user.id === item.leading_user_id && (
-                  <LeadingBidRibbon />
-                )}
+                {loggedIn &&
+                  item.status === "sold" &&
+                  user.id === item.leading_user_id && <YouWonRibbon />}
+                {loggedIn &&
+                  item.status === "sold" &&
+                  user.id !== item.leading_user_id && <SoldRibbon />}
+                {loggedIn &&
+                  user.id === item.leading_user_id &&
+                  item.status !== "sold" && <LeadingBidRibbon />}
               </>
             )}
           </Box>
@@ -200,6 +210,7 @@ function ItemDetails({ item, open, onClose, onBidSubmit, onBuyNowClick }) {
                 color: "#fff",
                 height: 56, // Ensure the button has the same height as the TextField
               }}
+              disabled={!isBidValid(bidAmount) || item.status === "sold"}
               onClick={handleSubmit}
             >
               Place Bid
