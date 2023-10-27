@@ -2,7 +2,7 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import supabase from "../../lib/supabase";
 import AuctionItem from "@/components/AuctionItem";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 import { Typography, Grid, CircularProgress } from "@mui/material";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";

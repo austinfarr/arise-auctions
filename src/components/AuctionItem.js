@@ -9,7 +9,7 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import ItemDetails from "./ItemDetails"; // Import the new component
+import ItemDetails from "./item-details/ItemDetails"; // Import the new component
 import Image from "next/image";
 import { useRouter } from "next/router";
 import LeadingBidRibbon from "./ribbons/LeadingBidRibbon";

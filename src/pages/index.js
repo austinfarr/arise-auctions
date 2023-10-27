@@ -20,7 +20,7 @@ import {
   Typography,
 } from "@mui/material";
 import Link from "next/link";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 import { Search } from "@mui/icons-material";
 import { deleteCookie, getCookie, useCookies } from "cookies-next";
 import { useAuth } from "@/context/AuthContext";

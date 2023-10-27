@@ -23,7 +23,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useRouter } from "next/router";
 import Image from "next/image"; // Importing the Image component
 import { use, useEffect, useState } from "react";
-import supabase from "../../lib/supabase";
+import supabase from "../../../lib/supabase";
 import Link from "next/link";
 import { deleteCookie, getCookie } from "cookies-next";
 import { useAuth } from "@/context/AuthContext";
@@ -36,10 +36,9 @@ import {
   ViewList,
 } from "@mui/icons-material";
 import { deepOrange } from "@mui/material/colors";
-import NotificationItem from "./NotificationItem";
-import NotificationMenu from "./NotificationMenu";
-import UserMenu from "./UserMenu";
-import DrawerMenu from "./DrawerMenu";
+import NotificationItem from "../NotificationItem";
+import NotificationMenu from "../NotificationMenu";
+import DrawerMenu from "../DrawerMenu";
 import Logo from "./Logo";
 import { useDrawer } from "@/context/DrawerContext";
 
@@ -86,25 +85,6 @@ const Header = () => {
         <Box display="flex" alignItems="center" sx={{ flexGrow: 1 }}>
           <Logo />
         </Box>
-        {/* 
-        <NotificationMenu
-          notifications={notifications}
-          anchorEl={notificationMenuAnchorEl}
-          isOpen={isNotificationMenuOpen}
-          onClose={handleNotificationMenuClose}
-          onOpen={handleNotificationMenuOpen}
-          onNotificationClick={handleNotificationClick}
-        /> */}
-
-        {/* <UserMenu
-          loggedIn={loggedIn}
-          anchorEl={avatarMenuAnchorEl}
-          isOpen={isAvatarMenuOpen}
-          onOpen={handleAvatarClick}
-          onClose={handleAvatarMenuClose}
-          onLogout={handleLogout}
-          onLogin={handleLogin}
-        /> */}
 
         <Button onClick={handleUserMenuOpen}>
           <Avatar sx={{ bgcolor: deepOrange[300] }}>
