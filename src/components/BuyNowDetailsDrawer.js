@@ -1,7 +1,37 @@
-import { Drawer, Box, Typography, Button } from "@mui/material";
+import { useAuction } from "@/context/AuctionContext";
+import { useAuth } from "@/context/AuthContext";
+import { useDrawer } from "@/context/DrawerContext";
+import {
+  Drawer,
+  Box,
+  Typography,
+  Button,
+  CircularProgress,
+} from "@mui/material";
 import React from "react";
 
 const BuyNowDetailsDrawer = ({ item, open, onClose }) => {
+  const { user } = useAuth();
+  const { openDrawer, showSnackbar } = useDrawer();
+  const { handleBuyNowSubmit } = useAuction();
+
+  const [isPurchasing, setIsPurchasing] = React.useState(false);
+
+  const handleBuyNow = async () => {
+    setIsPurchasing(true);
+    const buyNowPrice = item.buy_now_price;
+
+    if (!user) {
+      // showSnackbar("Please login to buy!", "error");
+      openDrawer();
+      setIsPurchasing(false); // You might want to stop the purchasing process here
+      return;
+    } else {
+      await handleBuyNowSubmit(item.id, user.id, buyNowPrice);
+    }
+    setIsPurchasing(false);
+  };
+
   return (
     <Drawer
       anchor="bottom"
@@ -25,7 +55,7 @@ const BuyNowDetailsDrawer = ({ item, open, onClose }) => {
         style={{
           //   width: "100%",
           //   maxWidth: 480,
-          margin: "0 auto",
+          // margin: "0 auto",
           paddingTop: 100,
           display: "flex",
           flexDirection: "column",
@@ -41,10 +71,13 @@ const BuyNowDetailsDrawer = ({ item, open, onClose }) => {
           align="center"
           sx={{ fontWeight: "bold", fontFamily: "sans-serif" }}
         >
-          Buy Now ${item.buy_now_price.toLocaleString()}
+          {item.status === "sold"
+            ? `You purchased for $${item.final_purchase_price?.toLocaleString()}!`
+            : `Buy Now $${item.buy_now_price.toLocaleString()}`}
         </Typography>
         <Button
           variant="contained"
+          disabled={item.status === "sold" || isPurchasing}
           sx={{
             bgcolor: "#ffb81d",
             color: "#fff",
@@ -58,7 +91,16 @@ const BuyNowDetailsDrawer = ({ item, open, onClose }) => {
               boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
             },
           }}
+          onClick={handleBuyNow}
         >
+          <CircularProgress
+            size={20}
+            sx={{
+              color: "#fff",
+              position: "absolute",
+              display: isPurchasing ? "block" : "none",
+            }}
+          />
           Buy Now
         </Button>
         <Typography
@@ -67,11 +109,12 @@ const BuyNowDetailsDrawer = ({ item, open, onClose }) => {
           paddingTop={4}
           sx={{ maxWidth: "80%" }}
         >
-          We will run your card for the amount above at the end of the auction.
+          {item.status !== "sold" &&
+            "We will run your card for the amount above at the end of the auction."}
         </Typography>
 
         <Button variant="text" color="primary" onClick={onClose} sx={{ mt: 2 }}>
-          Wait I don&apos;t Want to!
+          {item.status === "sold" ? "Go back" : "Wait I don't Want to!"}
         </Button>
       </Box>
     </Drawer>

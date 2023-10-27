@@ -12,9 +12,11 @@ import {
 import ItemDetails from "./ItemDetails"; // Import the new component
 import Image from "next/image";
 import { useRouter } from "next/router";
-import LeadingBidRibbon from "./LeadingBidRibbon";
+import LeadingBidRibbon from "./ribbons/LeadingBidRibbon";
 import { useAuth } from "@/context/AuthContext";
 import BuyNowDetailsDrawer from "./BuyNowDetailsDrawer";
+import SoldRibbon from "./ribbons/SoldRibbon";
+import YouWonRibbon from "./ribbons/YouWonRibbon";
 
 const AuctionItem = ({ item, onBidSubmit }) => {
   const router = useRouter();
@@ -82,9 +84,15 @@ const AuctionItem = ({ item, onBidSubmit }) => {
           sx={{ maxWidth: 500, width: "100%", position: "relative" }}
           onClick={handleOpenItemDetails}
         >
-          {loggedIn && user && user.id === item.leading_user_id && (
-            <LeadingBidRibbon />
-          )}
+          {loggedIn &&
+            item.status === "sold" &&
+            user.id === item.leading_user_id && <YouWonRibbon />}
+          {loggedIn &&
+            item.status === "sold" &&
+            user.id !== item.leading_user_id && <SoldRibbon />}
+          {loggedIn &&
+            user.id === item.leading_user_id &&
+            item.status !== "sold" && <LeadingBidRibbon />}
           <CardMedia
             component="img"
             sx={{ height: 240 }}
