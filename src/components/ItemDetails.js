@@ -225,6 +225,9 @@ function ItemDetails({ item, open, onClose, onBuyNowClick }) {
                 onBuyNowClick();
               }
             }}
+            disabled={
+              item.status === "sold" && user?.id !== item.leading_user_id
+            }
             sx={{
               color: "#fff",
               width: "100%",
