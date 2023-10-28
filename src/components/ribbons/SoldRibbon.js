@@ -4,8 +4,8 @@ const SoldRibbon = () => (
   <Box
     sx={{
       position: "absolute",
-      top: 190,
-      left: -50,
+      top: 120,
+      left: -30,
       backgroundColor: "red",
       padding: "8px 85px",
       color: "#fff",
@@ -16,7 +16,7 @@ const SoldRibbon = () => (
       fontFamily: "Montserrat, sans-serif",
     }}
   >
-    Sold to Someone Else!
+    Sold!
   </Box>
 );
 

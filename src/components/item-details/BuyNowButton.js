@@ -20,7 +20,9 @@ function BuyNowButton({ item, user, onBuyNowClick }) {
           backgroundColor: "#ffb81d",
         }}
       >
-        Buy Now for ${item.buy_now_price}
+        {item.status === "sold" && item.leading_user_id === user?.id
+          ? `You purchased for $${item.final_purchase_price}!`
+          : `Buy Now for $${item.buy_now_price}`}
       </Button>
     </>
   );
