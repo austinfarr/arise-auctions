@@ -326,7 +326,8 @@ export default function Home({ initialItems }) {
                     return (
                       userBids.includes(item.id) &&
                       (item.status !== "sold" ||
-                        (item.status === "sold" && userBids.includes(item.id)))
+                        (item.status === "sold" &&
+                          item.leading_user_id === user.id))
                     );
                   } else if (activeFilter === "all") {
                     return item.status !== "sold";

@@ -96,7 +96,7 @@ const AuctionItem = ({ item, onBidSubmit }) => {
           <CardMedia
             component="img"
             sx={{ height: 240 }}
-            image={item.image}
+            image={item.image?.images[0]}
             // title="green iguana"
           />
           <CardContent
