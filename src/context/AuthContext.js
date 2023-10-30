@@ -40,9 +40,9 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (phoneNumber) => {
     const { data, error } = await supabase.auth.signInWithOtp({
-      phone: phoneNumber,
+      phone: `+${phoneNumber}`,
     });
-    console.log("data", data);
+    console.log("login data:", data);
     console.log("error", error);
     if (error) {
       console.error("Login error:", error.message);
@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }) => {
 
   const verifyOtp = async (phoneNumber, otp) => {
     const { data, error } = await supabase.auth.verifyOtp({
-      phone: phoneNumber,
+      phone: `+1${phoneNumber}`,
       token: otp,
       type: "sms",
     });
@@ -69,6 +69,9 @@ export const AuthProvider = ({ children }) => {
           .select("*") // Adjust according to the fields you need
           .eq("id", data.user.id)
           .single();
+
+        console.log("userProfile", userProfile);
+        console.log("userError", userError);
 
         if (userError) {
           throw userError;

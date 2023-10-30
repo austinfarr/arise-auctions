@@ -88,7 +88,7 @@ const Header = () => {
 
         <Button onClick={handleUserMenuOpen}>
           <Avatar sx={{ bgcolor: deepOrange[300] }}>
-            {user ? user.full_name.charAt(0) : <Person />}
+            {user && user.full_name ? user.full_name.charAt(0) : <Person />}
           </Avatar>
         </Button>
 

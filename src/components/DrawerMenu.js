@@ -39,16 +39,20 @@ const DrawerMenu = ({ loggedIn }) => {
   const [isVerificationInitiated, setIsVerificationInitiated] = useState(false);
 
   const handleSignUp = async (phone, fullName) => {
+    console.log("Trying to sign up ", phone);
     try {
       // Adjust the implementation based on how your sign-up function works
       // You might need to temporarily store the full name until the OTP is verified
       // await supabase.auth.signUp({ phone });
       const { user, error } = await supabase.auth.signInWithOtp({
-        phone: phone,
+        phone: `+1${phone}`,
       });
       console.log("user", user);
       console.log("error", error);
       setIsSignUpVerificationInitiated(true);
+      setIsSigningUp(false);
+      setIsVerificationInitiated(true);
+      setPhoneNumber(phone);
     } catch (error) {
       setError("Failed to initiate sign up: " + error.message);
     }
@@ -69,7 +73,7 @@ const DrawerMenu = ({ loggedIn }) => {
       // Check if user already exists
       const { data: user, error: userError } = await supabase
         .from("user_profiles")
-        .select("id, phone")
+        .select("phone")
         .eq("phone", phoneNumber)
         .single();
 
