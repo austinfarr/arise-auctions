@@ -65,6 +65,9 @@ export default function Home({ initialItems }) {
 
   useEffect(() => {
     if (user) {
+      console.log("in index");
+      console.log("user", user);
+      console.log("user.id", user.id);
       const fetchUserBids = async () => {
         const { data: userBids, error } = await supabase
           .from("Bids")

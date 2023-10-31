@@ -1,3 +1,36 @@
+/**
+ * DrawerMenu Component:
+ * This component is responsible for handling the user authentication flow including login, signup, and OTP verification.
+ * It utilizes a Drawer from Material-UI to present a sliding panel from the bottom of the screen.
+ *
+ * The authentication flow is as follows:
+ * 1. If the user is not logged in, the login form is displayed. The user enters their phone number.
+ * 2. The system checks if the user exists. If they do, an OTP is sent, and the OTP verification screen is displayed.
+ * 3. If the user does not exist, they are prompted to enter their full name, then an OTP is sent, and the OTP verification screen is displayed.
+ * 4. The user enters the OTP, and if correct, they are logged in.
+ * 5. If the user is already logged in, a welcome message and logout button are displayed.
+ *
+ * State Variables:
+ * - phoneNumber: Stores the user's phone number.
+ * - fullName: Stores the user's full name (only required for new users).
+ * - otp: Stores the OTP entered by the user.
+ * - newUser: Boolean indicating whether the user is new or existing.
+ * - error: Stores any error messages related to initiating login.
+ * - verificationError: Stores any error messages related to OTP verification.
+ * - triggerOTPScreen: Boolean indicating whether to show the OTP verification screen.
+ * - triggerFullNameScreen: Boolean indicating whether to show the full name input screen (for new users).
+ *
+ * The component utilizes context to manage global state and functions related to authentication and drawer state.
+ *
+ * Functions:
+ * - handleSignUp: Initiates the signup process.
+ * - handleLogin: Initiates the login process. It checks if the user exists and sends an OTP accordingly.
+ * - handleLogout: Logs the user out and resets all state variables.
+ * - handleOTPVerification: Handles OTP verification and logs the user in if OTP is correct.
+ *
+ * The component returns a Drawer that conditionally renders different forms and messages based on the user's authentication state and the current step in the authentication flow.
+ */
+
 import { useAuth } from "@/context/AuthContext";
 import {
   Drawer,
@@ -17,57 +50,48 @@ import LoggedInView from "./login/LoggedInView";
 import SignUpForm from "./login/SignUpForm";
 import OTPVerificationForm from "./login/OTPVerificationForm";
 import LoginForm from "./login/LoginForm";
+import { Login } from "@mui/icons-material";
 
-const DrawerMenu = ({ loggedIn }) => {
+const DrawerMenu = () => {
   const { isDrawerOpen, closeDrawer } = useDrawer();
-  const { user, login, verifyOtp, logout } = useAuth();
-
-  const [fullName, setFullName] = useState("");
-  const [isFullNameSubmitted, setIsFullNameSubmitted] = useState(false);
+  const {
+    user,
+    login,
+    verifyOtpExistingUser,
+    verifyOtpNewUser,
+    logout,
+    loggedIn,
+    signUp,
+  } = useAuth();
 
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [error, setError] = useState(null);
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
-
-  const [isSigningUp, setIsSigningUp] = useState(false);
-  const [isSignUpVerificationInitiated, setIsSignUpVerificationInitiated] =
-    useState(false);
+  const [fullName, setFullName] = useState("");
 
   const [otp, setOtp] = useState("");
+
+  const [newUser, setNewUser] = useState(false);
+
+  const [error, setError] = useState(null);
+
   const [verificationError, setVerificationError] = useState(null);
-  const [isVerifying, setIsVerifying] = useState(false);
-  const [isVerificationInitiated, setIsVerificationInitiated] = useState(false);
 
-  const handleSignUp = async (phone, fullName) => {
-    console.log("Trying to sign up ", phone);
-    try {
-      // Adjust the implementation based on how your sign-up function works
-      // You might need to temporarily store the full name until the OTP is verified
-      // await supabase.auth.signUp({ phone });
-      const { user, error } = await supabase.auth.signInWithOtp({
-        phone: `+1${phone}`,
-      });
-      console.log("user", user);
-      console.log("error", error);
-      setIsSignUpVerificationInitiated(true);
-      setIsSigningUp(false);
-      setIsVerificationInitiated(true);
-      setPhoneNumber(phone);
-    } catch (error) {
-      setError("Failed to initiate sign up: " + error.message);
-    }
-  };
+  //this will be true and cue the OTP screen for both existing and new users
+  const [triggerOTPScreen, setTriggerOTPScreen] = useState(false);
 
-  const handleFullNameSubmit = async (e) => {
+  const [triggerFullNameScreen, setTriggerFullNameScreen] = useState(false);
+
+  const handleSignUp = async (e) => {
     e.preventDefault();
-    setIsFullNameSubmitted(true);
-    handleSignUp(phoneNumber, fullName);
+
+    setTriggerFullNameScreen(false);
+    setTriggerOTPScreen(true);
+
+    console.log("Trying to sign up ", phoneNumber);
+    console.log("full name", fullName);
   };
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError(null);
-    setIsLoggingIn(true);
 
     try {
       // Check if user already exists
@@ -80,45 +104,53 @@ const DrawerMenu = ({ loggedIn }) => {
       console.log("user", user);
       console.log("userError", userError);
 
+      //Whether they exist of not, we want to send them an OTP to verify
+      await login(phoneNumber);
+
       if (user) {
-        // User exists, initiate login
+        setNewUser(false);
+        // User exists, initiate login without entering full name
         console.log("User exists, initiating login...");
-        await login(phoneNumber);
-        setIsVerificationInitiated(true);
+        setTriggerOTPScreen(true);
       } else {
+        setNewUser(true);
         // User does not exist, initiate sign up
         console.log("User does not exist, initiating sign up...");
-        setIsLoggingIn(false);
-        setIsSigningUp(true);
-        setIsFullNameSubmitted(false); // Reset to allow full name input
+        setTriggerFullNameScreen(true);
       }
     } catch (error) {
       setError("Failed to initiate login: " + error.message);
-      setIsLoggingIn(false);
     }
   };
 
   const handleLogout = async () => {
     logout();
-    setIsVerificationInitiated(false);
+    //reset all states to default
+    setPhoneNumber("");
+    setOtp("");
+    setFullName("");
+    setVerificationError(null);
+    setTriggerOTPScreen(false);
+    setTriggerFullNameScreen(false);
   };
 
   const handleOTPVerification = async (e) => {
     e.preventDefault();
     setVerificationError(null);
-    setIsVerifying(true);
-    try {
-      console.log("phoneNumber", phoneNumber);
-      console.log("otp", otp);
-      await verifyOtp(phoneNumber, otp);
 
-      setIsVerifying(false);
+    try {
+      if (newUser) {
+        await verifyOtpNewUser(phoneNumber, fullName, otp);
+      } else {
+        await verifyOtpExistingUser(phoneNumber, otp);
+      }
+
       setPhoneNumber("");
       setOtp("");
-      //   onClose(); // Close the drawer after verification
+      setFullName("");
+      closeDrawer(); // Close the drawer after verification
     } catch (error) {
       setVerificationError(error.message);
-      setIsVerifying(false);
     }
   };
 
@@ -149,27 +181,38 @@ const DrawerMenu = ({ loggedIn }) => {
         }}
       >
         <List sx={{ width: "100%" }}>
-          {loggedIn && user ? (
+          {/* {content} */}
+
+          {loggedIn && user && (
             <LoggedInView user={user} onLogout={handleLogout} />
-          ) : isSigningUp && !isFullNameSubmitted ? (
-            <SignUpForm
-              fullName={fullName}
-              onFullNameChange={(e) => setFullName(e.target.value)}
-              onSubmit={handleFullNameSubmit}
+          )}
+
+          {/* show if the user is not logged in and no other screen has been triggered */}
+          {!loggedIn && !triggerOTPScreen && !triggerFullNameScreen && (
+            <LoginForm
+              phoneNumber={phoneNumber}
+              onPhoneNumberChange={(e) => setPhoneNumber(e.target.value)}
+              onSubmit={handleLogin}
+              error={error}
             />
-          ) : isVerificationInitiated ? (
+          )}
+
+          {/* show if the user is not logged in and the full name screen has been triggered */}
+          {triggerOTPScreen && !loggedIn && (
             <OTPVerificationForm
               otp={otp}
               onOtpChange={(e) => setOtp(e.target.value)}
               onSubmit={handleOTPVerification}
               error={verificationError}
             />
-          ) : (
-            <LoginForm
-              phoneNumber={phoneNumber}
-              onPhoneNumberChange={(e) => setPhoneNumber(e.target.value)}
-              onSubmit={handleLogin}
-              error={error}
+          )}
+
+          {/* show if the user is not logged in and the full name screen has been triggered */}
+          {triggerFullNameScreen && (
+            <SignUpForm
+              fullName={fullName}
+              onFullNameChange={(e) => setFullName(e.target.value)}
+              onSubmit={handleSignUp}
             />
           )}
         </List>
