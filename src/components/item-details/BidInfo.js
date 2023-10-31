@@ -10,6 +10,7 @@ function BidInfo({ item }) {
           alignItems: "center", // This ensures vertical centering
           justifyContent: "space-between",
           paddingY: 1, // Removes vertical padding
+          // marginY: 2,
         }}
       >
         <Box sx={{ marginX: 2 }}>
