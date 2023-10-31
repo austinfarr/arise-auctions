@@ -23,7 +23,7 @@ function BidInfo({ item }) {
           <Typography sx={{ fontWeight: "600", fontSize: 24 }}>
             ${item.current_bid.toLocaleString()}
           </Typography>
-          <Typography variant="body1">Current bid</Typography>
+          <Typography variant="body2">Current bid</Typography>
         </Box>
       </Box>
     </>
