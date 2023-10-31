@@ -112,7 +112,7 @@ const AuctionItem = ({ item, onBidSubmit }) => {
               justifyContent: "space-between",
               backgroundColor: "#ff8e44",
               paddingY: 1, // Removes vertical padding
-              "&:last-child": { paddingBottom: 0 }, // Removes default bottom padding from MUI
+              "&:last-child": { paddingBottom: 1 }, // Removes default bottom padding from MUI
             }}
           >
             <Box>
