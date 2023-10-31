@@ -82,14 +82,19 @@ const Header = () => {
   };
 
   return (
-    <AppBar position="sticky" color="secondary">
+    <AppBar
+      position="sticky"
+      color="secondary"
+      elevation={0}
+      sx={{ bgcolor: "#f5f5f5", py: 1 }}
+    >
       <Toolbar>
         <Box display="flex" alignItems="center" sx={{ flexGrow: 1 }}>
           <Logo />
         </Box>
 
         <Button onClick={handleUserMenuOpen}>
-          <Avatar sx={{ bgcolor: deepOrange[300] }}>
+          <Avatar sx={{ bgcolor: "#ff8e44", color: "#fff" }}>
             {user && user.full_name ? user.full_name.charAt(0) : <Person />}
           </Avatar>
         </Button>

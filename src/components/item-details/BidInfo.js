@@ -13,13 +13,13 @@ function BidInfo({ item }) {
         }}
       >
         <Box sx={{ marginX: 2 }}>
-          <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+          <Typography variant="h6" component="div" sx={{ fontWeight: "400" }}>
             {item.title}
           </Typography>
         </Box>
 
         <Box textAlign="right" sx={{ marginX: 2 }}>
-          <Typography sx={{ fontWeight: "bold", fontSize: 24 }}>
+          <Typography sx={{ fontWeight: "600", fontSize: 24 }}>
             ${item.current_bid.toLocaleString()}
           </Typography>
           <Typography variant="body1">Current bid</Typography>

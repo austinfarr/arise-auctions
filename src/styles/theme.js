@@ -7,15 +7,33 @@ const theme = createTheme({
       main: "#ff8e44", // Taken from your primary glow; you might adjust this
     },
     secondary: {
-      main: "#fff", // Taken from your primary glow; you might adjust this
+      main: "#f5f5f5", // Taken from your primary glow; you might adjust this
     },
     // You can add secondary, error, warning, etc. colors similarly
     background: {
-      default: "rgb(214, 219, 220)", // Background color for light mode
-      paper: "rgb(239, 245, 249)", // Equivalent to your tile start for light mode
+      default: "#f5f5f5", // Background color for light mode
+      paper: "#f5f5f5", // Equivalent to your tile start for light mode
     },
     text: {
       primary: "rgb(0, 0, 0)", // Text color for light mode
+    },
+  },
+  typography: {
+    fontFamily: ["Poppins", "sans-serif"].join(","),
+    h1: {
+      fontWeight: 700, // Bold
+    },
+    h2: {
+      fontWeight: 600, // Semi-bold
+    },
+    h3: {
+      fontWeight: 500, // Medium
+    },
+    h4: {
+      fontWeight: 400, // Regular
+    },
+    body1: {
+      fontWeight: 300, // Light
     },
   },
   // typography: {
@@ -38,8 +56,8 @@ const theme = createTheme({
           margin: 0,
           padding: 0,
           color: "rgb(0, 0, 0)", // Text color for light mode
-          background:
-            "linear-gradient(to bottom, transparent, rgb(255, 255, 255)) rgb(214, 219, 220)",
+          // background:
+          //   "linear-gradient(to bottom, transparent, rgb(255, 255, 255)) rgb(214, 219, 220)",
         },
         a: {
           textDecoration: "none",
