@@ -18,11 +18,12 @@ function BuyNowButton({ item, user, onBuyNowClick }) {
           marginTop: 2,
           borderRadius: 100,
           backgroundColor: "#ffb81d",
+          boxShadow: "none", // added to remove drop shadow
         }}
       >
         {item.status === "sold" && item.leading_user_id === user?.id
           ? `You purchased for $${item.final_purchase_price}!`
-          : `Or Buy Now for $${item.buy_now_price}`}
+          : `Or Buy Now for $${item.buy_now_price.toLocaleString()}`}
       </Button>
     </>
   );

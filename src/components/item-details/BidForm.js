@@ -37,6 +37,7 @@ function BidForm({
           backgroundColor: "#ff8e44",
           color: "#fff",
           height: 56, // Ensure the button has the same height as the TextField
+          fontWeight: 600,
         }}
         disabled={!isBidValid(bidAmount) || itemStatus === "sold"}
         onClick={handleSubmit}
