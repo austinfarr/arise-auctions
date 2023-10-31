@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (phoneNumber) => {
     let data, error;
 
-    if (phoneNumber === "4702178238" || phoneNumber === "1111111111") {
+    if (phoneNumber === "1111111111") {
       ({ data, error } = await supabase.auth.signInWithOtp({
         phone: phoneNumber,
       }));
@@ -131,35 +131,50 @@ export const AuthProvider = ({ children }) => {
       console.error("Error creating user profile:", error);
       throw error;
     }
-
-    return data[0];
   };
 
   const verifyOtpNewUser = async (phoneNumber, fullName, otp) => {
-    try {
-      const { data, error } = await supabase.auth.verifyOtp({
-        phone: `+1${phoneNumber}`,
-        token: otp,
-        type: "sms",
-      });
+    const { data, error } = await supabase.auth.verifyOtp({
+      phone: `+1${phoneNumber}`,
+      token: otp,
+      type: "sms",
+    });
+    console.log("data", data);
+    console.log("error", error);
 
-      if (error) {
-        console.error("OTP Verification error:", error.message);
-        throw error;
-      }
+    const makeNewUserProfile = await createUserProfile(
+      data.user.id,
+      phoneNumber,
+      fullName
+    );
 
-      const userProfile = await createUserProfile(
-        data.user.id,
-        phoneNumber,
-        fullName
-      );
-      setUser(userProfile);
-      setLoggedIn(true);
-      setCookie("userId", userProfile.id); // Adjusted to use user profile ID
-      console.log("User signed up and verified:", userProfile);
-    } catch (error) {
-      console.error("Error during sign up:", error.message);
+    console.log("userProfile", makeNewUserProfile);
+
+    const userProfile = await supabase
+      .from("user_profiles")
+      .select("*") // Adjust according to the fields you need
+      .eq("id", data.user.id)
+      .single();
+
+    console.log("userProfile", userProfile);
+
+    if (userProfile.error) {
+      console.error("Error fetching user profile:", userProfile.error);
+      throw userProfile.error;
+    }
+
+    console.log("user profile", userProfile);
+
+    if (error) {
+      console.error("OTP Verification error:", error.message);
       throw error;
+    } else {
+      console.log("data", data);
+      setUser(userProfile.data || null);
+      console.log("data.user.id:", data.user.id);
+      setLoggedIn(true);
+      setCookie("userId", data.user.id); // You might want to adjust options here
+      return data.user;
     }
   };
 

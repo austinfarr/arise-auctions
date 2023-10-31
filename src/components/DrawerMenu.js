@@ -98,7 +98,7 @@ const DrawerMenu = () => {
       const { data: user, error: userError } = await supabase
         .from("user_profiles")
         .select("phone")
-        .eq("phone", phoneNumber)
+        .eq("phone", `+1${phoneNumber}`)
         .single();
 
       console.log("user", user);
