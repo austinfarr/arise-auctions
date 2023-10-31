@@ -1,6 +1,7 @@
 import { useAuction } from "@/context/AuctionContext";
 import { useAuth } from "@/context/AuthContext";
 import { useDrawer } from "@/context/DrawerContext";
+import { usePurchase } from "@/context/PurchaseContext";
 import {
   Drawer,
   Box,
@@ -15,6 +16,8 @@ const BuyNowDetailsDrawer = ({ item, open, onClose }) => {
   const { openDrawer, showSnackbar } = useDrawer();
   const { handleBuyNowSubmit } = useAuction();
 
+  const { showSuccessMessage } = usePurchase();
+
   const [isPurchasing, setIsPurchasing] = React.useState(false);
 
   const handleBuyNow = async () => {
@@ -27,7 +30,9 @@ const BuyNowDetailsDrawer = ({ item, open, onClose }) => {
       setIsPurchasing(false); // You might want to stop the purchasing process here
       return;
     } else {
-      await handleBuyNowSubmit(item.id, user.id, buyNowPrice);
+      await handleBuyNowSubmit(item.id, user.id, buyNowPrice).then(() => {
+        showSuccessMessage(item);
+      });
     }
     setIsPurchasing(false);
   };
