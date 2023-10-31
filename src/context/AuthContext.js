@@ -39,9 +39,17 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (phoneNumber) => {
-    const { data, error } = await supabase.auth.signInWithOtp({
-      phone: `+1${phoneNumber}`,
-    });
+    let data, error;
+
+    if (phoneNumber === "4702178238" || phoneNumber === "1111111111") {
+      ({ data, error } = await supabase.auth.signInWithOtp({
+        phone: phoneNumber,
+      }));
+    } else {
+      const { data, error } = await supabase.auth.signInWithOtp({
+        phone: `+1${phoneNumber}`,
+      });
+    }
     console.log("loggin in user. data:", data);
     if (error) {
       console.error("Login error:", error.message);
