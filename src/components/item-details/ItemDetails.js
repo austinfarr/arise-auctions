@@ -101,8 +101,8 @@ function ItemDetails({ item, open, onClose, onBuyNowClick }) {
           flexDirection: "column",
           "& .MuiPaper-root": {
             // Targeting the Paper component inside Drawer
-            borderTopLeftRadius: 32, // Adjust as needed
-            borderTopRightRadius: 32, // Adjust as needed
+            borderTopLeftRadius: 20, // Adjust as needed
+            borderTopRightRadius: 20, // Adjust as needed
             height: "75%",
             background: "#fff",
           },
