@@ -41,7 +41,7 @@ function BidForm({
         disabled={!isBidValid(bidAmount) || itemStatus === "sold"}
         onClick={handleSubmit}
       >
-        Place Bid
+        Bid Now
       </Button>
     </Box>
   );

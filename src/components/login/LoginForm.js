@@ -5,54 +5,102 @@ const {
   TextField,
   Button,
   Alert,
+  Box,
 } = require("@mui/material");
 
 const LoginForm = ({ phoneNumber, onPhoneNumberChange, onSubmit, error }) => (
   <form onSubmit={onSubmit}>
-    <ListItem>
-      <ListItemText
-        primary={
-          <Typography variant="body2" align="center">
-            Login to Your Account
-          </Typography>
-        }
-      />
-    </ListItem>
-    <ListItem>
-      <TextField
-        variant="outlined"
-        fullWidth
-        required
-        label="Phone Number"
-        autoFocus
-        value={phoneNumber}
-        onChange={onPhoneNumberChange}
-        sx={{ marginBottom: "1em" }}
-      />
-    </ListItem>
-    <ListItem>
-      <Button
-        variant="contained"
-        color="primary"
-        type="submit"
-        sx={{ color: "#fff", margin: "0 auto" }}
-      >
-        Get Verification Code
-      </Button>
-    </ListItem>
-    {error && (
-      <Alert
-        severity="error"
-        variant="contained"
+    <Box sx={{ mt: 3 }}>
+      <ListItem>
+        <ListItemText
+          primary={
+            <Typography variant="h5" align="center" sx={{ fontWeight: 600 }}>
+              You&apos;re not signed in!
+            </Typography>
+          }
+          secondary={
+            <Typography variant="body1" align="center" sx={{ mt: 1 }}>
+              No problem, enter your number below and get to bidding!
+            </Typography>
+          }
+        />
+      </ListItem>
+      {/* <ListItem> */}
+      <Box
         sx={{
-          backgroundColor: "#d32f2f",
-          color: "#fff",
-          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          mt: 2,
+          mx: 2,
         }}
       >
-        {error}
-      </Alert>
-    )}
+        <TextField
+          variant="outlined"
+          fullWidth
+          required
+          label="Phone Number"
+          autoFocus
+          value={phoneNumber}
+          onChange={onPhoneNumberChange}
+          sx={{
+            flexGrow: 1,
+            height: 56,
+            borderRadius: 0,
+            "& .MuiOutlinedInput-root": {
+              height: "100%",
+              borderRadius: 8,
+              backgroundColor: "rgb(239, 245, 249)",
+              border: "none",
+              "& fieldset": {
+                border: "none", // Remove border
+              },
+              "&:hover fieldset": {
+                border: "none", // Remove border on hover
+              },
+              "&.Mui-focused fieldset": {
+                border: "none", // Remove border when focused
+              },
+            },
+          }}
+          InputProps={{
+            style: {
+              height: "100%",
+              backgroundColor: "rgb(239, 245, 249)",
+              borderRadius: 8,
+            },
+          }}
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          type="submit"
+          sx={{
+            color: "#fff",
+            // margin: "0 auto",
+            backgroundColor: "#ff8e44",
+            color: "#fff",
+            height: 56,
+            width: 120,
+            borderRadius: 0.5,
+          }}
+        >
+          Sign in
+        </Button>
+      </Box>
+      {error && (
+        <Alert
+          severity="error"
+          variant="contained"
+          sx={{
+            backgroundColor: "#d32f2f",
+            color: "#fff",
+            width: "100%",
+          }}
+        >
+          {error}
+        </Alert>
+      )}
+    </Box>
   </form>
 );
 

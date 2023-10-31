@@ -190,7 +190,7 @@ export default function Home({ initialItems }) {
           </Head>
 
           <main style={{ backgroundColor: "#f5f5f5" }}>
-            <Header hasLogoutOption={true} />
+            <Header />
 
             <Grid
               container
@@ -198,13 +198,30 @@ export default function Home({ initialItems }) {
               spacing={2}
               sx={{
                 marginBottom: "2rem",
-                marginTop: ".5rem",
+                marginTop: 0.1,
                 bgcolor: "#f5f5f5",
               }}
             >
               <Grid item xs={10} sm={8} md={6}>
                 <TextField
                   fullWidth
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      height: "100%",
+                      borderRadius: 0.5,
+                      backgroundColor: "rgb(239, 245, 249)",
+                      border: "none",
+                      "& fieldset": {
+                        border: "none", // Remove border
+                      },
+                      "&:hover fieldset": {
+                        border: "none", // Remove border on hover
+                      },
+                      "&.Mui-focused fieldset": {
+                        border: "none", // Remove border when focused
+                      },
+                    },
+                  }}
                   variant="outlined"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -215,7 +232,7 @@ export default function Home({ initialItems }) {
                         <Search />
                       </InputAdornment>
                     ),
-                    style: { backgroundColor: "#F5F5F5" },
+                    style: { backgroundColor: "#e8e8e8" },
                   }}
                 />
               </Grid>
@@ -234,70 +251,31 @@ export default function Home({ initialItems }) {
                     spacing={1}
                     sx={{ minWidth: "max-content" }}
                   >
-                    <Chip
-                      label="All"
-                      onClick={handleChipClick("all")}
-                      color={activeFilter === "all" ? "primary" : "secondary"}
-                      sx={{
-                        color: activeFilter === "all" ? "white" : "gray",
-                        "&:hover": {
-                          bgcolor:
-                            activeFilter === "all"
-                              ? "#ff8e44"
-                              : "lighten(secondary.main, 0.2)",
-                          color: "white",
-                        },
-                      }}
-                    />
-                    <Chip
-                      label="Your Bids"
-                      onClick={handleChipClick("myBids")}
-                      color={
-                        activeFilter === "myBids" ? "primary" : "secondary"
-                      }
-                      sx={{
-                        color: activeFilter === "myBids" ? "white" : "gray",
-                        "&:hover": {
-                          bgcolor:
-                            activeFilter === "myBids"
-                              ? "#ff8e44"
-                              : "lighten(secondary.main, 0.2)",
-                          color: "white",
-                        },
-                      }}
-                    />
-                    <Chip
-                      label="Sold"
-                      onClick={handleChipClick("sold")}
-                      color={activeFilter === "sold" ? "primary" : "secondary"}
-                      sx={{
-                        color: activeFilter === "sold" ? "white" : "gray",
-                        "&:hover": {
-                          bgcolor:
-                            activeFilter === "sold"
-                              ? "#ff8e44"
-                              : "lighten(secondary.main, 0.2)",
-                          color: "white",
-                        },
-                      }}
-                    />
-
-                    {categories.map((category) => (
+                    {[
+                      { label: "All", value: "all" },
+                      { label: "Your Bids", value: "myBids" },
+                      { label: "Sold", value: "sold" },
+                      ...categories.map((category) => ({
+                        label: capitalizeFirstLetter(category),
+                        value: category,
+                      })),
+                    ].map((chip) => (
                       <Chip
-                        key={category}
-                        label={capitalizeFirstLetter(category)}
-                        onClick={handleChipClick(category)}
-                        color={
-                          activeFilter === category ? "primary" : "secondary"
-                        }
+                        key={chip.value}
+                        label={chip.label}
+                        onClick={handleChipClick(chip.value)}
                         sx={{
-                          color: activeFilter === category ? "white" : "gray",
+                          color: "gray",
+                          bgcolor:
+                            activeFilter === chip.value
+                              ? "#ffeeca"
+                              : "secondary.main",
                           "&:hover": {
                             bgcolor:
-                              activeFilter === category
-                                ? "#ff8e44"
+                              activeFilter === chip.value
+                                ? "#ffeeca"
                                 : "lighten(secondary.main, 0.2)",
-                            color: "white",
+                            // color: "white",
                           },
                         }}
                       />

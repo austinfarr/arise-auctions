@@ -4,7 +4,6 @@ import Image from "next/image";
 import YouWonRibbon from "../ribbons/YouWonRibbon";
 import SoldRibbon from "../ribbons/SoldRibbon";
 import LeadingBidRibbon from "../ribbons/LeadingBidRibbon";
-import YouLostRibbon from "../ribbons/YouLostRibbon";
 import { useEffect, useState } from "react";
 import { supabase } from "../../../lib/supabase";
 import { ArrowBackIosNew, ArrowForwardIos } from "@mui/icons-material";

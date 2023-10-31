@@ -164,8 +164,8 @@ const DrawerMenu = () => {
         display: "flex",
         flexDirection: "column",
         "& .MuiPaper-root": {
-          borderTopLeftRadius: 32,
-          borderTopRightRadius: 32,
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
           height: "60%",
           background: "#fff",
         },
@@ -176,7 +176,7 @@ const DrawerMenu = () => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          justifyContent: "center",
+          justifyContent: "flex-start",
           height: "100%", // Take up all available space in the drawer
         }}
       >

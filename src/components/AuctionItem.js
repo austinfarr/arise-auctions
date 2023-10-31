@@ -85,6 +85,7 @@ const AuctionItem = ({ item, onBidSubmit }) => {
             maxWidth: 500,
             width: "100%",
             position: "relative",
+            borderRadius: 1,
           }}
           elevation={0}
           onClick={handleOpenItemDetails}
@@ -116,7 +117,11 @@ const AuctionItem = ({ item, onBidSubmit }) => {
             }}
           >
             <Box>
-              <Typography variant="h6" component="div" sx={{ color: "white" }}>
+              <Typography
+                variant="h6"
+                component="div"
+                sx={{ color: "white", fontWeight: 600 }}
+              >
                 {item.title}
               </Typography>
             </Box>

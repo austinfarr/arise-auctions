@@ -17,6 +17,9 @@ const theme = createTheme({
     text: {
       primary: "rgb(0, 0, 0)", // Text color for light mode
     },
+    yellowColor: {
+      main: "#ffeeca", // Taken from your primary glow; you might adjust this
+    },
   },
   typography: {
     fontFamily: ["Poppins", "sans-serif"].join(","),

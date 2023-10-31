@@ -14,7 +14,7 @@ function BidInfo({ item }) {
         }}
       >
         <Box sx={{ marginX: 2 }}>
-          <Typography variant="h6" component="div" sx={{ fontWeight: "400" }}>
+          <Typography variant="h6" component="div" sx={{ fontWeight: "600" }}>
             {item.title}
           </Typography>
         </Box>
