@@ -81,7 +81,12 @@ const AuctionItem = ({ item, onBidSubmit }) => {
         onClick={handleOpenItemDetails}
       >
         <Card
-          sx={{ maxWidth: 500, width: "100%", position: "relative" }}
+          sx={{
+            maxWidth: 500,
+            width: "100%",
+            position: "relative",
+          }}
+          elevation={0}
           onClick={handleOpenItemDetails}
         >
           {loggedIn &&
@@ -111,18 +116,12 @@ const AuctionItem = ({ item, onBidSubmit }) => {
             }}
           >
             <Box>
-              <Typography
-                variant="h6"
-                component="div"
-                sx={{ color: "white", fontWeight: "bold" }}
-              >
+              <Typography variant="h6" component="div" sx={{ color: "white" }}>
                 {item.title}
               </Typography>
             </Box>
             <Box textAlign="right">
-              <Typography
-                sx={{ color: "white", fontWeight: "bold", fontSize: 24 }}
-              >
+              <Typography sx={{ color: "white", fontSize: 24 }} variant="h2">
                 ${item.current_bid.toLocaleString()}
               </Typography>
               <Typography sx={{ color: "white" }}>Current bid</Typography>

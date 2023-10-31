@@ -189,14 +189,18 @@ export default function Home({ initialItems }) {
             <link rel="icon" href="/favicon.ico" />
           </Head>
 
-          <main>
+          <main style={{ backgroundColor: "#f5f5f5" }}>
             <Header hasLogoutOption={true} />
 
             <Grid
               container
               justifyContent="center"
               spacing={2}
-              sx={{ marginBottom: "2rem", marginTop: "1rem" }}
+              sx={{
+                marginBottom: "2rem",
+                marginTop: ".5rem",
+                bgcolor: "#f5f5f5",
+              }}
             >
               <Grid item xs={10} sm={8} md={6}>
                 <TextField
