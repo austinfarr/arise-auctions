@@ -80,7 +80,7 @@ export const AuthProvider = ({ children }) => {
     console.log("phoneNumber", phoneNumber);
     let data, error;
 
-    if (phoneNumber === "4702178238" || phoneNumber === "1111111111") {
+    if (phoneNumber === "1111111111") {
       ({ data, error } = await supabase.auth.verifyOtp({
         phone: phoneNumber,
         token: otp,
@@ -144,7 +144,7 @@ export const AuthProvider = ({ children }) => {
 
     const makeNewUserProfile = await createUserProfile(
       data.user.id,
-      phoneNumber,
+      `1${phoneNumber}`,
       fullName
     );
 
