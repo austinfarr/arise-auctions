@@ -44,7 +44,7 @@ import { useDrawer } from "@/context/DrawerContext";
 
 const Header = () => {
   const router = useRouter();
-  const { loggedIn, logout, user } = useAuth();
+  const { logout, user } = useAuth();
   const { openDrawer, closeDrawer } = useDrawer();
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -56,6 +56,8 @@ const Header = () => {
   const [notificationMenuAnchorEl, setNotificationMenuAnchorEl] =
     useState(null);
   const isNotificationMenuOpen = Boolean(notificationMenuAnchorEl);
+
+  // console.log("user in header", user);
 
   const toggleDrawer = (open) => (event) => {
     console.log("toggleDrawer", open);
@@ -88,15 +90,11 @@ const Header = () => {
 
         <Button onClick={handleUserMenuOpen}>
           <Avatar sx={{ bgcolor: deepOrange[300] }}>
-            {user ? user.full_name.charAt(0) : <Person />}
+            {user && user.full_name ? user.full_name.charAt(0) : <Person />}
           </Avatar>
         </Button>
 
-        <DrawerMenu
-          onClose={toggleDrawer(false)}
-          loggedIn={loggedIn}
-          onLogout={handleLogout}
-        />
+        <DrawerMenu onClose={toggleDrawer(false)} onLogout={handleLogout} />
       </Toolbar>
     </AppBar>
   );
