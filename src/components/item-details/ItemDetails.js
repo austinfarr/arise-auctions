@@ -97,7 +97,7 @@ function ItemDetails({ item, open, onClose, onBuyNowClick }) {
         open={open}
         onClose={onClose}
         sx={{
-          height: "70%",
+          height: "75%",
           display: "flex",
           flexDirection: "column",
           "& .MuiPaper-root": {
@@ -107,9 +107,10 @@ function ItemDetails({ item, open, onClose, onBuyNowClick }) {
             height: "75%",
             background: "#fff",
           },
+          overflowY: "auto",
         }}
       >
-        <Box style={{ padding: 10 }}>
+        <Box style={{ padding: 10, paddingBottom: 20 }}>
           <IconButton
             onClick={onClose}
             style={{ marginLeft: "auto", display: "block" }}

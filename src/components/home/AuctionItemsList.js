@@ -1,6 +1,7 @@
 import React from "react";
-import { Grid } from "@mui/material";
+import { Button, Grid, Typography } from "@mui/material";
 import AuctionItem from "../AuctionItem";
+import { useDrawer } from "@/context/DrawerContext";
 
 const AuctionItemsList = ({
   items,
@@ -38,12 +39,10 @@ const AuctionItemsList = ({
       return matchesQuery;
     });
 
-  if (activeFilter === "myBids" && !user) {
+  if (filteredItems.length < 1) {
     return (
       <Grid container justifyContent="center">
-        <Grid item>
-          <div>Login to View Your Bids</div>
-        </Grid>
+        <Typography>No items left in this category!</Typography>
       </Grid>
     );
   }
