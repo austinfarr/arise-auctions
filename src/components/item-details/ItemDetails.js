@@ -107,10 +107,10 @@ function ItemDetails({ item, open, onClose, onBuyNowClick }) {
             height: "75%",
             background: "#fff",
           },
-          overflowY: "auto",
+          // overflowY: "auto",
         }}
       >
-        <Box style={{ padding: 10, paddingBottom: 20 }}>
+        <Box style={{ padding: 10 }}>
           <IconButton
             onClick={onClose}
             style={{ marginLeft: "auto", display: "block" }}
@@ -138,7 +138,11 @@ function ItemDetails({ item, open, onClose, onBuyNowClick }) {
             onClose={handleBuyNowDrawerClose}
           />
 
-          <Typography variant="body1" paragraph sx={{ marginY: 3 }}>
+          <Typography
+            variant="body1"
+            paragraph
+            sx={{ marginTop: 5, marginBottom: 15 }}
+          >
             {item.description}
           </Typography>
         </Box>

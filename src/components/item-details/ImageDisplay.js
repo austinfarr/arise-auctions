@@ -49,8 +49,8 @@ function ImageDisplay({ item, user }) {
           alignItems: "center",
           borderRadius: "5%",
           overflow: "hidden",
-          height: "80%",
-          width: "90%",
+          height: "250px",
+          width: "325px",
           //   width: 400,
           margin: "0 auto",
         }}
