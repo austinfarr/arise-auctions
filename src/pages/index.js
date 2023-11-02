@@ -156,7 +156,7 @@ export default function Home({ initialItems }) {
     };
 
     fetchCategories();
-  }, [categories]);
+  }, []);
 
   const handleChipClick = (filter) => () => {
     setActiveFilter(filter);
