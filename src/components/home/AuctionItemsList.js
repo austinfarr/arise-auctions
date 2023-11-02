@@ -11,8 +11,6 @@ const AuctionItemsList = ({
   userBids,
   onBidSubmit,
 }) => {
-  const { openDrawer } = useDrawer();
-
   const filteredItems = items
     .filter((item) => {
       // Filtering based on active filter
@@ -40,16 +38,6 @@ const AuctionItemsList = ({
         .includes(searchQuery.toLowerCase());
       return matchesQuery;
     });
-
-  // if (activeFilter === "myBids" && !user) {
-  //   return (
-  //     <Grid container justifyContent="center">
-  //       <Grid item>
-  //         <Button onClick={() => openDrawer()}>Login to View Your Bids</Button>
-  //       </Grid>
-  //     </Grid>
-  //   );
-  // }
 
   if (filteredItems.length < 1) {
     return (
