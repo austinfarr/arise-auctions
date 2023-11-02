@@ -24,6 +24,7 @@ import ImageDisplay from "./ImageDisplay";
 import BidInfo from "./BidInfo";
 import BidForm from "./BidForm";
 import BuyNowButton from "./BuyNowButton";
+import Countdown from "react-countdown";
 
 function ItemDetails({ item, open, onClose, onBuyNowClick }) {
   const [bidAmount, setBidAmount] = useState("");

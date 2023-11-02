@@ -1,32 +1,25 @@
 import Head from "next/head";
-import Image from "next/image";
-import { Inter } from "next/font/google";
-import styles from "@/styles/Home.module.css";
 import supabase from "../../lib/supabase";
 import AuctionItem from "@/components/AuctionItem";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Button,
   Chip,
-  FormControl,
   Grid,
   InputAdornment,
-  InputLabel,
-  MenuItem,
-  Select,
   Stack,
   TextField,
-  Typography,
 } from "@mui/material";
-import Link from "next/link";
 import Header from "@/components/header/Header";
 import { Search } from "@mui/icons-material";
-import { deleteCookie, getCookie, useCookies } from "cookies-next";
 import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/router";
 import { useDrawer } from "@/context/DrawerContext";
 import { AuctionProvider, useAuction } from "@/context/AuctionContext";
+import SearchBar from "@/components/home/SearchBar";
+import CategoriesFilter from "@/components/home/CategoriesFilter";
+import LoginToViewBids from "@/components/home/LoginToViewBids";
+import AuctionItemsList from "@/components/home/AuctionItemsList";
 
 export async function getServerSideProps(context) {
   let { data: items, error } = await supabase.from("Items").select("*");
@@ -53,7 +46,6 @@ export default function Home({ initialItems }) {
 
   const [searchQuery, setSearchQuery] = useState("");
 
-  // const [userBids, setUserBids] = useState([]);
   const { userBids, setUserBids, handleBidSubmit } = useAuction();
 
   const [activeFilter, setActiveFilter] = useState("all");
@@ -110,7 +102,16 @@ export default function Home({ initialItems }) {
       setItems((prevItems) => {
         switch (eventType) {
           case "INSERT":
-            return [...prevItems, newRecord].sort(sortItemsById);
+            const newItems = [...prevItems];
+            const index = newItems.findIndex(
+              (item) => sortItemsById(item, newRecord) > 0
+            );
+            if (index === -1) {
+              newItems.push(newRecord);
+            } else {
+              newItems.splice(index, 0, newRecord);
+            }
+            return newItems;
 
           case "UPDATE":
             return prevItems
@@ -156,7 +157,7 @@ export default function Home({ initialItems }) {
     };
 
     fetchCategories();
-  }, [categories]);
+  }, []);
 
   const handleChipClick = (filter) => () => {
     setActiveFilter(filter);
@@ -167,10 +168,9 @@ export default function Home({ initialItems }) {
     }
   };
 
-  function capitalizeFirstLetter(string) {
-    if (!string) return "";
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  }
+  const sortedItems = useMemo(() => {
+    return [...items].sort(sortItemsById);
+  }, [items]);
 
   return (
     <>
@@ -203,140 +203,30 @@ export default function Home({ initialItems }) {
               }}
             >
               <Grid item xs={10} sm={8} md={6}>
-                <TextField
-                  fullWidth
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      height: "100%",
-                      borderRadius: 0.5,
-                      backgroundColor: "rgb(239, 245, 249)",
-                      border: "none",
-                      "& fieldset": {
-                        border: "none", // Remove border
-                      },
-                      "&:hover fieldset": {
-                        border: "none", // Remove border on hover
-                      },
-                      "&.Mui-focused fieldset": {
-                        border: "none", // Remove border when focused
-                      },
-                    },
-                  }}
-                  variant="outlined"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  // placeholder="Search for items..."
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Search />
-                      </InputAdornment>
-                    ),
-                    style: { backgroundColor: "#e8e8e8" },
-                  }}
+                <SearchBar
+                  searchQuery={searchQuery}
+                  onSearchChange={setSearchQuery}
                 />
               </Grid>
               <Grid item xs={12}>
                 {/* Make sure to set the item prop correctly */}
-                <Box
-                  sx={{
-                    overflowX: "auto",
-                    marginX: 2,
-                    scrollbarWidth: "none",
-                    "&::-webkit-scrollbar": { display: "none" },
-                  }}
-                >
-                  <Stack
-                    direction="row"
-                    spacing={1}
-                    sx={{ minWidth: "max-content" }}
-                  >
-                    {[
-                      { label: "All", value: "all" },
-                      { label: "Your Bids", value: "myBids" },
-                      { label: "Sold", value: "sold" },
-                      ...categories.map((category) => ({
-                        label: capitalizeFirstLetter(category),
-                        value: category,
-                      })),
-                    ].map((chip) => (
-                      <Chip
-                        key={chip.value}
-                        label={chip.label}
-                        onClick={handleChipClick(chip.value)}
-                        sx={{
-                          color: "gray",
-                          bgcolor:
-                            activeFilter === chip.value
-                              ? "#ffeeca"
-                              : "secondary.main",
-                          "&:hover": {
-                            bgcolor:
-                              activeFilter === chip.value
-                                ? "#ffeeca"
-                                : "lighten(secondary.main, 0.2)",
-                            // color: "white",
-                          },
-                        }}
-                      />
-                    ))}
-                  </Stack>
-                </Box>
+                <CategoriesFilter
+                  categories={categories}
+                  activeFilter={activeFilter}
+                  onFilterChange={setActiveFilter}
+                />
               </Grid>
             </Grid>
             {activeFilter === "myBids" && !loggedIn ? (
-              <Grid container justifyContent="center">
-                <Grid item>
-                  {/* <Link href="/login" passHref> */}
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => {
-                      openDrawer();
-                    }}
-                    sx={{ color: "#fff" }}
-                  >
-                    Login to View Your Bids
-                  </Button>
-                  {/* </Link> */}
-                </Grid>
-              </Grid>
+              <LoginToViewBids onLoginClick={() => openDrawer()} />
             ) : (
-              items
-                .filter((item) => {
-                  // Filtering based on active filter
-                  if (activeFilter === "sold") {
-                    return item.status === "sold";
-                  } else if (activeFilter === "myBids") {
-                    return (
-                      userBids.includes(item.id) &&
-                      (item.status !== "sold" ||
-                        (item.status === "sold" &&
-                          item.leading_user_id === user.id))
-                    );
-                  } else if (activeFilter === "all") {
-                    return item.status !== "sold";
-                  } else {
-                    return (
-                      item.status !== "sold" &&
-                      (item.categories || []).includes(selectedCategory)
-                    );
-                  }
-                })
-                .filter((item) => {
-                  const matchesQuery = item.title
-                    .toLowerCase()
-                    .includes(searchQuery.toLowerCase());
-                  return matchesQuery;
-                })
-                .map((filteredItem) => (
-                  <AuctionItem
-                    key={filteredItem.id}
-                    item={filteredItem}
-                    user={user}
-                    onBidSubmit={handleBidSubmit}
-                  />
-                ))
+              <AuctionItemsList
+                items={items}
+                searchQuery={searchQuery}
+                activeFilter={activeFilter}
+                userBids={userBids}
+                user={user}
+              />
             )}
           </main>
         </>
