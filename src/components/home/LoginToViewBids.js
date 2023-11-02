@@ -1,6 +1,9 @@
+import { useDrawer } from "@/context/DrawerContext";
 import { Button, Grid } from "@mui/material";
 
 function LoginToViewBids() {
+  const { openDrawer } = useDrawer();
+
   return (
     <div>
       <Grid container justifyContent="center">
@@ -16,7 +19,6 @@ function LoginToViewBids() {
           >
             Login to View Your Bids
           </Button>
-          {/* </Link> */}
         </Grid>
       </Grid>
     </div>

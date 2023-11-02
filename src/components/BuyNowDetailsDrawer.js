@@ -10,6 +10,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import React from "react";
+import { motion } from "framer-motion";
 
 const BuyNowDetailsDrawer = ({ item, open, onClose }) => {
   const { user } = useAuth();
