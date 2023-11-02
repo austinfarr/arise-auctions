@@ -24,7 +24,7 @@ function SearchBar({ searchQuery, onSearchChange }) {
       }}
       variant="outlined"
       value={searchQuery}
-      onChange={(e) => setSearchQuery(e.target.value)}
+      onChange={(e) => onSearchChange(e.target.value)}
       // placeholder="Search for items..."
       InputProps={{
         startAdornment: (
