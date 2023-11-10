@@ -43,7 +43,7 @@ import {
   TextField,
   Alert,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import supabase from "../../lib/supabase";
 import { useDrawer } from "@/context/DrawerContext";
 import LoggedInView from "./login/LoggedInView";
@@ -51,9 +51,17 @@ import SignUpForm from "./login/SignUpForm";
 import OTPVerificationForm from "./login/OTPVerificationForm";
 import LoginForm from "./login/LoginForm";
 import { Login } from "@mui/icons-material";
+import SideDrawer from "./SideDrawer";
+import Header from "./header/Header";
 
 const DrawerMenu = () => {
-  const { isDrawerOpen, closeDrawer } = useDrawer();
+  const {
+    isDrawerOpen,
+    closeDrawer,
+    isSideDrawerOpen,
+    setIsSideDrawerOpen,
+    closeSideDrawer,
+  } = useDrawer();
   const {
     user,
     login,
@@ -77,8 +85,23 @@ const DrawerMenu = () => {
 
   //this will be true and cue the OTP screen for both existing and new users
   const [triggerOTPScreen, setTriggerOTPScreen] = useState(false);
-
   const [triggerFullNameScreen, setTriggerFullNameScreen] = useState(false);
+
+  const handleOpenSideDrawer = () => {
+    setIsSideDrawerOpen(true);
+  };
+
+  const handleCloseSideDrawer = () => {
+    setIsSideDrawerOpen(false);
+  };
+
+  // useEffect(() => {
+  //   if (loggedIn) {
+  //     handleOpenSideDrawer();
+  //   } else {
+  //     handleCloseSideDrawer();
+  //   }
+  // }, [loggedIn]);
 
   const resetLoginForm = () => {
     // Reset to initial state
@@ -134,7 +157,9 @@ const DrawerMenu = () => {
   };
 
   const handleLogout = async () => {
+    closeSideDrawer();
     logout();
+
     //reset all states to default
     setPhoneNumber("");
     setOtp("");
@@ -166,71 +191,84 @@ const DrawerMenu = () => {
   };
 
   return (
-    <Drawer
-      anchor="bottom"
-      open={isDrawerOpen}
-      onClose={closeDrawer}
-      sx={{
-        height: "60%",
-        display: "flex",
-        flexDirection: "column",
-        "& .MuiPaper-root": {
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
-          height: "60%",
-          background: "#fff",
-        },
-      }}
-    >
-      <Box
+    <>
+      <Drawer
+        anchor="bottom"
+        open={isDrawerOpen}
+        onClose={closeDrawer}
         sx={{
+          height: "60%",
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "flex-start",
-          height: "100%", // Take up all available space in the drawer
+          "& .MuiPaper-root": {
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+            height: "60%",
+            background: "#fff",
+          },
         }}
       >
-        <List sx={{ width: "100%" }}>
-          {/* {content} */}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "flex-start",
+            height: "100%", // Take up all available space in the drawer
+          }}
+        >
+          <List sx={{ width: "100%" }}>
+            {/* {loggedIn && user && (
+              <LoggedInView user={user} onLogout={handleLogout} />
+            )} */}
 
-          {loggedIn && user && (
-            <LoggedInView user={user} onLogout={handleLogout} />
-          )}
+            {/* show if the user is not logged in and no other screen has been triggered */}
+            {!loggedIn && !triggerOTPScreen && !triggerFullNameScreen && (
+              <LoginForm
+                phoneNumber={phoneNumber}
+                onPhoneNumberChange={(e) => setPhoneNumber(e.target.value)}
+                onSubmit={handleLogin}
+                error={error}
+              />
+            )}
 
-          {/* show if the user is not logged in and no other screen has been triggered */}
-          {!loggedIn && !triggerOTPScreen && !triggerFullNameScreen && (
-            <LoginForm
-              phoneNumber={phoneNumber}
-              onPhoneNumberChange={(e) => setPhoneNumber(e.target.value)}
-              onSubmit={handleLogin}
-              error={error}
-            />
-          )}
+            {/* show if the user is not logged in and the full name screen has been triggered */}
+            {triggerOTPScreen && !loggedIn && (
+              <OTPVerificationForm
+                otp={otp}
+                onOtpChange={(e) => setOtp(e.target.value)}
+                onSubmit={handleOTPVerification}
+                error={verificationError}
+                onGoBack={resetLoginForm}
+              />
+            )}
 
-          {/* show if the user is not logged in and the full name screen has been triggered */}
-          {triggerOTPScreen && !loggedIn && (
-            <OTPVerificationForm
-              otp={otp}
-              onOtpChange={(e) => setOtp(e.target.value)}
-              onSubmit={handleOTPVerification}
-              error={verificationError}
-              onGoBack={resetLoginForm}
-            />
-          )}
-
-          {/* show if the user is not logged in and the full name screen has been triggered */}
-          {triggerFullNameScreen && (
-            <SignUpForm
-              fullName={fullName}
-              onFullNameChange={(e) => setFullName(e.target.value)}
-              onSubmit={handleSignUp}
-              onGoBack={resetLoginForm}
-            />
-          )}
-        </List>
-      </Box>
-    </Drawer>
+            {/* show if the user is not logged in and the full name screen has been triggered */}
+            {triggerFullNameScreen && (
+              <SignUpForm
+                fullName={fullName}
+                onFullNameChange={(e) => setFullName(e.target.value)}
+                onSubmit={handleSignUp}
+                onGoBack={resetLoginForm}
+              />
+            )}
+          </List>
+        </Box>
+      </Drawer>
+      {/* <Header /> */}
+      <Drawer
+        variant="temporary" // or "persistent"
+        anchor="right" // Open from the right side
+        open={isSideDrawerOpen}
+        onClose={handleCloseSideDrawer}
+      >
+        <SideDrawer
+          onClose={handleCloseSideDrawer}
+          user={user}
+          onLogout={handleLogout}
+        />
+      </Drawer>
+    </>
   );
 };
 
