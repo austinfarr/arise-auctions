@@ -97,6 +97,59 @@ export const AuctionProvider = ({ children, items, setItems }) => {
     }
 
     setUserBids((prevUserBids) => [...prevUserBids, itemId]);
+
+    const { data: purchaseData, error: purchaseError } = await supabase
+      .from("Purchases")
+      .insert([
+        {
+          item_id: itemId,
+          user_id: userId,
+          purchase_price: buyNowPrice,
+          purchase_type: "buy_now",
+        },
+      ]);
+
+    if (purchaseError) {
+      console.error("Error logging purchase:", purchaseError);
+      return;
+    }
+  };
+
+  const handlePurchaseSubmit = async (itemId, userId, purchasePrice) => {
+    // Implement the logic for "Buy Now" here
+    // Update the item's status, set the buyer's ID, etc.
+    const { data: bidData, error: bidError } = await supabase
+      .from("Bids")
+      .insert([
+        {
+          item_id: itemId,
+          user_id: userId,
+          bid_amount: purchasePrice,
+          type: "purchase",
+        },
+      ]);
+
+    if (bidError) {
+      console.error("Error logging purchase:", bidError);
+      return;
+    }
+
+    const { data: purchaseData, error: purchaseError } = await supabase
+      .from("Purchases")
+      .insert([
+        {
+          item_id: itemId,
+          user_id: userId,
+          purchase_price: purchasePrice,
+          purchase_type: "purchase",
+          // quantity: quantity,
+        },
+      ]);
+
+    if (purchaseError) {
+      console.error("Error logging purchase:", purchaseError);
+      return;
+    }
   };
 
   const value = {
@@ -105,6 +158,7 @@ export const AuctionProvider = ({ children, items, setItems }) => {
     setUserBids,
     handleBidSubmit,
     handleBuyNowSubmit,
+    handlePurchaseSubmit,
     // ... any other state or functions you want to provide
   };
 

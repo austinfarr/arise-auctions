@@ -23,7 +23,7 @@ function BuyNowButton({ item, user, onBuyNowClick }) {
       >
         {item.status === "sold" && item.leading_user_id === user?.id
           ? `You purchased for $${item.final_purchase_price}!`
-          : `Or Buy Now for $${item.buy_now_price.toLocaleString()}`}
+          : `Buy Now for $${item.buy_now_price.toLocaleString()}`}
       </Button>
     </>
   );
