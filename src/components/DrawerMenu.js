@@ -80,6 +80,16 @@ const DrawerMenu = () => {
 
   const [triggerFullNameScreen, setTriggerFullNameScreen] = useState(false);
 
+  const resetLoginForm = () => {
+    // Reset to initial state
+    setPhoneNumber("");
+    setOtp("");
+    setFullName("");
+    setVerificationError(null);
+    setTriggerOTPScreen(false);
+    setTriggerFullNameScreen(false);
+  };
+
   const handleSignUp = async (e) => {
     e.preventDefault();
 
@@ -150,7 +160,8 @@ const DrawerMenu = () => {
       setFullName("");
       closeDrawer(); // Close the drawer after verification
     } catch (error) {
-      setVerificationError(error.message);
+      console.log("error", error);
+      setVerificationError("Your code is invalid or has expired!");
     }
   };
 
@@ -204,6 +215,7 @@ const DrawerMenu = () => {
               onOtpChange={(e) => setOtp(e.target.value)}
               onSubmit={handleOTPVerification}
               error={verificationError}
+              onGoBack={resetLoginForm}
             />
           )}
 
@@ -213,6 +225,7 @@ const DrawerMenu = () => {
               fullName={fullName}
               onFullNameChange={(e) => setFullName(e.target.value)}
               onSubmit={handleSignUp}
+              onGoBack={resetLoginForm}
             />
           )}
         </List>

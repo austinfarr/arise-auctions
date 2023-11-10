@@ -12,10 +12,17 @@ function LoginToViewBids() {
           <Button
             variant="contained"
             color="primary"
+            type="submit"
+            sx={{
+              color: "#fff",
+              margin: "0 auto",
+              height: 50,
+              width: 240,
+              borderRadius: 0.5,
+            }}
             onClick={() => {
               openDrawer();
             }}
-            sx={{ color: "#fff" }}
           >
             Login to View Your Bids
           </Button>

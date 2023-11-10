@@ -18,7 +18,16 @@ function BuyNowButton({ item, user, onBuyNowClick }) {
           marginTop: 2,
           borderRadius: 100,
           backgroundColor: "#ffb81d",
-          boxShadow: "none", // added to remove drop shadow
+          boxShadow: "none",
+          "&:hover": {
+            boxShadow: "none",
+          },
+          "&:active": {
+            boxShadow: "none",
+          },
+          "&:focus": {
+            boxShadow: "none",
+          },
         }}
       >
         {item.status === "sold" && item.leading_user_id === user?.id
