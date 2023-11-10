@@ -27,7 +27,9 @@ import BuyNowButton from "./BuyNowButton";
 import Countdown from "react-countdown";
 
 function ItemDetails({ item, open, onClose, onBuyNowClick }) {
-  const [bidAmount, setBidAmount] = useState(item.current_bid + 1);
+  const [bidAmount, setBidAmount] = useState(
+    item.current_bid + item.bid_increment
+  );
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
@@ -42,7 +44,7 @@ function ItemDetails({ item, open, onClose, onBuyNowClick }) {
 
   //If another user increases the bid, update the default bid amount
   useEffect(() => {
-    setBidAmount(item.current_bid + 1);
+    setBidAmount(item.current_bid + item.bid_increment);
   }, [item]);
 
   const handleBuyNowDrawerClose = () => {
