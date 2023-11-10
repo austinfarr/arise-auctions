@@ -14,13 +14,17 @@ const LoginForm = ({ phoneNumber, onPhoneNumberChange, onSubmit, error }) => (
       <ListItem>
         <ListItemText
           primary={
-            <Typography variant="h5" align="center" sx={{ fontWeight: 600 }}>
+            <Typography
+              variant="h5"
+              align="center"
+              sx={{ fontWeight: 600, letterSpacing: -1 }}
+            >
               You&apos;re not signed in!
             </Typography>
           }
           secondary={
             <Typography variant="body1" align="center" sx={{ mt: 1 }}>
-              No problem, enter your number below and get to bidding!
+              No problem, enter your phone number below and get to bidding!
             </Typography>
           }
         />
@@ -35,7 +39,7 @@ const LoginForm = ({ phoneNumber, onPhoneNumberChange, onSubmit, error }) => (
         }}
       >
         <TextField
-          variant="outlined"
+          variant="filled"
           fullWidth
           required
           label="Phone Number"
@@ -45,28 +49,12 @@ const LoginForm = ({ phoneNumber, onPhoneNumberChange, onSubmit, error }) => (
           sx={{
             flexGrow: 1,
             height: 56,
-            borderRadius: 0,
-            "& .MuiOutlinedInput-root": {
-              height: "100%",
-              borderRadius: 8,
-              backgroundColor: "rgb(239, 245, 249)",
-              border: "none",
-              "& fieldset": {
-                border: "none", // Remove border
-              },
-              "&:hover fieldset": {
-                border: "none", // Remove border on hover
-              },
-              "&.Mui-focused fieldset": {
-                border: "none", // Remove border when focused
-              },
-            },
           }}
           InputProps={{
             style: {
               height: "100%",
               backgroundColor: "rgb(239, 245, 249)",
-              borderRadius: 8,
+              borderRadius: "8px 0 0 8px",
             },
           }}
         />
@@ -81,7 +69,7 @@ const LoginForm = ({ phoneNumber, onPhoneNumberChange, onSubmit, error }) => (
             color: "#fff",
             height: 56,
             width: 120,
-            borderRadius: 0.5,
+            borderRadius: "0 8px 8px 0",
           }}
         >
           Sign in

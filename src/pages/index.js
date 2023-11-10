@@ -210,7 +210,7 @@ export default function Home({ initialItems }) {
                 bgcolor: "#f5f5f5",
               }}
             >
-              <Grid item xs={10} sm={8} md={6}>
+              <Grid item xs={11} sm={8} md={6}>
                 <SearchBar
                   searchQuery={searchQuery}
                   onSearchChange={setSearchQuery}

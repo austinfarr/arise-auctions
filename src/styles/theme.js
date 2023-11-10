@@ -69,6 +69,22 @@ const theme = createTheme({
         // Add more global styles as needed
       },
     },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          boxShadow: "none",
+          "&:hover": {
+            boxShadow: "none",
+          },
+          "&:active": {
+            boxShadow: "none",
+          },
+          "&:focus": {
+            boxShadow: "none",
+          },
+        },
+      },
+    },
   },
 });
 
