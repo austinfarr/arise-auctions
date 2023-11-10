@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Drawer,
   Typography,
@@ -27,7 +27,7 @@ import BuyNowButton from "./BuyNowButton";
 import Countdown from "react-countdown";
 
 function ItemDetails({ item, open, onClose, onBuyNowClick }) {
-  const [bidAmount, setBidAmount] = useState("");
+  const [bidAmount, setBidAmount] = useState(item.current_bid + 1);
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
@@ -39,6 +39,11 @@ function ItemDetails({ item, open, onClose, onBuyNowClick }) {
   const { items, handleBidSubmit, handleBuyNowSubmit } = useAuction();
 
   const [buyNowDrawerOpen, setBuyNowDrawerOpen] = useState(false);
+
+  //If another user increases the bid, update the default bid amount
+  useEffect(() => {
+    setBidAmount(item.current_bid + 1);
+  }, [item]);
 
   const handleBuyNowDrawerClose = () => {
     setBuyNowDrawerOpen(false);
@@ -122,13 +127,15 @@ function ItemDetails({ item, open, onClose, onBuyNowClick }) {
 
           <BidInfo item={item} />
 
-          <BidForm
-            bidAmount={bidAmount}
-            handleSubmit={handleSubmit}
-            itemStatus={item.status}
-            isBidValid={isBidValid}
-            handleBidAmountChange={handleBidAmountChange}
-          />
+          {item.is_biddable && (
+            <BidForm
+              bidAmount={bidAmount}
+              handleSubmit={handleSubmit}
+              itemStatus={item.status}
+              isBidValid={isBidValid}
+              handleBidAmountChange={handleBidAmountChange}
+            />
+          )}
 
           <BuyNowButton item={item} onBuyNowClick={onBuyNowClick} user={user} />
 
@@ -141,7 +148,7 @@ function ItemDetails({ item, open, onClose, onBuyNowClick }) {
           <Typography
             variant="body1"
             paragraph
-            sx={{ marginTop: 5, marginBottom: 15 }}
+            sx={{ marginTop: 5, marginBottom: 10 }}
           >
             {item.description}
           </Typography>

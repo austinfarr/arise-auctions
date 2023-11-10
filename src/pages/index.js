@@ -23,8 +23,16 @@ import AuctionItemsList from "@/components/home/AuctionItemsList";
 
 export async function getServerSideProps(context) {
   let { data: items, error } = await supabase.from("Items").select("*");
-  const sortItemsById = (a, b) => a.id - b.id;
-  items.sort(sortItemsById);
+
+  // Ensure that 'items' is an array before calling sort
+  if (Array.isArray(items)) {
+    const sortItemsById = (a, b) => a.id - b.id;
+    items.sort(sortItemsById);
+  } else {
+    // Log an error and return an empty array if items is not an array
+    console.error("Items is not an array:", items);
+    items = [];
+  }
 
   if (error) {
     console.error("Error fetching items:", error);

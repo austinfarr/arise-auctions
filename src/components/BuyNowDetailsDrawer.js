@@ -15,7 +15,7 @@ import { motion } from "framer-motion";
 const BuyNowDetailsDrawer = ({ item, open, onClose }) => {
   const { user } = useAuth();
   const { openDrawer, showSnackbar } = useDrawer();
-  const { handleBuyNowSubmit } = useAuction();
+  const { handleBuyNowSubmit, handlePurchaseSubmit } = useAuction();
 
   const { showSuccessMessage } = usePurchase();
 
@@ -30,6 +30,9 @@ const BuyNowDetailsDrawer = ({ item, open, onClose }) => {
       openDrawer();
       setIsPurchasing(false); // You might want to stop the purchasing process here
       return;
+    } else if (item.is_biddable === false) {
+      await handlePurchaseSubmit(item.id, user.id, buyNowPrice).then(() => {});
+      showSuccessMessage(item);
     } else {
       await handleBuyNowSubmit(item.id, user.id, buyNowPrice).then(() => {
         showSuccessMessage(item);
