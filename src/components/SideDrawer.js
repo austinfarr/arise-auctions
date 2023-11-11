@@ -91,7 +91,7 @@ const SideDrawer = ({ onClose, user, onLogout }) => {
             align="center"
             sx={{ fontWeight: 600, letterSpacing: -1 }}
           >
-            {user.full_name}
+            {user ? `${user.full_name}` : "Sign in"}
           </Typography>
           <Button
             variant="text"
