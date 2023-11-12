@@ -32,10 +32,10 @@ function ImageDisplay({ item, user }) {
                 currentImageIndex === index ? "primary.main" : "#e0e0e0",
               borderRadius: "50%",
               padding: 0,
-              // "&:hover": {
-              //   backgroundColor:
-              //     currentImageIndex === index ? "#primary.main" : "#aeaeae",
-              // },
+              "&:hover": {
+                backgroundColor:
+                  currentImageIndex === index ? "primary.main" : "#aeaeae",
+              },
             }}
           />
         ))}
