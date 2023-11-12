@@ -9,8 +9,45 @@ import { supabase } from "../../../lib/supabase";
 import { ArrowBackIosNew, ArrowForwardIos } from "@mui/icons-material";
 
 function ImageDisplay({ item, user }) {
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+
+  // Minimum distance (in pixels) to be considered as swipe
+  const minSwipeDistance = 50;
+
+  // Called when the user starts touching the screen
+  const onTouchStart = (e) => {
+    setTouchEnd(null); // Reset touch end to null on new touch start
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  // Called when the user moves their finger on the screen
+  const onTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  // Called when the user lifts their finger off the screen
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isSwipe = Math.abs(distance) > minSwipeDistance;
+
+    if (isSwipe) {
+      // Swipe left (next image)
+      if (distance > 0) {
+        nextImage();
+      }
+      // Swipe right (previous image)
+      else {
+        prevImage();
+      }
+    }
+  };
+
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [imageUrls, setImageUrls] = useState([]);
+
+  const { loggedIn } = useAuth();
 
   useEffect(() => {
     if (item && item.image && item.image.images) {
@@ -18,10 +55,6 @@ function ImageDisplay({ item, user }) {
       console.log("item.image.images", item.image.images);
     }
   }, [item]);
-
-  const { loggedIn } = useAuth();
-
-  const [userHasBid, setUserHasBid] = useState(false);
 
   const nextImage = () => {
     setCurrentImageIndex((prevIndex) => (prevIndex + 1) % imageUrls.length);
@@ -35,12 +68,6 @@ function ImageDisplay({ item, user }) {
 
   return (
     <>
-      {/* {imageUrls.length > 1 && (
-        <>
-          <Button onClick={prevImage}>Previous</Button>
-          <Button onClick={nextImage}>Next</Button>
-        </>
-      )} */}
       <Box
         sx={{
           position: "relative",
@@ -54,6 +81,9 @@ function ImageDisplay({ item, user }) {
           //   width: 400,
           margin: "0 auto",
         }}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
       >
         {imageUrls.length > 1 && (
           <>
@@ -91,9 +121,6 @@ function ImageDisplay({ item, user }) {
         )}
         {item.image && (
           <>
-            {/* <IconButton onClick={prevImage} disabled={currentImageIndex === 0}>
-              <ArrowBackIosNew />
-            </IconButton> */}
             {imageUrls.length > 0 && (
               <Image
                 src={imageUrls[currentImageIndex]}
@@ -108,7 +135,6 @@ function ImageDisplay({ item, user }) {
               user.id === item.leading_user_id && <YouWonRibbon />}
             {loggedIn &&
               item.status === "sold" &&
-              !userHasBid &&
               user.id !== item.leading_user_id && <SoldRibbon />}
             {loggedIn &&
               user.id === item.leading_user_id &&

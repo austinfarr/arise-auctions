@@ -55,7 +55,6 @@ const AuctionItem = ({ item, onBidSubmit }) => {
 
   const handleCloseBuyNowDetails = () => {
     setBuyNowDetailsOpen(false);
-    setItemDetailsOpen(true);
   };
 
   useEffect(() => {

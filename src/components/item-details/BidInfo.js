@@ -18,7 +18,7 @@ function BidInfo({ item }) {
           <Typography variant="h6" component="div" sx={{ fontWeight: "600" }}>
             {item.title}
           </Typography>
-          {item.item_timer_ends && (
+          {item.item_timer_ends && item.is_biddable && (
             <Countdown
               date={new Date(item.item_timer_ends)}
               renderer={({ days, hours, minutes, seconds, completed }) => {
@@ -28,8 +28,15 @@ function BidInfo({ item }) {
                 } else {
                   // Countdown is still going
                   return (
-                    <Typography variant="body1" sx={{ color: "#ff7675" }}>
-                      {days}:{hours}:{minutes}:{seconds} left!
+                    <Typography variant="body2" sx={{ color: "#ff7675" }}>
+                      {days > 1 && `${days} days left`}
+                      {days === 1 && `${days} day left`}
+                      {days === 0 &&
+                        hours > 1 &&
+                        `${hours} hours, ${minutes} minutes left!`}
+                      {days === 0 &&
+                        hours < 1 &&
+                        `${minutes} minutes, ${seconds} seconds left!`}
                     </Typography>
                   );
                 }
@@ -39,6 +46,9 @@ function BidInfo({ item }) {
                 console.log("Auction ended!");
               }}
             />
+          )}
+          {!item.is_biddable && (
+            <Typography variant="body2">Buy it now!</Typography>
           )}
         </Box>
 

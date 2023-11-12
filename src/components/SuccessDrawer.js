@@ -1,7 +1,20 @@
 import { Drawer, Box, Typography, Button } from "@mui/material";
 import { usePurchase } from "@/context/PurchaseContext";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import Image from "next/image";
+import { useDrawer } from "@/context/DrawerContext";
 const SuccessDrawer = () => {
   const { purchaseSuccess, boughtItem, hideSuccessMessage } = usePurchase();
+
+  const router = useRouter();
+
+  const handleGoToPurchases = () => {
+    hideSuccessMessage();
+    router.push("/purchased");
+  };
+
+  console.log("boughtItem", boughtItem);
 
   return (
     <Drawer
@@ -30,13 +43,63 @@ const SuccessDrawer = () => {
           height: "100%", // Take up all available space in the drawer
         }}
       >
-        <Typography variant="h4">Purchase Successful!</Typography>
-        <Typography>{`You have successfully bought ${
+        <Box
+          sx={{
+            position: "relative",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: "5%",
+            overflow: "hidden",
+            height: "150px",
+            width: "200px",
+            //   width: 400,
+            margin: "0 auto",
+            mb: 3,
+          }}
+        >
+          <Image
+            src={boughtItem?.image?.images[0]}
+            // width={200}
+            // height={200}
+            alt="item image"
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            style={{ objectFit: "cover" }}
+          />
+        </Box>
+        <Typography variant="h5" sx={{ fontWeight: 600, fontSize: 28 }}>
+          Purchase Successful!
+        </Typography>
+        <Typography>{`You purchased ${
           boughtItem?.title
-        } for $${boughtItem?.buy_now_price.toLocaleString()}`}</Typography>
-        <br />
-        <Typography>View all of your bought items in the Sold tab!</Typography>
-        <Button onClick={hideSuccessMessage}>Close</Button>
+        } for $${boughtItem?.buy_now_price.toLocaleString()}.`}</Typography>
+
+        <Typography
+          onClick={handleGoToPurchases}
+          sx={{
+            textDecoration: "underline",
+            textDecorationThickness: "1px", // Adjust thickness of the underline
+            textUnderlineOffset: "4px",
+            cursor: "pointer",
+            color: "#13294B",
+            mb: 5,
+          }}
+        >
+          View your purchases here.
+        </Typography>
+
+        <Button
+          onClick={hideSuccessMessage}
+          sx={{
+            //   margin: "0 auto",
+            textDecoration: "underline",
+            textDecorationThickness: "2px", // Adjust thickness of the underline
+            textUnderlineOffset: "4px",
+          }}
+        >
+          Close
+        </Button>
       </Box>
     </Drawer>
   );

@@ -110,7 +110,9 @@ const SideDrawer = ({ onClose, user, onLogout }) => {
           <Typography
             onClick={handleBrowse}
             sx={{
-              mt: 10,
+              mt: 8,
+              py: 3,
+              fontWeight: 600,
               cursor: "pointer",
               "&:hover": { color: "primary.main" },
             }}
@@ -120,7 +122,9 @@ const SideDrawer = ({ onClose, user, onLogout }) => {
           <Typography
             onClick={handlePurchased}
             sx={{
-              mt: 5,
+              fontWeight: 600,
+              py: 3,
+              mt: 2,
               "&:hover": { color: "primary.main", cursor: "pointer" },
             }}
           >
@@ -136,7 +140,7 @@ const SideDrawer = ({ onClose, user, onLogout }) => {
               height: 50,
               width: 140,
               borderRadius: 0.5,
-              mt: 5,
+              mt: 2,
             }}
           >
             DONATE
