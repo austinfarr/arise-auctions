@@ -11,6 +11,7 @@ const AuctionItemsList = ({
   userBids,
   onBidSubmit,
 }) => {
+  const searchQueryLower = searchQuery.toLowerCase();
   const filteredItems = items
     .filter((item) => {
       // Filtering based on active filter
@@ -33,10 +34,13 @@ const AuctionItemsList = ({
     })
     .filter((item) => {
       // Filtering based on search query
-      const matchesQuery = item.title
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
-      return matchesQuery;
+      const matchesTitle = item.title.toLowerCase().includes(searchQueryLower);
+      const matchesCategory = item.categories
+        ? item.categories.some((category) =>
+            category.toLowerCase().includes(searchQueryLower)
+          )
+        : false;
+      return matchesTitle || matchesCategory;
     });
 
   if (filteredItems.length < 1) {

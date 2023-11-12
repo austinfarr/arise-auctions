@@ -15,7 +15,7 @@ const theme = createTheme({
       paper: "#f5f5f5", // Equivalent to your tile start for light mode
     },
     text: {
-      primary: "rgb(0, 0, 0)", // Text color for light mode
+      primary: "#13294B", // Text color for light mode
     },
     yellowColor: {
       main: "#ffeeca", // Taken from your primary glow; you might adjust this

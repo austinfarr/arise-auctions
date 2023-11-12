@@ -149,19 +149,30 @@ export default function Home({ initialItems }) {
 
   useEffect(() => {
     const fetchCategories = async () => {
-      let { data: categoriesData, error: categoriesError } = await supabase
+      let { data: itemsData, error: itemsError } = await supabase
         .from("Items")
-        .select("categories");
+        .select("*");
 
-      if (categoriesError) {
-        console.error("Error fetching categories:", categoriesError);
-      } else {
-        const allCategories = categoriesData.flatMap(
-          (cat) => cat.categories || []
-        );
-        const uniqueCategories = [...new Set(allCategories)].filter(Boolean);
-        setCategories(uniqueCategories);
+      console.log("itemsData", itemsData);
+
+      if (itemsError) {
+        console.error("Error fetching categories:", itemsError);
+        return;
       }
+
+      // Filter out items where status is 'sold'
+      const biddableItems = itemsData.filter((item) => item.status !== "sold");
+      console.log("biddableItems", biddableItems);
+
+      // From the biddable items, extract all categories
+      const allCategories = biddableItems
+        .flatMap((item) => item.categories || [])
+        .filter(Boolean); // Remove falsy values, i.e., null, undefined, empty string
+
+      // Deduplicate the categories
+      const uniqueCategories = Array.from(new Set(allCategories));
+
+      setCategories(uniqueCategories);
     };
 
     fetchCategories();

@@ -26,6 +26,7 @@ function BidForm({
           style: {
             height: "100%",
             backgroundColor: "rgb(239, 245, 249)",
+            borderRadius: "12px 0 0 12px",
           },
           startAdornment: <InputAdornment position="start">$</InputAdornment>, // Ensure the inner input is the same height as the TextField
         }}
@@ -38,6 +39,7 @@ function BidForm({
           color: "#fff",
           height: 56, // Ensure the button has the same height as the TextField
           fontWeight: 600,
+          borderRadius: "0 12px 12px 0",
         }}
         disabled={!isBidValid(bidAmount) || itemStatus === "sold"}
         onClick={handleSubmit}
