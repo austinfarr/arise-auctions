@@ -25,18 +25,31 @@ const theme = createTheme({
     fontFamily: ["Poppins", "sans-serif"].join(","),
     h1: {
       fontWeight: 700, // Bold
+      color: "#13294B",
     },
     h2: {
       fontWeight: 600, // Semi-bold
+      color: "#13294B",
     },
     h3: {
       fontWeight: 500, // Medium
+      color: "#13294B",
     },
     h4: {
       fontWeight: 400, // Regular
+      color: "#13294B",
+    },
+    h5: {
+      fontWeight: 400, // Regular
+      color: "#13294B",
+    },
+    h6: {
+      fontWeight: 400, // Regular
+      color: "#13294B",
     },
     body1: {
       fontWeight: 300, // Light
+      color: "#13294B",
     },
   },
   // typography: {
