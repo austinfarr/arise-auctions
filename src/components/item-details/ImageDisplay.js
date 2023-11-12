@@ -9,6 +9,40 @@ import { supabase } from "../../../lib/supabase";
 import { ArrowBackIosNew, ArrowForwardIos } from "@mui/icons-material";
 
 function ImageDisplay({ item, user }) {
+  const renderImageDots = () => {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: "8px",
+        }}
+      >
+        {imageUrls.map((_, index) => (
+          <IconButton
+            key={index}
+            size="small"
+            onClick={() => setCurrentImageIndex(index)}
+            sx={{
+              width: currentImageIndex === index ? 12 : 10,
+              height: currentImageIndex === index ? 12 : 10,
+              margin: "0 4px",
+              backgroundColor:
+                currentImageIndex === index ? "primary.main" : "#e0e0e0",
+              borderRadius: "50%",
+              padding: 0,
+              // "&:hover": {
+              //   backgroundColor:
+              //     currentImageIndex === index ? "#primary.main" : "#aeaeae",
+              // },
+            }}
+          />
+        ))}
+      </Box>
+    );
+  };
+
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
 
@@ -85,40 +119,6 @@ function ImageDisplay({ item, user }) {
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
       >
-        {imageUrls.length > 1 && (
-          <>
-            <IconButton
-              onClick={prevImage}
-              sx={{
-                position: "absolute",
-                left: 16,
-                zIndex: 1,
-                backgroundColor: "rgba(255, 255, 255, 0.7)", // semi-transparent white
-                ":hover": {
-                  backgroundColor: "rgba(255, 255, 255, 0.9)",
-                },
-              }}
-              disabled={currentImageIndex === 0}
-            >
-              <ArrowBackIosNew />
-            </IconButton>
-            <IconButton
-              onClick={nextImage}
-              sx={{
-                position: "absolute",
-                right: 16,
-                zIndex: 1,
-                backgroundColor: "rgba(255, 255, 255, 0.7)", // semi-transparent white
-                ":hover": {
-                  backgroundColor: "rgba(255, 255, 255, 0.9)",
-                },
-              }}
-              disabled={currentImageIndex === imageUrls.length - 1}
-            >
-              <ArrowForwardIos />
-            </IconButton>
-          </>
-        )}
         {item.image && (
           <>
             {imageUrls.length > 0 && (
@@ -142,6 +142,7 @@ function ImageDisplay({ item, user }) {
           </>
         )}
       </Box>
+      {renderImageDots()}
     </>
   );
 }
