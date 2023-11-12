@@ -1,5 +1,5 @@
 import Header from "@/components/header/Header";
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import supabase from "../../lib/supabase";
 import { useState } from "react";
 import PurchasedItem from "@/components/purchases/PurchasedItem";
@@ -78,6 +78,21 @@ export default function PurchasedPage({ purchasedItems: initialItems }) {
   return (
     <>
       <Header />
+      <Box
+        sx={{
+          // flexGrow: 1,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "end",
+          px: 2,
+          py: 2,
+        }}
+      >
+        <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          Your Purchases
+        </Typography>
+      </Box>
       {items?.length > 0 &&
         items.map((item) => <PurchasedItem item={item} key={item.title} />)}
     </>

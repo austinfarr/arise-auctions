@@ -21,14 +21,17 @@ function PurchasedItem({ item }) {
       }}
     >
       <CardContent sx={{ flex: "1 0 auto" }}>
-        <Typography component="div" variant="h5">
+        <Typography variant="h6" sx={{ fontWeight: 600 }}>
           {item.title}
         </Typography>
-        <Typography variant="subtitle1" color="text.secondary" component="div">
+        <Typography
+          color="text.secondary"
+          sx={{ fontSize: 14, fontWeight: 400 }}
+        >
           Purchased for ${item.purchase_price.toLocaleString()}
         </Typography>
       </CardContent>
-      <Box sx={{ display: "flex", alignItems: "center", p: 1 }}>
+      <Box sx={{ display: "flex", alignItems: "center", p: 1, pr: 2 }}>
         <CardMedia
           component="img"
           sx={{
