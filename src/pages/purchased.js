@@ -5,6 +5,7 @@ import { useState } from "react";
 import PurchasedItem from "@/components/purchases/PurchasedItem";
 import { useAuth } from "@/context/AuthContext";
 import { getCookie } from "cookies-next";
+import { useConfigurations } from "@/context/ConfigurationsContext";
 
 function parseCookies(cookieHeader) {
   const list = {};

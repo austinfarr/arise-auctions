@@ -24,7 +24,11 @@ function BidInfo({ item }) {
               renderer={({ days, hours, minutes, seconds, completed }) => {
                 if (completed) {
                   // Auction has ended
-                  return <Typography variant="h6">Auction Ended</Typography>;
+                  return (
+                    <Typography variant="body2" sx={{ color: "#ff7675" }}>
+                      Auction Ended
+                    </Typography>
+                  );
                 } else {
                   // Countdown is still going
                   return (

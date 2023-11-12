@@ -150,7 +150,7 @@ function ItemDetails({ item, open, onClose, onBuyNowClick }) {
           <Typography
             variant="body1"
             paragraph
-            sx={{ marginTop: 5, marginBottom: 10 }}
+            sx={{ marginTop: 5, marginBottom: 10, px: 2 }}
           >
             {item.description}
           </Typography>

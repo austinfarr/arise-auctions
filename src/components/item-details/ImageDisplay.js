@@ -102,47 +102,49 @@ function ImageDisplay({ item, user }) {
 
   return (
     <>
-      <Box
-        sx={{
-          position: "relative",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          borderRadius: "5%",
-          overflow: "hidden",
-          height: "250px",
-          width: "325px",
-          //   width: 400,
-          margin: "0 auto",
-        }}
-        onTouchStart={onTouchStart}
-        onTouchMove={onTouchMove}
-        onTouchEnd={onTouchEnd}
-      >
-        {item.image && (
-          <>
-            {imageUrls.length > 0 && (
-              <Image
-                src={imageUrls[currentImageIndex]}
-                alt={item.title}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                style={{ objectFit: "cover" }}
-              />
-            )}
-            {loggedIn &&
-              item.status === "sold" &&
-              user.id === item.leading_user_id && <YouWonRibbon />}
-            {loggedIn &&
-              item.status === "sold" &&
-              user.id !== item.leading_user_id && <SoldRibbon />}
-            {loggedIn &&
-              user.id === item.leading_user_id &&
-              item.status !== "sold" && <LeadingBidRibbon />}
-          </>
-        )}
+      <Box sx={{ px: 2 }}>
+        <Box
+          sx={{
+            position: "relative",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: "5%",
+            overflow: "hidden",
+            height: "250px",
+            width: "100%",
+            //   width: 400,
+            margin: "0 auto",
+          }}
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+        >
+          {item.image && (
+            <>
+              {imageUrls.length > 0 && (
+                <Image
+                  src={imageUrls[currentImageIndex]}
+                  alt={item.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  style={{ objectFit: "cover" }}
+                />
+              )}
+              {loggedIn &&
+                item.status === "sold" &&
+                user.id === item.leading_user_id && <YouWonRibbon />}
+              {loggedIn &&
+                item.status === "sold" &&
+                user.id !== item.leading_user_id && <SoldRibbon />}
+              {loggedIn &&
+                user.id === item.leading_user_id &&
+                item.status !== "sold" && <LeadingBidRibbon />}
+            </>
+          )}
+        </Box>
+        {renderImageDots()}
       </Box>
-      {renderImageDots()}
     </>
   );
 }
