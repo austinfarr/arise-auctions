@@ -1,8 +1,8 @@
-import { Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 
 function BuyNowButton({ item, user, onBuyNowClick }) {
   return (
-    <>
+    <Box sx={{ mx: 2 }}>
       <Button
         variant="contained"
         // color="primary"
@@ -34,7 +34,7 @@ function BuyNowButton({ item, user, onBuyNowClick }) {
           ? `You purchased for $${item.final_purchase_price}!`
           : `Buy Now for $${item.buy_now_price.toLocaleString()}`}
       </Button>
-    </>
+    </Box>
   );
 }
 

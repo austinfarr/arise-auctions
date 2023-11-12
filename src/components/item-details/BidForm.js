@@ -13,6 +13,7 @@ function BidForm({
         display: "flex",
         alignItems: "center",
         mt: 2,
+        px: 2,
       }}
     >
       <TextField
