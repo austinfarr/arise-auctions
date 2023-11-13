@@ -19,11 +19,33 @@ import SoldRibbon from "./ribbons/SoldRibbon";
 import YouWonRibbon from "./ribbons/YouWonRibbon";
 
 const AuctionItem = ({ item, onBidSubmit }) => {
-  const router = useRouter();
   const { user, loggedIn } = useAuth();
-  const { itemDetailId } = router.query;
 
   const [detailsOpen, setDetailsOpen] = useState(false);
+
+  const router = useRouter();
+  const { id } = router.query;
+
+  const [itemDetailsOpen, setItemDetailsOpen] = useState(false);
+
+  const handleOpenItemDetails = () => {
+    setItemDetailsOpen(true);
+    // If you want to manipulate the URL without navigation
+    router.replace(`/?id=${item.id}`, undefined, { shallow: true });
+  };
+
+  const handleCloseItemDetails = () => {
+    setItemDetailsOpen(false);
+    // Reset the URL
+    router.replace("/", undefined, { shallow: true });
+  };
+
+  useEffect(() => {
+    // Open the details drawer if the itemDetailId matches the item's ID
+    if (id && id === item.id.toString()) {
+      handleOpenItemDetails();
+    }
+  }, [id, item.id]);
 
   const handleItemClick = () => {
     setDetailsOpen(true);
@@ -34,19 +56,8 @@ const AuctionItem = ({ item, onBidSubmit }) => {
     router.push("/", undefined, { shallow: true });
   };
 
-  const [itemDetailsOpen, setItemDetailsOpen] = useState(false);
   const [buyNowDetailsOpen, setBuyNowDetailsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-
-  const handleOpenItemDetails = (item) => {
-    setSelectedItem(item);
-    setItemDetailsOpen(true);
-  };
-
-  const handleCloseItemDetails = () => {
-    setItemDetailsOpen(false);
-    router.push("/", undefined, { shallow: true });
-  };
 
   const handleOpenBuyNowDetails = () => {
     setItemDetailsOpen(false); // Close ItemDetails Drawer
@@ -58,18 +69,17 @@ const AuctionItem = ({ item, onBidSubmit }) => {
   };
 
   useEffect(() => {
-    console.log("itemDetailId", itemDetailId);
+    console.log("itemDetailId", id);
     console.log("item.id", item.id);
-    if (itemDetailId && itemDetailId === item.id.toString()) {
+    if (id && id === item.id.toString()) {
       setDetailsOpen(true);
     }
-  }, [itemDetailId, item.id]);
+  }, [id, item.id]);
 
   return (
     <>
       <Box
         sx={{
-          // padding: "16px",
           marginY: 2,
           marginX: 2,
           cursor: "pointer",

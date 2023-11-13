@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 const SoldRibbon = () => (
   <Box
@@ -13,10 +13,17 @@ const SoldRibbon = () => (
       transformOrigin: "0 0",
       fontSize: "16px",
       fontWeight: "bold",
-      fontFamily: "Montserrat, sans-serif",
     }}
   >
-    Sold!
+    <Typography
+      sx={{
+        color: "#fff",
+        fontSize: "16px",
+        fontWeight: 600,
+      }}
+    >
+      Sold!
+    </Typography>
   </Box>
 );
 

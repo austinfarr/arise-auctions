@@ -77,11 +77,7 @@ const BuyNowDetailsDrawer = ({ item, open, onClose }) => {
         <Typography variant="body1" align="center">
           {item.title}
         </Typography>
-        <Typography
-          variant="h4"
-          align="center"
-          sx={{ fontWeight: "bold", fontFamily: "sans-serif" }}
-        >
+        <Typography variant="h4" align="center" sx={{ fontWeight: "bold" }}>
           {item.status === "sold"
             ? `You purchased for $${item.final_purchase_price?.toLocaleString()}!`
             : `Buy Now $${item.buy_now_price.toLocaleString()}`}

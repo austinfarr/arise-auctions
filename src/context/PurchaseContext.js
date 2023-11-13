@@ -6,6 +6,8 @@ export const PurchaseProvider = ({ children }) => {
   const [purchaseSuccess, setPurchaseSuccess] = useState(false);
   const [boughtItem, setBoughtItem] = useState(null);
 
+  const [bidSuccess, setBidSuccess] = useState(false);
+
   const showSuccessMessage = (item) => {
     setBoughtItem(item);
     setPurchaseSuccess(true);
@@ -16,6 +18,14 @@ export const PurchaseProvider = ({ children }) => {
     setBoughtItem(null);
   };
 
+  const showBidSuccessMessage = (item) => {
+    setBidSuccess(true);
+  };
+
+  const hideBidSuccessMessage = () => {
+    setBidSuccess(false);
+  };
+
   return (
     <PurchaseContext.Provider
       value={{
@@ -23,6 +33,9 @@ export const PurchaseProvider = ({ children }) => {
         boughtItem,
         showSuccessMessage,
         hideSuccessMessage,
+        bidSuccess,
+        showBidSuccessMessage,
+        hideBidSuccessMessage,
       }}
     >
       {children}

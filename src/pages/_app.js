@@ -7,6 +7,7 @@ import { AuctionProvider } from "@/context/AuctionContext";
 import { PurchaseProvider } from "@/context/PurchaseContext";
 import SuccessDrawer from "@/components/SuccessDrawer";
 import { ConfigurationsProvider } from "@/context/ConfigurationsContext";
+import BidSuccessDrawer from "@/components/BidSuccessDrawer";
 
 export default function App({ Component, pageProps }) {
   return (
@@ -17,6 +18,7 @@ export default function App({ Component, pageProps }) {
             <AuctionProvider>
               <ThemeProvider theme={theme}>
                 <SuccessDrawer />
+                <BidSuccessDrawer />
                 <Component {...pageProps} />
               </ThemeProvider>
             </AuctionProvider>

@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 const LeadingBidRibbon = () => (
   <Box
@@ -13,10 +13,17 @@ const LeadingBidRibbon = () => (
       transformOrigin: "0 0",
       fontSize: "16px",
       fontWeight: "bold",
-      fontFamily: "Montserrat, sans-serif",
     }}
   >
-    You&rsquo;re Winning!
+    <Typography
+      sx={{
+        color: "#ffb81d",
+        fontSize: "16px",
+        fontWeight: 600,
+      }}
+    >
+      You&rsquo;re Winning!
+    </Typography>
   </Box>
 );
 
