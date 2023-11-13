@@ -46,7 +46,6 @@ import {
 import { useEffect, useState } from "react";
 import supabase from "../../lib/supabase";
 import { useDrawer } from "@/context/DrawerContext";
-import LoggedInView from "./login/LoggedInView";
 import SignUpForm from "./login/SignUpForm";
 import OTPVerificationForm from "./login/OTPVerificationForm";
 import LoginForm from "./login/LoginForm";
@@ -218,10 +217,6 @@ const DrawerMenu = () => {
           }}
         >
           <List sx={{ width: "100%" }}>
-            {/* {loggedIn && user && (
-              <LoggedInView user={user} onLogout={handleLogout} />
-            )} */}
-
             {/* show if the user is not logged in and no other screen has been triggered */}
             {!loggedIn && !triggerOTPScreen && !triggerFullNameScreen && (
               <LoginForm

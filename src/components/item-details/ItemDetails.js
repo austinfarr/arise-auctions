@@ -25,6 +25,7 @@ import BidInfo from "./BidInfo";
 import BidForm from "./BidForm";
 import BuyNowButton from "./BuyNowButton";
 import Countdown from "react-countdown";
+import { usePurchase } from "@/context/PurchaseContext";
 
 function ItemDetails({ item, open, onClose, onBuyNowClick }) {
   const [bidAmount, setBidAmount] = useState(
@@ -39,8 +40,22 @@ function ItemDetails({ item, open, onClose, onBuyNowClick }) {
   const { user, loggedIn } = useAuth();
   const { openDrawer } = useDrawer();
   const { items, handleBidSubmit, handleBuyNowSubmit } = useAuction();
+  const [isExpired, setIsExpired] = useState(false);
+
+  const { showBidSuccessMessage, hideBidSuccessMessage } = usePurchase();
 
   const [buyNowDrawerOpen, setBuyNowDrawerOpen] = useState(false);
+
+  useEffect(() => {
+    // Calculate the current time
+    const now = new Date().getTime();
+
+    // Parse the item_timer_ends as a date object
+    const endTime = new Date(item.item_timer_ends).getTime();
+
+    // Determine if the current time is greater than the end time
+    setIsExpired(now > endTime);
+  }, [item.item_timer_ends]); // The effect runs whenever item_timer_ends changes
 
   //If another user increases the bid, update the default bid amount
   useEffect(() => {
@@ -75,6 +90,12 @@ function ItemDetails({ item, open, onClose, onBuyNowClick }) {
       openDrawer();
       return;
     }
+
+    if (new Date().getTime() > new Date(item.item_timer_ends).getTime()) {
+      showSnackbar("Please login to place a bid!", "error");
+      return;
+    }
+
     if (isBidValid(bidAmountNumber)) {
       submitBid(bidAmountNumber);
     } else {
@@ -91,6 +112,8 @@ function ItemDetails({ item, open, onClose, onBuyNowClick }) {
       await handleBidSubmit(item.id, bidAmount, user.id);
       setBidAmount("");
       showSnackbar("Bid placed successfully!", "success");
+      onClose();
+      showBidSuccessMessage();
     } catch (error) {
       console.error("Bid submission failed:", error);
       showSnackbar("Failed to place bid. Please try again later.", "error");
@@ -136,6 +159,7 @@ function ItemDetails({ item, open, onClose, onBuyNowClick }) {
               itemStatus={item.status}
               isBidValid={isBidValid}
               handleBidAmountChange={handleBidAmountChange}
+              isExpired={isExpired}
             />
           )}
 

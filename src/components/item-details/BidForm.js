@@ -6,6 +6,7 @@ function BidForm({
   handleSubmit,
   isBidValid,
   itemStatus,
+  isExpired,
 }) {
   return (
     <Box
@@ -42,7 +43,7 @@ function BidForm({
           fontWeight: 600,
           borderRadius: "0 12px 12px 0",
         }}
-        disabled={!isBidValid(bidAmount) || itemStatus === "sold"}
+        disabled={!isBidValid(bidAmount) || itemStatus === "sold" || isExpired}
         onClick={handleSubmit}
       >
         Bid Now

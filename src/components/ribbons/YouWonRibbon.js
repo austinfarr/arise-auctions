@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 const YouWonRibbon = () => (
   <Box
@@ -8,15 +8,21 @@ const YouWonRibbon = () => (
       left: -30,
       backgroundColor: "#ffb81d",
       padding: "8px 80px",
-      color: "#fff",
       transform: "rotate(-45deg)",
       transformOrigin: "0 0",
       fontSize: "16px",
       fontWeight: "bold",
-      fontFamily: "Montserrat, sans-serif",
     }}
   >
-    You Won!
+    <Typography
+      sx={{
+        color: "#fff",
+        fontSize: "16px",
+        fontWeight: 600,
+      }}
+    >
+      You Won!
+    </Typography>
   </Box>
 );
 
