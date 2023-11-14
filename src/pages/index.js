@@ -20,6 +20,7 @@ import SearchBar from "@/components/home/SearchBar";
 import CategoriesFilter from "@/components/home/CategoriesFilter";
 import LoginToViewBids from "@/components/home/LoginToViewBids";
 import AuctionItemsList from "@/components/home/AuctionItemsList";
+import Footer from "@/components/Footer";
 
 export async function getServerSideProps(context) {
   let { data: items, error } = await supabase.from("Items").select("*");
@@ -247,6 +248,7 @@ export default function Home({ initialItems }) {
                 user={user}
               />
             )}
+            <Footer />
           </main>
         </>
       </AuctionProvider>
