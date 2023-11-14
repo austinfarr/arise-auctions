@@ -15,6 +15,7 @@ import Header from "./header/Header";
 import Logo from "./header/Logo";
 import { Close, Person } from "@mui/icons-material";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 const SideDrawer = ({ onClose, user, onLogout }) => {
   const router = useRouter();
@@ -138,13 +139,61 @@ const SideDrawer = ({ onClose, user, onLogout }) => {
               color: "#fff",
               //   margin: "0 auto",
               height: 50,
-              width: 140,
+              width: 160,
               borderRadius: 0.5,
               mt: 2,
             }}
           >
             DONATE
           </Button>
+        </Box>
+        <Box
+          sx={{
+            // flexGrow: 1,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "end",
+            px: 2,
+            py: 4,
+          }}
+        >
+          <Link
+            href="https://www.ariseafrica.org/what-we-do"
+            replace={false}
+            style={{ textDecoration: "none" }}
+          >
+            <Typography
+              onClick={handleBrowse}
+              sx={{
+                mt: 8,
+                pt: 2,
+                fontWeight: 600,
+                cursor: "pointer",
+                textDecoration: "none", // Remove underline
+                "&:hover": { color: "primary.main" },
+              }}
+            >
+              LEARN ABOUT ARISE AFRICA
+            </Typography>
+          </Link>
+          <Link
+            href="https://www.ariseafrica.org/what-we-do"
+            replace={false}
+            style={{ textDecoration: "none" }}
+          >
+            <Typography
+              onClick={handleBrowse}
+              sx={{
+                pt: 1,
+                fontWeight: 600,
+                cursor: "pointer",
+                "&:hover": { color: "primary.main" },
+              }}
+            >
+              VIEW EVENT SPONSORS
+            </Typography>
+          </Link>
         </Box>
       </Box>
     </>
