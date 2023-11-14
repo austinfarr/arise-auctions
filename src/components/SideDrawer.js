@@ -166,7 +166,7 @@ const SideDrawer = ({ onClose, user, onLogout }) => {
             <Typography
               onClick={handleBrowse}
               sx={{
-                mt: 8,
+                mt: 4,
                 pt: 2,
                 fontWeight: 600,
                 cursor: "pointer",
