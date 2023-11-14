@@ -25,8 +25,8 @@ function ImageDisplay({ item, user }) {
             size="small"
             onClick={() => setCurrentImageIndex(index)}
             sx={{
-              width: currentImageIndex === index ? 12 : 10,
-              height: currentImageIndex === index ? 12 : 10,
+              width: currentImageIndex === index ? 10 : 10,
+              height: currentImageIndex === index ? 10 : 10,
               margin: "0 4px",
               backgroundColor:
                 currentImageIndex === index ? "primary.main" : "#e0e0e0",
@@ -143,7 +143,7 @@ function ImageDisplay({ item, user }) {
             </>
           )}
         </Box>
-        {renderImageDots()}
+        {imageUrls.length > 1 && renderImageDots()}
       </Box>
     </>
   );

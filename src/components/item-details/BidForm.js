@@ -43,7 +43,7 @@ function BidForm({
           borderRadius: "0 12px 12px 0",
           lineHeight: 1,
           whiteSpace: "nowrap", // Prevents the text from wrapping
-          paddingX: { xs: 1, sm: 2 }, // Adjust horizontal padding based on screen size
+          paddingX: { xs: 2.5, sm: 2 }, // Adjust horizontal padding based on screen size
           fontSize: { xs: "0.9rem", sm: "1rem" }, // Adjust font size based on screen size
         }}
         disabled={!isBidValid(bidAmount) || itemStatus === "sold" || isExpired}
