@@ -92,7 +92,7 @@ function ItemDetails({ item, open, onClose, onBuyNowClick }) {
     }
 
     if (new Date().getTime() > new Date(item.item_timer_ends).getTime()) {
-      showSnackbar("Please login to place a bid!", "error");
+      showSnackbar("It is too late to bid on this item!", "error");
       return;
     }
 

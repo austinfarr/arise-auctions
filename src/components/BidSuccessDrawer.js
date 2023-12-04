@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { useDrawer } from "@/context/DrawerContext";
-import Confetti from "react-confetti";
 import { useEffect, useState } from "react";
 const BidSuccessDrawer = () => {
   const { showBidSuccessMessage, hideBidSuccessMessage, bidSuccess } =
@@ -41,16 +40,15 @@ const BidSuccessDrawer = () => {
             pt: 12,
           }}
         >
-          <Typography variant="h5" sx={{ fontWeight: 600, fontSize: 28 }}>
+          <Typography
+            variant="h5"
+            sx={{ fontWeight: 600, fontSize: 28, textAlign: "center" }}
+          >
             Your Bid Was Received!
           </Typography>
 
           <Typography
             sx={{
-              //   textDecoration: "underline",
-              //   textDecorationThickness: "1px", // Adjust thickness of the underline
-              //   textUnderlineOffset: "4px",
-              //   cursor: "pointer",
               textAlign: "center",
               color: "#13294B",
               mt: 2,
