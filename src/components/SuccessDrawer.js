@@ -48,7 +48,13 @@ const SuccessDrawer = () => {
           },
         }}
       >
-        {confettiActive && <Confetti />}
+        {confettiActive && (
+          <Confetti
+            colors={["#FFC107", "#FF9800"]}
+            recycle={false}
+            numberOfPieces={1000}
+          />
+        )}
         <Box
           p={3}
           sx={{

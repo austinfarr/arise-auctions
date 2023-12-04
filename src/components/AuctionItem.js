@@ -100,14 +100,15 @@ const AuctionItem = ({ item, onBidSubmit }) => {
           onClick={handleOpenItemDetails}
         >
           {loggedIn &&
-            item.status === "sold" &&
+            (item.status === "sold" || item.status === "auction ended") &&
             user.id === item.leading_user_id && <YouWonRibbon />}
           {loggedIn &&
-            item.status === "sold" &&
+            (item.status === "sold" || item.status === "auction ended") &&
             user.id !== item.leading_user_id && <SoldRibbon />}
           {loggedIn &&
             user.id === item.leading_user_id &&
-            item.status !== "sold" && <LeadingBidRibbon />}
+            item.status !== "sold" &&
+            item.status !== "auction ended" && <LeadingBidRibbon />}
           <CardMedia
             component="img"
             sx={{ height: 240 }}

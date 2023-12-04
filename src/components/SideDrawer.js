@@ -13,7 +13,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import Header from "./header/Header";
 import Logo from "./header/Logo";
-import { Close, Person } from "@mui/icons-material";
+import { ArrowForward, Close, Person } from "@mui/icons-material";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
@@ -45,9 +45,10 @@ const SideDrawer = ({ onClose, user, onLogout }) => {
         sx={{
           width: "100vw", // Full screen width
           height: "100vh", // Full screen height
-          bgcolor: "background.paper",
           display: "flex",
           flexDirection: "column",
+          backgroundColor: "grey.200", // Gray background color
+          // bgcolor: "background.default", // Existing background color
         }}
       >
         <Box
@@ -58,6 +59,7 @@ const SideDrawer = ({ onClose, user, onLogout }) => {
             justifyContent: "space-between",
             alignItems: "center",
             borderColor: "divider",
+            backgroundColor: "background.default", // Existing background color
           }}
         >
           <Logo />
@@ -75,13 +77,13 @@ const SideDrawer = ({ onClose, user, onLogout }) => {
         </Box>
         <Box
           sx={{
-            // flexGrow: 1,
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "end",
             px: 2,
             py: 4,
+            backgroundColor: "background.default", // Existing background color
           }}
         >
           <Typography variant="body1" gutterBottom>
@@ -107,30 +109,72 @@ const SideDrawer = ({ onClose, user, onLogout }) => {
           >
             Log Out
           </Button>
+        </Box>
 
-          <Typography
-            onClick={handleBrowse}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "end",
+            px: 2,
+
+            backgroundColor: "grey.200", // Gray background color
+          }}
+        >
+          <Box
             sx={{
-              mt: 8,
+              display: "flex",
+              alignItems: "center", // Align items in the center vertically
               py: 3,
-              fontWeight: 600,
               cursor: "pointer",
-              "&:hover": { color: "primary.main" },
+              "&:hover": {
+                color: "primary.main",
+              },
+              "&:hover svg": {
+                // Change color of the icon on hover
+                color: "primary.main",
+              },
             }}
+            onClick={handleBrowse}
           >
-            BROWSE
-          </Typography>
-          <Typography
-            onClick={handlePurchased}
+            <Typography
+              sx={{
+                fontWeight: 600,
+                mr: 1, // Margin right to add space between text and icon
+              }}
+            >
+              BROWSE
+            </Typography>
+            <ArrowForward />
+          </Box>
+          <Box
             sx={{
-              fontWeight: 600,
+              display: "flex",
+              alignItems: "center", // Align items in the center vertically
               py: 3,
-              mt: 2,
-              "&:hover": { color: "primary.main", cursor: "pointer" },
+              cursor: "pointer",
+              "&:hover": {
+                color: "primary.main",
+              },
+              "&:hover svg": {
+                // Change color of the icon on hover
+                color: "primary.main",
+              },
             }}
+            onClick={handlePurchased}
           >
-            PURCHASED
-          </Typography>
+            <Typography
+              sx={{
+                fontWeight: 600,
+                mr: 1, // Margin right to add space between text and icon
+              }}
+            >
+              PURCHASED
+            </Typography>
+            <ArrowForward />
+          </Box>
+
           <Button
             variant="contained"
             color="primary"
@@ -141,30 +185,19 @@ const SideDrawer = ({ onClose, user, onLogout }) => {
               height: 50,
               width: 160,
               borderRadius: 0.5,
-              mt: 2,
+              mt: 4,
             }}
           >
             DONATE
           </Button>
-        </Box>
-        <Box
-          sx={{
-            // flexGrow: 1,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "end",
-            px: 2,
-            py: 4,
-          }}
-        >
+
           <Link
             href="https://www.ariseafrica.org/what-we-do"
             replace={false}
             style={{ textDecoration: "none" }}
           >
             <Typography
-              onClick={handleBrowse}
+              // onClick={handleBrowse}
               sx={{
                 mt: 4,
                 pt: 2,
@@ -183,7 +216,7 @@ const SideDrawer = ({ onClose, user, onLogout }) => {
             style={{ textDecoration: "none" }}
           >
             <Typography
-              onClick={handleBrowse}
+              // onClick={handleBrowse}
               sx={{
                 pt: 1,
                 fontWeight: 600,
