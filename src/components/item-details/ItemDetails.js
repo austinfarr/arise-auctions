@@ -60,7 +60,7 @@ function ItemDetails({ item, open, onClose, onBuyNowClick }) {
   //If another user increases the bid, update the default bid amount
   useEffect(() => {
     setBidAmount(item.current_bid + item.bid_increment);
-  }, [item]);
+  }, []);
 
   const handleBuyNowDrawerClose = () => {
     setBuyNowDrawerOpen(false);
@@ -170,11 +170,16 @@ function ItemDetails({ item, open, onClose, onBuyNowClick }) {
             open={buyNowDrawerOpen}
             onClose={handleBuyNowDrawerClose}
           />
-
+          <Typography
+            paragraph
+            sx={{ mb: 1, mt: 3, px: 2, fontSize: 14, fontWeight: "bold" }}
+          >
+            MARKET VALUE: {item.market_value}
+          </Typography>
           <Typography
             variant="body1"
             paragraph
-            sx={{ marginTop: 5, marginBottom: 10, px: 2 }}
+            sx={{ mt: 0, marginBottom: 10, px: 2 }}
           >
             {item.description}
           </Typography>
