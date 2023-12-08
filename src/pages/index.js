@@ -229,7 +229,6 @@ export default function Home({ initialItems }) {
                 />
               </Grid>
               <Grid item xs={12}>
-                {/* Make sure to set the item prop correctly */}
                 <CategoriesFilter
                   categories={categories}
                   activeFilter={activeFilter}
