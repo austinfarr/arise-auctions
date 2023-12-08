@@ -21,6 +21,12 @@ const BuyNowDetailsDrawer = ({ item, open, onClose }) => {
 
   const [isPurchasing, setIsPurchasing] = React.useState(false);
 
+  let buyNowPrice = "No Price";
+
+  if (item.buy_now_price) {
+    buyNowPrice = item.buy_now_price.toLocaleString();
+  }
+
   const handleBuyNow = async () => {
     setIsPurchasing(true);
     const buyNowPrice = item.buy_now_price;
@@ -80,7 +86,7 @@ const BuyNowDetailsDrawer = ({ item, open, onClose }) => {
         <Typography variant="h4" align="center" sx={{ fontWeight: "bold" }}>
           {item.status === "sold"
             ? `You purchased for $${item.final_purchase_price?.toLocaleString()}!`
-            : `Buy Now $${item.buy_now_price.toLocaleString()}`}
+            : `Buy Now $${buyNowPrice}`}
         </Typography>
         <Button
           variant="contained"
