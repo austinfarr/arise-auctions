@@ -7,6 +7,8 @@ const nextConfig = {
       "sothebys-com.brightspotcdn.com",
       "www.pujolsfamilyfoundation.org",
       "images.unsplash.com",
+      "www.googleapis.com",
+      "storage.googleapis.com",
     ],
   },
 };

@@ -59,7 +59,6 @@ const BuyNowDetailsDrawer = ({ item, open, onClose }) => {
         display: "flex",
         flexDirection: "column",
         "& .MuiPaper-root": {
-          // Targeting the Paper component inside Drawer
           borderTopLeftRadius: 32, // Adjust as needed
           borderTopRightRadius: 32, // Adjust as needed
           height: "60%",
@@ -70,9 +69,6 @@ const BuyNowDetailsDrawer = ({ item, open, onClose }) => {
       <Box
         p={2}
         style={{
-          //   width: "100%",
-          //   maxWidth: 480,
-          // margin: "0 auto",
           paddingTop: 100,
           display: "flex",
           flexDirection: "column",
