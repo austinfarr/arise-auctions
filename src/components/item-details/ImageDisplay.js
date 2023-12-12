@@ -84,9 +84,11 @@ function ImageDisplay({ item, user }) {
   const { loggedIn } = useAuth();
 
   useEffect(() => {
-    if (item && item.image && item.image.images) {
-      setImageUrls(item.image.images);
-      console.log("item.image.images", item.image.images);
+    if (item && item.image && Array.isArray(item.image.images)) {
+      // Map over the nested arrays to extract the first element (URL) from each
+      const urls = item.image.images.map((imageArray) => imageArray[0]);
+      setImageUrls(urls);
+      console.log("Updated item.image.images", urls);
     }
   }, [item]);
 
