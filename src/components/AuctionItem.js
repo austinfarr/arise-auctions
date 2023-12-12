@@ -139,7 +139,7 @@ const AuctionItem = ({ item, onBidSubmit }) => {
               <Typography sx={{ color: "white", fontSize: 24 }} variant="h2">
                 {item.current_bid
                   ? `$${item.current_bid.toLocaleString()}`
-                  : "No bid price"}
+                  : "$0"}
               </Typography>
               <Typography sx={{ color: "white" }}>Current bid</Typography>
             </Box>
