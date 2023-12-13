@@ -26,6 +26,7 @@ import BidForm from "./BidForm";
 import BuyNowButton from "./BuyNowButton";
 import Countdown from "react-countdown";
 import { usePurchase } from "@/context/PurchaseContext";
+import DOMPurify from "dompurify";
 
 function ItemDetails({ item, open, onClose, onBuyNowClick }) {
   const [bidAmount, setBidAmount] = useState(
@@ -45,6 +46,11 @@ function ItemDetails({ item, open, onClose, onBuyNowClick }) {
   const { showBidSuccessMessage, hideBidSuccessMessage } = usePurchase();
 
   const [buyNowDrawerOpen, setBuyNowDrawerOpen] = useState(false);
+
+  let sanitizedDescription = item.description;
+  if (typeof window !== "undefined") {
+    sanitizedDescription = DOMPurify.sanitize(item.description);
+  }
 
   useEffect(() => {
     // Calculate the current time
@@ -181,7 +187,7 @@ function ItemDetails({ item, open, onClose, onBuyNowClick }) {
             paragraph
             sx={{ mt: 0, marginBottom: 10, px: 2 }}
           >
-            {item.description}
+            <div dangerouslySetInnerHTML={{ __html: sanitizedDescription }} />
           </Typography>
         </Box>
       </Drawer>
