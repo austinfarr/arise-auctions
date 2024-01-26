@@ -9,7 +9,6 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
-
 function PurchasedItem({ item }) {
   return (
     <Card
@@ -20,8 +19,18 @@ function PurchasedItem({ item }) {
         alignItems: "center",
       }}
     >
-      <CardContent sx={{ flex: "1 0 auto" }}>
-        <Typography variant="h6" sx={{ fontWeight: 600 }}>
+      <CardContent sx={{ flex: "1 0 auto", maxWidth: "calc(100% - 200px)" }}>
+        {" "}
+        {/* Adjust maxWidth accordingly */}
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: 600,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "wrap",
+          }}
+        >
           {item.title}
         </Typography>
         <Typography

@@ -94,8 +94,17 @@ export default function PurchasedPage({ purchasedItems: initialItems }) {
           Your Purchases
         </Typography>
       </Box>
-      {items?.length > 0 &&
-        items.map((item) => <PurchasedItem item={item} key={item.title} />)}
+      {items?.length > 0 ? (
+        items.map((item) => <PurchasedItem item={item} key={item.title} />)
+      ) : (
+        <Typography
+          variant="h6"
+          gutterBottom
+          sx={{ fontWeight: 600, textAlign: "center" }}
+        >
+          You have no purchased items
+        </Typography>
+      )}
     </>
   );
 }
