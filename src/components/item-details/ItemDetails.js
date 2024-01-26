@@ -159,7 +159,7 @@ function ItemDetails({ item, open, onClose, onBuyNowClick }) {
 
           <BidInfo item={item} />
 
-          {item.is_biddable && !isBanned && (
+          {item.is_biddable && !isBanned && !item.live_auction_only && (
             <BidForm
               bidAmount={bidAmount}
               handleSubmit={handleSubmit}
@@ -170,7 +170,7 @@ function ItemDetails({ item, open, onClose, onBuyNowClick }) {
             />
           )}
 
-          {!isBanned && (
+          {!isBanned && !item.live_auction_only && (
             <BuyNowButton
               item={item}
               onBuyNowClick={onBuyNowClick}
@@ -178,7 +178,7 @@ function ItemDetails({ item, open, onClose, onBuyNowClick }) {
             />
           )}
 
-          {isBanned && (
+          {isBanned && !item.live_auction_only && (
             <Box sx={{ bgcolor: "#ff7675", borderRadius: 5 }}>
               <Typography
                 textAlign="center"

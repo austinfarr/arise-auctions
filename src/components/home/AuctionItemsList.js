@@ -17,6 +17,8 @@ const AuctionItemsList = ({
       // Filtering based on active filter
       if (activeFilter === "sold") {
         return item.status === "sold";
+      } else if (activeFilter === "live") {
+        return item.live_auction_only;
       } else if (activeFilter === "myBids") {
         return (
           userBids.includes(item.id) &&
@@ -24,7 +26,7 @@ const AuctionItemsList = ({
             (item.status === "sold" && item.leading_user_id === user?.id))
         );
       } else if (activeFilter === "all") {
-        return item.status !== "sold";
+        return item.status !== "sold" && !item.live_auction_only;
       } else {
         return (
           item.status !== "sold" &&
