@@ -6,10 +6,15 @@ function Footer() {
   const configurations = useConfigurations();
 
   let sponsorImages = [];
-  try {
-    sponsorImages = JSON.parse(configurations["sponsor_images"]);
-  } catch (error) {
-    console.error("Error parsing sponsor images", error);
+  if (!configurations["sponsor_images"]) return null;
+  else {
+    try {
+      sponsorImages = JSON.parse(configurations["sponsor_images"]);
+      console.log("sponsorImages", sponsorImages);
+    } catch (error) {
+      console.log("sponsorImages", sponsorImages);
+      console.error("Error parsing sponsor images", error);
+    }
   }
 
   return (

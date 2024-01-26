@@ -38,7 +38,8 @@ function ItemDetails({ item, open, onClose, onBuyNowClick }) {
     severity: "error",
   });
 
-  const { user, loggedIn } = useAuth();
+  const { user, loggedIn, isBanned } = useAuth();
+
   const { openDrawer } = useDrawer();
   const { items, handleBidSubmit, handleBuyNowSubmit } = useAuction();
   const [isExpired, setIsExpired] = useState(false);
@@ -158,7 +159,7 @@ function ItemDetails({ item, open, onClose, onBuyNowClick }) {
 
           <BidInfo item={item} />
 
-          {item.is_biddable && (
+          {item.is_biddable && !isBanned && (
             <BidForm
               bidAmount={bidAmount}
               handleSubmit={handleSubmit}
@@ -169,7 +170,25 @@ function ItemDetails({ item, open, onClose, onBuyNowClick }) {
             />
           )}
 
-          <BuyNowButton item={item} onBuyNowClick={onBuyNowClick} user={user} />
+          {!isBanned && (
+            <BuyNowButton
+              item={item}
+              onBuyNowClick={onBuyNowClick}
+              user={user}
+            />
+          )}
+
+          {isBanned && (
+            <Box sx={{ bgcolor: "#ff7675", borderRadius: 5 }}>
+              <Typography
+                textAlign="center"
+                sx={{ color: "#fff", fontSize: 14, p: 2 }}
+              >
+                To bid, please add a payment method using the link provided to
+                you via text message
+              </Typography>
+            </Box>
+          )}
 
           <BuyNowDetailsDrawer
             item={item}

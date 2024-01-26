@@ -8,6 +8,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [isBanned, setIsBanned] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -27,6 +28,7 @@ export const AuthProvider = ({ children }) => {
           if (userProfile) {
             setUser(userProfile);
             setLoggedIn(true);
+            setIsBanned(userProfile.is_banned);
             console.log("user", userProfile);
           }
         } catch (error) {
@@ -201,6 +203,7 @@ export const AuthProvider = ({ children }) => {
         verifyOtpExistingUser,
         verifyOtpNewUser,
         signUp,
+        isBanned,
       }}
     >
       {children}
