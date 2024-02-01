@@ -25,7 +25,7 @@ const CategoriesFilter = ({ categories, activeFilter, onFilterChange }) => {
           { label: "All", value: "all" },
           { label: "Your Bids", value: "myBids" },
           { label: "Sold", value: "sold" },
-          { label: "Live Auction Only", value: "live" },
+          { label: "Live Auction", value: "live" },
           ...categories.map((category) => ({
             label: capitalizeFirstLetter(category),
             value: category,

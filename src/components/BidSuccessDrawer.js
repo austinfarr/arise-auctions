@@ -17,7 +17,7 @@ const BidSuccessDrawer = () => {
         anchor="bottom"
         open={bidSuccess}
         onClose={() => {
-          hideSuccessMessage();
+          hideBidSuccessMessage();
         }}
         sx={{
           height: "60%",
