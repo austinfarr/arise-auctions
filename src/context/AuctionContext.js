@@ -51,7 +51,14 @@ export const AuctionProvider = ({ children, items, setItems }) => {
       setItems(updatedItems);
     }
 
-    setUserBids((prevUserBids) => [...prevUserBids, itemId]);
+    setUserBids((prevUserBids) => {
+      const newUserBids = new Set(prevUserBids);
+      newUserBids.add(itemId);
+      return Array.from(newUserBids);
+    });
+
+    // setUserBids((prevUserBids) => [...prevUserBids, itemId]);
+    console.log("userBids", userBids);
   };
 
   const handleBuyNowSubmit = async (itemId, userId, buyNowPrice) => {

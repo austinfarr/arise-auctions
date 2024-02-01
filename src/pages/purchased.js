@@ -100,7 +100,7 @@ export default function PurchasedPage({ purchasedItems: initialItems }) {
         <Typography
           variant="h6"
           gutterBottom
-          sx={{ fontWeight: 600, textAlign: "center" }}
+          sx={{ fontWeight: 300, textAlign: "center", py: 2 }}
         >
           You have no purchased items
         </Typography>

@@ -27,7 +27,7 @@ export async function getServerSideProps(context) {
 
   // Ensure that 'items' is an array before calling sort
   if (Array.isArray(items)) {
-    const sortItemsById = (a, b) => a.id - b.id;
+    const sortItemsById = (a, b) => a.sort - b.sort;
     items.sort(sortItemsById);
   } else {
     // Log an error and return an empty array if items is not an array

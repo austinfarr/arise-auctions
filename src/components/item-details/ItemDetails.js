@@ -83,7 +83,10 @@ function ItemDetails({ item, open, onClose, onBuyNowClick }) {
 
   const isBidValid = (bid) => {
     const numericBid = parseFloat(bid);
-    if (isNaN(numericBid) || numericBid <= item.current_bid) {
+    if (
+      isNaN(numericBid) ||
+      numericBid <= item.current_bid + item.bid_increment - 1
+    ) {
       return false;
     }
     return true;
