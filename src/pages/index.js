@@ -62,7 +62,7 @@ export default function Home({ initialItems }) {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
 
-  const sortItemsById = (a, b) => a.id - b.id;
+  const sortItemsById = (a, b) => a.sort - b.sort;
 
   useEffect(() => {
     if (user) {
