@@ -140,13 +140,18 @@ function ItemDetails({ item, open, onClose, onBuyNowClick }) {
           height: "75%",
           display: "flex",
           flexDirection: "column",
+          maxWidth: "600px",
+          mx: "auto",
           "& .MuiPaper-root": {
             // Targeting the Paper component inside Drawer
             borderTopLeftRadius: 20, // Adjust as needed
             borderTopRightRadius: 20, // Adjust as needed
             height: "75%",
             background: "#fff",
+            maxWidth: "600px",
+            mx: "auto",
           },
+
           // overflowY: "auto",
         }}
       >

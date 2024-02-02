@@ -158,7 +158,9 @@ export default function Home({ initialItems }) {
       }
 
       // Filter out items where status is 'sold'
-      const biddableItems = itemsData.filter((item) => item.status !== "sold");
+      const biddableItems = itemsData.filter(
+        (item) => item.status !== "sold" && item.status !== "auction ended"
+      );
       console.log("biddableItems", biddableItems);
 
       // From the biddable items, extract all categories
