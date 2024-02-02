@@ -58,11 +58,14 @@ const BuyNowDetailsDrawer = ({ item, open, onClose }) => {
         height: "60%",
         display: "flex",
         flexDirection: "column",
+        maxWidth: "600px",
         "& .MuiPaper-root": {
           borderTopLeftRadius: 32, // Adjust as needed
           borderTopRightRadius: 32, // Adjust as needed
           height: "60%",
           background: "#fff",
+          maxWidth: "600px",
+          mx: "auto",
         },
       }}
     >

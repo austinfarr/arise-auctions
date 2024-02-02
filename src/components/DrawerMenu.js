@@ -199,11 +199,14 @@ const DrawerMenu = () => {
           height: "60%",
           display: "flex",
           flexDirection: "column",
+          maxWidth: "600px",
           "& .MuiPaper-root": {
             borderTopLeftRadius: 20,
             borderTopRightRadius: 20,
             height: "60%",
             background: "#fff",
+            maxWidth: "600px",
+            mx: "auto",
           },
         }}
       >
