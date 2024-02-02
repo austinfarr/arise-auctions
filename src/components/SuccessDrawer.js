@@ -25,8 +25,6 @@ const SuccessDrawer = () => {
     router.push("/purchased");
   };
 
-  console.log("boughtItem", boughtItem);
-
   return (
     <>
       <Drawer
