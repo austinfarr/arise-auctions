@@ -99,48 +99,22 @@ const AuctionItem = ({ item, onBidSubmit }) => {
           elevation={0}
           onClick={handleOpenItemDetails}
         >
-          <Box sx={{ position: "relative" }}>
-            {loggedIn &&
-              (item.status === "sold" || item.status === "auction ended") &&
-              user.id === item.leading_user_id && <YouWonRibbon />}
-            {loggedIn &&
-              (item.status === "sold" || item.status === "auction ended") &&
-              user.id !== item.leading_user_id && <SoldRibbon />}
-            {loggedIn &&
-              user.id === item.leading_user_id &&
-              item.status !== "sold" &&
-              item.status !== "auction ended" && <LeadingBidRibbon />}
+          {loggedIn &&
+            (item.status === "sold" || item.status === "auction ended") &&
+            user.id === item.leading_user_id && <YouWonRibbon />}
+          {loggedIn &&
+            (item.status === "sold" || item.status === "auction ended") &&
+            user.id !== item.leading_user_id && <SoldRibbon />}
+          {loggedIn &&
+            user.id === item.leading_user_id &&
+            item.status !== "sold" &&
+            item.status !== "auction ended" && <LeadingBidRibbon />}
 
-            <CardMedia
-              component="img"
-              sx={{ height: 240 }}
-              image={item.image?.images[0]}
-            />
-            {/* Position the Market Value overlay relative to the CardMedia */}
-            <Box
-              sx={{
-                position: "absolute",
-                top: "84.65%", // Adjust this to align the overlay as needed
-                left: "0%", // Center horizontally
-                // width: "100%", // Overlay spans the full width of the image
-                backgroundColor: "rgba(255,255,255,0.75)",
-                paddingX: 1, // Padding for left and right
-                color: "white",
-                textAlign: "center", // Center the text inside the overlay
-                py: 1, // Padding for top and bottom
-              }}
-            >
-              <Typography
-                variant="body1"
-                sx={{
-                  fontWeight: "bold",
-                  fontSize: 14,
-                }}
-              >
-                MARKET VALUE: {item.market_value}
-              </Typography>
-            </Box>
-          </Box>
+          <CardMedia
+            component="img"
+            sx={{ height: 240 }}
+            image={item.image?.images[0]}
+          />
           <CardContent
             sx={{
               display: "flex",
@@ -156,7 +130,7 @@ const AuctionItem = ({ item, onBidSubmit }) => {
               <Typography
                 variant="h6"
                 component="div"
-                sx={{ color: "white", fontWeight: 600 }}
+                sx={{ color: "white", fontWeight: 600, pr: 1 }}
               >
                 {item.title}
               </Typography>
