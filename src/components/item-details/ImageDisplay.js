@@ -111,16 +111,15 @@ function ImageDisplay({ item, user }) {
       <Box sx={{ px: 2 }}>
         <Box
           sx={{
+            width: "100%", // Use the full width of the parent
+            height: "300px", // This element will have a height of 0
+            // paddingTop: "56.25%", // This creates a 16:9 aspect ratio box
             position: "relative",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
             borderRadius: "5%",
             overflow: "hidden",
-            height: "250px",
-            width: "100%",
-            //   width: 400,
-            margin: "0 auto",
           }}
           onTouchStart={onTouchStart}
           onTouchMove={onTouchMove}
@@ -134,7 +133,7 @@ function ImageDisplay({ item, user }) {
                   alt={item.title}
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  style={{ objectFit: "cover" }}
+                  style={{ objectFit: "contain" }}
                 />
               )}
               {loggedIn &&

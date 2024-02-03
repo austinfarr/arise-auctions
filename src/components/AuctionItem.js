@@ -91,7 +91,7 @@ const AuctionItem = ({ item, onBidSubmit }) => {
       >
         <Card
           sx={{
-            maxWidth: 500,
+            maxWidth: 400,
             width: "100%",
             position: "relative",
             borderRadius: 1,
