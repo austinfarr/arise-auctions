@@ -215,7 +215,7 @@ export default function Home({ initialItems }) {
               justifyContent="center"
               spacing={2}
               sx={{
-                marginBottom: "2rem",
+                marginBottom: "1rem",
                 marginTop: 0.1,
                 bgcolor: "#f5f5f5",
               }}

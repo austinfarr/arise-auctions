@@ -137,7 +137,7 @@ function ItemDetails({ item, open, onClose, onBuyNowClick }) {
         open={open}
         onClose={onClose}
         sx={{
-          height: "75%",
+          height: { xs: "75%", md: "85%" }, // Adjust as needed
           display: "flex",
           flexDirection: "column",
           maxWidth: "600px",
@@ -146,7 +146,7 @@ function ItemDetails({ item, open, onClose, onBuyNowClick }) {
             // Targeting the Paper component inside Drawer
             borderTopLeftRadius: 20, // Adjust as needed
             borderTopRightRadius: 20, // Adjust as needed
-            height: "75%",
+            height: { xs: "75%", md: "85%" }, // Adjust as needed
             background: "#fff",
             maxWidth: "600px",
             mx: "auto",

@@ -59,14 +59,30 @@ const AuctionItemsList = ({
 
   return (
     <div>
-      {filteredItems.map((filteredItem) => (
-        <AuctionItem
-          key={filteredItem.id}
-          item={filteredItem}
-          user={user}
-          onBidSubmit={onBidSubmit}
-        />
-      ))}
+      <Grid
+        container
+        spacing={{ xs: 0, sm: 2, md: 2, lg: 2 }}
+        sx={{ mt: 0, pt: 0 }}
+      >
+        {filteredItems.map((filteredItem) => (
+          <Grid
+            key={filteredItem.id}
+            item
+            xs={12}
+            sm={6}
+            md={4}
+            lg={4}
+            sx={{ mt: 0, pt: 0 }}
+          >
+            <AuctionItem
+              key={filteredItem.id}
+              item={filteredItem}
+              user={user}
+              onBidSubmit={onBidSubmit}
+            />
+          </Grid>
+        ))}
+      </Grid>
     </div>
   );
 };
