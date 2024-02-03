@@ -140,7 +140,7 @@ function ItemDetails({ item, open, onClose, onBuyNowClick }) {
           height: { xs: "75%", md: "85%" }, // Adjust as needed
           display: "flex",
           flexDirection: "column",
-          maxWidth: "600px",
+          maxWidth: "800px",
           mx: "auto",
           "& .MuiPaper-root": {
             // Targeting the Paper component inside Drawer
@@ -148,7 +148,7 @@ function ItemDetails({ item, open, onClose, onBuyNowClick }) {
             borderTopRightRadius: 20, // Adjust as needed
             height: { xs: "75%", md: "85%" }, // Adjust as needed
             background: "#fff",
-            maxWidth: "600px",
+            maxWidth: "800px",
             mx: "auto",
           },
 

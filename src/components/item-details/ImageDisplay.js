@@ -1,12 +1,12 @@
 import { useAuth } from "@/context/AuthContext";
 import { Box, Button, IconButton } from "@mui/material";
 import Image from "next/image";
-import YouWonRibbon from "../ribbons/YouWonRibbon";
-import SoldRibbon from "../ribbons/SoldRibbon";
-import LeadingBidRibbon from "../ribbons/LeadingBidRibbon";
 import { useEffect, useState } from "react";
 import { supabase } from "../../../lib/supabase";
 import { ArrowBackIosNew, ArrowForwardIos } from "@mui/icons-material";
+import LeadingBidRibbonDetails from "../ribbons/LeadingBidRibbonDetails";
+import SoldRibbonDetails from "../ribbons/SoldRibbonDetails";
+import YouWonRibbonDetails from "../ribbons/YouWonRibbonDetails";
 
 function ImageDisplay({ item, user }) {
   const renderImageDots = () => {
@@ -138,14 +138,14 @@ function ImageDisplay({ item, user }) {
               )}
               {loggedIn &&
                 (item.status === "sold" || item.status === "auction ended") &&
-                user.id === item.leading_user_id && <YouWonRibbon />}
+                user.id === item.leading_user_id && <YouWonRibbonDetails />}
               {loggedIn &&
                 (item.status === "sold" || item.status === "auction ended") &&
-                user.id !== item.leading_user_id && <SoldRibbon />}
+                user.id !== item.leading_user_id && <SoldRibbonDetails />}
               {loggedIn &&
                 user.id === item.leading_user_id &&
                 item.status !== "sold" &&
-                item.status !== "auction ended" && <LeadingBidRibbon />}
+                item.status !== "auction ended" && <LeadingBidRibbonDetails />}
             </>
           )}
         </Box>
