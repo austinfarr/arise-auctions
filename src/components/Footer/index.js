@@ -10,9 +10,7 @@ function Footer() {
   else {
     try {
       sponsorImages = JSON.parse(configurations["sponsor_images"]);
-      console.log("sponsorImages", sponsorImages);
     } catch (error) {
-      console.log("sponsorImages", sponsorImages);
       console.error("Error parsing sponsor images", error);
     }
   }

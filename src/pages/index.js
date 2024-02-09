@@ -92,8 +92,10 @@ export default function Home({ initialItems }) {
           event: "*",
           schema: "public",
           table: "Items",
+          columns: ["title", "description", "categories", "current_bid"],
         },
         (payload) => {
+          // console.log("Change received!", payload);
           const eventType = payload.eventType;
           const newRecord = payload.new;
           const oldRecord = payload.old;
@@ -119,9 +121,10 @@ export default function Home({ initialItems }) {
             return newItems;
 
           case "UPDATE":
-            return prevItems
-              .map((item) => (item.id === newRecord.id ? newRecord : item))
-              .sort(sortItemsById);
+            return prevItems.map((item) =>
+              item.id === newRecord.id ? newRecord : item
+            );
+          // .sort(sortItemsById);
 
           case "DELETE":
             return prevItems.filter((item) => item.id !== oldRecord.id);
@@ -140,7 +143,9 @@ export default function Home({ initialItems }) {
     };
 
     return () => {
+      console.log("subscription", subscription);
       subscription.unsubscribe();
+      console.log("subscription", subscription);
     };
   }, []);
 
@@ -149,8 +154,6 @@ export default function Home({ initialItems }) {
       let { data: itemsData, error: itemsError } = await supabase
         .from("Items")
         .select("*");
-
-      console.log("itemsData", itemsData);
 
       if (itemsError) {
         console.error("Error fetching categories:", itemsError);
@@ -161,7 +164,6 @@ export default function Home({ initialItems }) {
       const biddableItems = itemsData.filter(
         (item) => item.status !== "sold" && item.status !== "auction ended"
       );
-      console.log("biddableItems", biddableItems);
 
       // From the biddable items, extract all categories
       const allCategories = biddableItems
