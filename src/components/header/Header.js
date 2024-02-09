@@ -36,7 +36,7 @@ const Header = () => {
     } else {
       // Render a countdown
       return (
-        <Typography variant="h6" sx={{ fontWeight: 500 }}>
+        <Typography variant="h6" sx={{ fontWeight: 500, fontSize: 16 }}>
           {days > 1 && `${days} days left`}
           {days === 1 && `${days} day left`}
           {days === 0 &&
