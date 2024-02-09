@@ -86,7 +86,6 @@ function ImageDisplay({ item, user }) {
   useEffect(() => {
     if (item && item.image && item.image.images) {
       setImageUrls(item.image.images);
-      console.log("item.image.images", item.image.images);
 
       // if (item && item.image && Array.isArray(item.image.images)) {
       //   // Map over the nested arrays to extract the first element (URL) from each

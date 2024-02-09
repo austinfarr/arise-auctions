@@ -72,7 +72,7 @@ const ItemDetail = ({ initialItem }) => {
 
     return () => {
       // cleanup the subscription on component unmount
-      // supabase.removeSubscription(subscription);
+      subscription.unsubscribe();
     };
   }, []);
 

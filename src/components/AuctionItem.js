@@ -69,8 +69,6 @@ const AuctionItem = ({ item, onBidSubmit }) => {
   };
 
   useEffect(() => {
-    console.log("itemDetailId", id);
-    console.log("item.id", item.id);
     if (id && id === item.id.toString()) {
       setDetailsOpen(true);
     }
